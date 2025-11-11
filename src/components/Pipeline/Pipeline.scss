@@ -1,0 +1,8 @@
+@import "/src/styles/_variables.scss";
+
+.pipeline {
+  display: flex;
+  padding: 20px;
+  border: 2px $secondaryColor solid;
+  border-top: none;
+}

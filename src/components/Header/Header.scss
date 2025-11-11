@@ -1,0 +1,55 @@
+@import "/src/styles/_variables.scss";
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 2px $secondaryColor solid;
+  color: $secondaryColor;
+}
+
+.headerMid {
+  display: flex;
+  flex-direction: column;
+  min-width: 50%;
+  gap: 12px;
+
+  .inputUrl {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .inputsLow {
+    display: flex;
+    width: 100%;
+    gap: 12px;
+
+    .inputLow {
+      display: flex;
+      width: 50%;
+      gap: 10px;
+    }
+  }
+
+  label {
+    font-weight: 600;
+  }
+
+  input {
+    width: 100%;
+  }
+}
+
+.headerRight {
+  display: flex;
+  gap: 20px;
+
+  .headerAction {
+    display: flex;
+    padding: 10px;
+    border: 2px $secondaryColor solid;
+    color: inherit;
+  }
+}
