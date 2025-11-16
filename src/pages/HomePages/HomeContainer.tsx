@@ -2,7 +2,7 @@ import type React from "react";
 
 import "./styles/ContainerHome.scss";
 
-export const ContainerHome: React.FC = () => {
+export const HomeContainer: React.FC = () => {
   return (
     <div className="containerHome">
       <div className="homeUp">

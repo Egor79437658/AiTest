@@ -1,13 +1,13 @@
 @import "/src/styles/animations.scss";
 @import "/src/styles/_variables.scss";
 
-.bodyProject {
+.bodyLayout {
   display: flex;
   font-weight: 500;
   background-color: $primaryColor;
   height: 100vh;
 
-  .contentProject {
+  .contentLayout {
     padding-left: 5%;
     transition: padding-left 0.3s;
     width: 100%;
@@ -24,9 +24,13 @@
         padding-left: 0;
       }
     }
-
-    .projectContainer {
+    > *:last-child {
+      display: flex;
+      flex-direction: column;
+      background-color: #ffdd6e;
+      padding: 20px;
       height: 100vh;
+      // height: 85.6vh;
     }
   }
 }
