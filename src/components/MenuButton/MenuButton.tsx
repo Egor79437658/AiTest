@@ -1,15 +1,19 @@
-import React from 'react'
-import './MenuButton.scss'
+import React from "react";
+import cn from "classnames";
+import styles from "./MenuButton.module.scss";
 
 export const MenuButton: React.FC<{
-  onClick: () => void
-  isActive?: boolean
+  onClick: () => void;
+  isActive?: boolean;
 }> = ({ onClick, isActive }) => {
   return (
-    <div className={`menuToggle ${isActive ? 'active' : ''}`} onClick={onClick}>
-      <div className="bar" />
-      <div className="bar" />
-      <div className="bar" />
+    <div
+      className={cn(styles.menuToggle, { [styles.open]: isActive })}
+      onClick={onClick}
+    >
+      <div className={styles.bar} />
+      <div className={styles.bar} />
+      <div className={styles.bar} />
     </div>
-  )
-}
+  );
+};

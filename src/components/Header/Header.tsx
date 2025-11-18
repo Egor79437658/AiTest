@@ -1,16 +1,16 @@
-import type React from "react";
-import { useSidebar } from "../../contexts/";
-import { MenuButton } from "../";
+import type React from 'react'
+import { useSidebar } from '@contexts/'
+import { MenuButton } from '@components/'
 
-import "./Header.scss";
+import './Header.scss'
 
 interface HeaderProps {
-  actionText?: string;
-  actionLink?: string;
+  actionText?: string
+  actionLink?: string
 }
 
 export const Header: React.FC<HeaderProps> = ({ actionText, actionLink }) => {
-  const { toggleSidebar } = useSidebar();
+  const { toggleSidebar } = useSidebar()
 
   return (
     <div className="header">
@@ -42,11 +42,11 @@ export const Header: React.FC<HeaderProps> = ({ actionText, actionLink }) => {
             {actionText}
           </a>
         ) : (
-          <a href={"/home"} className="headerAction">
-            {window.location.pathname == "/" ? "Войти" : "личный кабинет"}
+          <a href={'/home'} className="headerAction">
+            {window.location.pathname == '/' ? 'Войти' : 'личный кабинет'}
           </a>
         )}
       </div>
     </div>
-  );
-};
+  )
+}

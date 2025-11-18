@@ -1,0 +1,36 @@
+.menuToggle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.bar {
+  width: 35px;
+  height: 4px;
+  background-color: #727272;
+  border-radius: 10px;
+  margin: 3px 0;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.menuToggle:hover .bar {
+  background-color: #303030;
+}
+
+.menuToggle.open .bar:nth-child(1) {
+  transform: translateY(10px) rotate(45deg);
+}
+
+.menuToggle.open .bar:nth-child(2) {
+  opacity: 0;
+}
+
+.menuToggle.open .bar:nth-child(3) {
+  transform: translateY(-10px) rotate(-45deg);
+}

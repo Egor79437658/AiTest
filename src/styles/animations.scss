@@ -160,3 +160,32 @@
     pointer-events: none;
   }
 }
+
+@keyframes openLi {
+  0% {
+    // -50px для коротких объектов (иконок), -30% для длинных объектов (кнопки в боковой панели)
+    transform: translateX(-50%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0px);
+    opacity: 1;
+  }
+}
+@keyframes closeLi {
+  0% {
+    // -50px для коротких объектов (иконок), -30% для длинных объектов (кнопки в боковой панели)
+    transform: translateX(50px);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0px);
+    opacity: 1;
+  }
+}

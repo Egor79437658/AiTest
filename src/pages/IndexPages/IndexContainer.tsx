@@ -1,14 +1,13 @@
 import type React from "react";
-
-import "./styles/IndexContainer.scss";
+import styles from "./styles/IndexContainer.module.scss";
 
 export const IndexContainer: React.FC = () => {
   return (
-    <div className="indexContainer">
-      <div className="indexUp">
+    <div className={styles.pageContainer}>
+      <div className={styles.pageUp}>
         <p>Регистрация</p>
       </div>
-      <div className="indexDown">
+      <div className={styles.pageDown}>
         <p>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius quis vel
           facere sunt. Soluta libero quibusdam voluptatem veniam necessitatibus

@@ -1,25 +1,25 @@
 import type React from "react";
-
-import "./styles/ContainerHome.scss";
+import cn from "classnames";
+import styles from "./styles/ContainerHome.module.scss";
 
 export const HomeContainer: React.FC = () => {
   return (
-    <div className="containerHome">
-      <div className="homeUp">
-        <a href="/project" className="block first">
+    <div className={styles.pageContainer}>
+      <div className={styles.pageUp}>
+        <a href="/project" className={cn(styles.block, styles.first)}>
           <p>Проект 1</p>
           <p>перейти {">>"}</p>
         </a>
-        <a href="#" className="block second">
+        <a href="#" className={cn(styles.block, styles.second)}>
           <p>Проект 2</p>
           <p>перейти {">>"}</p>
         </a>
-        <a href="#" className="block third">
+        <a href="#" className={cn(styles.block, styles.third)}>
           <p>Новый проект</p>
           <p>+</p>
         </a>
       </div>
-      <div className="homeDown">
+      <div className={styles.pageDown}>
         <p>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius quis vel
           facere sunt. Soluta libero quibusdam voluptatem veniam necessitatibus
