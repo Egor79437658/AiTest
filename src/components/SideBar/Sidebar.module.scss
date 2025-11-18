@@ -1,5 +1,5 @@
-@use "/src/styles/animations.scss";
-@use "/src/styles/_variables.scss" as vars;
+@use '/src/styles/animations.scss';
+@use '/src/styles/_variables.scss' as vars;
 
 .sidebar {
   display: flex;
@@ -41,15 +41,27 @@
 }
 
 .sidebarMenu {
-  display: none;
+  height: 100%;
   transition: opacity 0.4s ease;
-  pointer-events: none;
+
+  &:not(.open) {
+    .menuList {
+      display: none;
+    }
+    .sidebarIcons {
+      display: flex;
+      opacity: 1;
+      pointer-events: all;
+    }
+  }
 
   &.open {
-    display: block;
-    opacity: 1;
-    pointer-events: all;
-    transition: opacity 0.4s ease 0.2s;
+    .menuList {
+      display: flex;
+    }
+    .sidebarIcons {
+      display: none;
+    }
   }
 }
 
