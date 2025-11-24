@@ -26,6 +26,7 @@ export const SettingsTab: React.FC = () => {
   const hasCompany = user?.profileData.company !== null
 
   return (
+    <div className={stylesGeneral.pageContainer}>
     <div className={stylesSettings.settingsTab}>
       <form onSubmit={handleSubmit(handleSave)} className={stylesSettings.form}>
         <div className={stylesSettings.settingsSection}>
@@ -245,6 +246,7 @@ export const SettingsTab: React.FC = () => {
           </button>
         </div>
       </form>
+    </div>
     </div>
   )
 }

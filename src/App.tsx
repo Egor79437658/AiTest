@@ -1,9 +1,17 @@
+import { Layout, ProtectedRoute } from '@components/'
+import { AuthProvider, SidebarProvider } from '@contexts/'
 import { HelmetProvider } from 'react-helmet-async'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
-import { AuthProvider, SidebarProvider } from '@contexts/'
-import { Layout, ProtectedRoute } from '@components/'
 import { PAGE_ENDPOINTS } from './constants'
-import { HomeContainer, IndexContainer, ProjectContainer, PersonalAccountContainer } from './pages'
+import {
+  FinanceTab,
+  HomeContainer,
+  IndexContainer,
+  PersonalAccountLayout,
+  ProfileTab,
+  ProjectContainer,
+  SettingsTab,
+} from './pages'
 
 import './index.css'
 
@@ -16,10 +24,10 @@ const router = createBrowserRouter([
       {
         path: PAGE_ENDPOINTS.INDEX,
         element: (
-        <ProtectedRoute requireAuth={false}>
-          <IndexContainer />    
-        </ProtectedRoute>
-      ),
+          <ProtectedRoute requireAuth={false}>
+            <IndexContainer />
+          </ProtectedRoute>
+        ),
       },
       {
         path: PAGE_ENDPOINTS.HOME,
@@ -38,12 +46,26 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: PAGE_ENDPOINTS.ACCOUNT,
+        path: PAGE_ENDPOINTS.ACCOUNT.INDEX,
         element: (
           <ProtectedRoute>
-            <PersonalAccountContainer />
+            <PersonalAccountLayout />
           </ProtectedRoute>
         ),
+        children: [
+          {
+            path: PAGE_ENDPOINTS.ACCOUNT.PROFILE,
+            element: <ProfileTab/>
+          },
+          {
+            path: PAGE_ENDPOINTS.ACCOUNT.FINANCES,
+            element: <FinanceTab/>
+          },
+          {
+            path: PAGE_ENDPOINTS.ACCOUNT.SETTINGS,
+            element: <SettingsTab/>
+          }
+        ],
       },
       {
         path: '*',

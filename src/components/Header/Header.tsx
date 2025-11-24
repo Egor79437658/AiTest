@@ -1,7 +1,9 @@
 import type React from 'react'
 import { useSidebar, useAuth } from '@contexts/'
 import { MenuButton } from '@components/'
-import './Header.scss'
+import styles from './Header.module.scss'
+import { useState } from 'react'
+import { PAGE_ENDPOINTS } from '../../constants'
 
 interface HeaderProps {
   actionText?: string
@@ -11,57 +13,101 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = () => {
   const { toggleSidebar } = useSidebar()
   const { user, isAuthenticated, logout, openAuthModal } = useAuth()
-
+  const [openDropdown, setOpenDropdown] = useState(false)
+  const [timeoutID, setTimeOutId] = useState<NodeJS.Timeout>()
   const handleLogout = () => {
     logout()
     window.location.href = '/'
   }
 
   return (
-    <div className="header">
-      <div className="headerLeft">
+    <div className={styles.header}>
+      <div className={styles.headerLeft}>
         <MenuButton onClick={toggleSidebar} />
       </div>
-      <div className="headerMid">
-        <div className="inputUrl">
+      <div className={styles.headerMid}>
+        <div className={styles.inputUrl}>
           <label htmlFor="url">URL:</label>
-          <input id="url" type="text" className="url" />
+          <input id="url" type="text" className={styles.url} />
         </div>
-        <div className="inputsLow">
-          <div className="inputLow">
+        <div className={styles.inputsLow}>
+          <div className={styles.inputLow}>
             <label htmlFor="login">Login:</label>
-            <input id="login" type="text" className="login" />
+            <input id="login" type="text" className={styles.login} />
           </div>
-          <div className="inputLow">
+          <div className={styles.inputLow}>
             <label htmlFor="password">Password: </label>
-            <input id="password" type="text" className="password" />
+            <input id="password" type="text" className={styles.password} />
           </div>
         </div>
       </div>
-      <div className="headerRight">
+      <div className={styles.headerRight}>
         {isAuthenticated && (
           <>
-            <span className="userGreeting">
+            <span className={styles.userGreeting}>
               Привет, {user?.profileData.username || 'Пользователь'}{' '}
             </span>
-            <button onClick={handleLogout} className="headerAction">
+            <button onClick={handleLogout} className={styles.headerAction}>
               Выйти
             </button>
           </>
         )}
         <button
+          className={`${styles.headerAction} ${isAuthenticated ? styles.openDropdownBtn : ''}`}
           onClick={(e) => {
             if (isAuthenticated) {
-              window.location.href = '/account'
+              setOpenDropdown(!openDropdown)
             } else {
               openAuthModal('login')
-              e.currentTarget.blur()
             }
           }}
-          className="headerAction"
+          onMouseEnter={() => {
+            clearTimeout(timeoutID)
+          }}
+          onMouseLeave={() => {
+            setTimeOutId(
+              setTimeout(() => {
+                setOpenDropdown(false)
+              }, 250)
+            )
+          }}
         >
-          {isAuthenticated ? 'Личный кабинет' : 'Войти'}
+          {isAuthenticated
+            ? `Личный кабинет ${openDropdown ? '▼' : '▶'}`
+            : 'Войти'}
         </button>
+        <div
+          className={`${styles.dropdownDiv} ${openDropdown ? '' : styles.hidden}`}
+          onMouseEnter={() => {
+            clearTimeout(timeoutID)
+          }}
+          onMouseLeave={() => {
+            setTimeOutId(
+              setTimeout(() => {
+                setOpenDropdown(false)
+              }, 250)
+            )
+          }}
+        >
+          <button
+            className={styles.headerAction}
+            onClick={() => (window.location.href = `${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.PROFILE}`)}
+          >
+            Профиль
+          </button>
+          <button
+            className={styles.headerAction}
+            onClick={() => (window.location.href = `${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.FINANCES}`)}
+          >
+            Финансы
+          </button>
+          <button
+            className={styles.headerAction}
+            onClick={() => (window.location.href = `${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.SETTINGS}`)}
+          >
+            Настройки
+          </button>
+        </div>
       </div>
     </div>
   )
