@@ -1,0 +1,147 @@
+.profileTab {
+    max-width: 800px;
+    min-width: 41%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.sectionTitle {
+    margin: 0 0 20px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #efbf04;
+    padding-bottom: 10px;
+}
+
+.editableSection,
+.teamsSection {
+    background-color: #fffbf5;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    input,
+    select,
+    option {
+        background-color: #fffbf5;
+    }
+}
+
+.fieldGroup {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+.nameRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
+}
+
+.input,
+.select {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+
+    &:focus {
+        outline: none;
+        border-color: #9d8229;
+    }
+}
+
+.select {
+    background-color: white;
+    cursor: pointer;
+}
+
+.statusDiv {
+    padding-bottom: 12px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.confirmButton {
+    padding: 4px 8px;
+    background-color: #40655e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: #9d8229;
+    }
+}
+
+.error {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.teamsTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+
+    th,
+    td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        transition: box-shadow 0.3s ease-in-out;
+    }
+
+    th {
+        // background-color: #fff5e8;
+        border-bottom: 2px solid black;
+        font-weight: 600;
+        color: #555;
+    }
+    tbody {
+        tr:hover {
+            background-color: #fef6ed;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+        }
+
+    }
+}
+
+.noTeams {
+    color: #f5f5f5;
+    text-align: center;
+    font-style: italic;
+    margin: 0;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 24px;
+}

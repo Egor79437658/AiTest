@@ -14,7 +14,7 @@ export const Layout: React.FC = () => {
         className={`${styles.contentLayout} ${isOpen ? styles.contentShifted : ''}`}
       >
         <Header />
-        <Pipeline />
+        {/* <Pipeline /> */}
         <div className={styles.mainContent}>
           <Outlet />
         </div>

@@ -26,11 +26,13 @@
   }
 }
 
-.mainContent {
+.mainContent > *:not(:first-child) {
   display: flex;
   flex-direction: column;
-  background-color: #ffdd6e;
+  background-color: #253b37;
+  // background-color: #ffc1c1;
+  // background-color: #074f32;
   padding: 20px;
-  height: 100vh;
+  min-height: 100vh;
   // height: 85.6vh;
 }

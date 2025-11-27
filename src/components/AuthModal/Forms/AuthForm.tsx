@@ -1,6 +1,6 @@
 import React from 'react'
 import { FormDataToRecord } from '@types/'
-
+import styles from "../AuthModal.module.scss"
 interface FormField {
   name: string
   label: string
@@ -47,10 +47,10 @@ export function AuthForm<T extends Record<string, unknown>>({
 
   return (
     <>
-      <form onSubmit={onSubmit} className="authForm">
+      <form onSubmit={onSubmit} className={styles.authForm}>
         {fields.map((field) => (
-          <div key={field.name} className="authFormGroup">
-            <label htmlFor={field.name}>{field.label}</label>
+          <div key={field.name} className={styles.authFormGroup}>
+            <label htmlFor={field.name} className={styles.label}>{field.label}</label>
             <input
               type={field.type}
               id={field.name}
@@ -65,14 +65,14 @@ export function AuthForm<T extends Record<string, unknown>>({
           </div>
         ))}
 
-        {error && <div className="authErrorMessage">{error}</div>}
+        {error && <div className={styles.authErrorMessage}>{error}</div>}
 
-        <button type="submit" className="authSubmitButton" disabled={isLoading}>
+        <button type="submit" className={styles.authSubmitButton} disabled={isLoading}>
           {isLoading ? loadingText : submitText}
         </button>
       </form>
 
-      <div className="authModalFooter">{footerContent}</div>
+      <div className={styles.authModalFooter}>{footerContent}</div>
     </>
   )
 }

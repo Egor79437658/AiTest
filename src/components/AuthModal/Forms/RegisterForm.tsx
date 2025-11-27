@@ -1,7 +1,7 @@
 import React from 'react'
 import { RegisterFormData, FormDataToRecord, PartialFormData } from '@types/'
 import { AuthForm } from './AuthForm'
-
+import styles from "../AuthModal.module.scss"
 interface RegisterFormProps {
   formData: RegisterFormData
   error: string
@@ -51,7 +51,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       Уже есть аккаунт?{' '}
       <button
         type="button"
-        className="authLinkButton"
+        className={styles.authLinkButton}
         onClick={onSwitchToLogin}
       >
         Войти
