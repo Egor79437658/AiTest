@@ -1,13 +1,14 @@
 import type React from 'react'
-import { ProtectedRoute } from '@components/'
 import { useAuth } from '@contexts/'
 import styles from './styles/IndexContainer.module.scss'
+import { Pipeline } from '@components/'
 
 export const IndexContainer: React.FC = () => {
   const { openAuthModal, isAuthenticated } = useAuth()
 
   return (
-    <ProtectedRoute requireAuth={false}>
+    <>
+      <Pipeline />
       <div className={styles.pageContainer}>
         <div className={styles.pageUp}>
           <p>Регистрация</p>
@@ -31,6 +32,6 @@ export const IndexContainer: React.FC = () => {
           </p>
         </div>
       </div>
-    </ProtectedRoute>
+    </>
   )
 }

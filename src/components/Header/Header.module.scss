@@ -1,4 +1,4 @@
-@use '/src/styles/_variables.scss' as vars;
+@use "/src/styles/_variables.scss" as vars;
 
 .header {
   display: flex;
@@ -7,6 +7,7 @@
   padding: 10px;
   border: 2px vars.$secondaryColor solid;
   color: vars.$secondaryColor;
+  background: #fff;
 }
 
 .headerMid {
@@ -46,6 +47,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  position: relative;
 
   .userGreeting {
     margin-right: 8px;
@@ -55,16 +57,43 @@
 
   .headerAction {
     padding: 8px 16px;
-    background-color: #007bff;
+    background-color: #40655e;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     text-decoration: none;
     font-size: 14px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
 
     &:hover {
-      background-color: #0056b3;
+      background-color: #9d8229;
     }
+    &:focus {
+      box-shadow: inset 5px 5px 5px black;
+    }
+  }
+  .openDropdownBtn {
+    width: 160px;
+  }
+  .dropdownDiv {
+    position: absolute;
+    top: 40px;
+    right: 0px;
+    width: 160px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+    transition: opacity 0.3s ease-in-out;
+    border-radius: 5px;
+    overflow: hidden;
+
+    button {
+      width: 100%;
+      text-align: center;
+      border-radius: 0;
+    }
+  }
+  .hidden {
+    opacity: 0;
+    pointer-events: none;
   }
 }

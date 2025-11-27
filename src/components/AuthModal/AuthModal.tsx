@@ -1,9 +1,7 @@
-import React, { useState } from 'react'
-import { LoginFormData, RegisterFormData, ConfirmEmailFormData } from '@types/'
-import { LoginForm } from './Forms/LoginForm'
-import { RegisterForm } from './Forms/RegisterForm'
-import { ConfirmEmailForm } from './Forms/ConfirmEmailForm'
 import { useAuth } from '@contexts/'
+import { ConfirmFormData, LoginFormData, RegisterFormData } from '@types/'
+import React, { useState } from 'react'
+import { ConfirmForm, LoginForm, RegisterForm } from './Forms/'
 
 import styles from './AuthModal.module.scss'
 
@@ -13,8 +11,9 @@ export const AuthModal: React.FC = () => {
     closeAuthModal,
     login,
     register,
-    confirmEmail,
+    confirmPending,
     pendingEmail,
+    pendingPhone,
     openAuthModal,
   } = useAuth()
 
@@ -30,7 +29,7 @@ export const AuthModal: React.FC = () => {
     confirmPassword: '',
   })
 
-  const [confirmData, setConfirmData] = useState<ConfirmEmailFormData>({
+  const [confirmData, setConfirmData] = useState<ConfirmFormData>({
     code: '',
   })
 
@@ -51,7 +50,7 @@ export const AuthModal: React.FC = () => {
 
   const handleClose = () => {
     resetForms()
-    closeAuthModal()
+    closeAuthModal(authModal)
   }
 
   const handleOverlayClick = (e: React.MouseEvent) => {
@@ -120,7 +119,7 @@ export const AuthModal: React.FC = () => {
     }
   }
 
-  const handleConfirmEmail = async (e: React.FormEvent) => {
+  const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError('')
@@ -132,7 +131,10 @@ export const AuthModal: React.FC = () => {
     }
 
     try {
-      const success = await confirmEmail(confirmData.code)
+      const success = await confirmPending(
+        confirmData.code,
+        authModal === 'confirmPhone' ? 'phone' : 'email'
+      )
       if (!success) {
         setError('Неверный код подтверждения')
       }
@@ -149,8 +151,10 @@ export const AuthModal: React.FC = () => {
         return 'Вход'
       case 'register':
         return 'Регистрация'
-      case 'confirm':
+      case 'confirmEmail':
         return 'Подтверждение e-mail'
+      case 'confirmPhone':
+        return 'Подтверждение номера'
       default:
         return ''
     }
@@ -193,16 +197,19 @@ export const AuthModal: React.FC = () => {
           />
         )}
 
-        {authModal === 'confirm' && (
-          <ConfirmEmailForm
+        {(authModal === 'confirmEmail' || authModal === 'confirmPhone') && (
+          <ConfirmForm
+            confirmType={authModal === 'confirmPhone' ? 'phone' : 'email'}
             formData={confirmData}
             error={error}
             isLoading={isLoading}
-            pendingEmail={pendingEmail}
+            pendingValue={
+              authModal === 'confirmPhone' ? pendingPhone : pendingEmail
+            }
             onChange={(data) =>
               setConfirmData((prev) => ({ ...prev, ...data }))
             }
-            onSubmit={handleConfirmEmail}
+            onSubmit={handleConfirm}
             onSwitchToLogin={switchToLogin}
           />
         )}

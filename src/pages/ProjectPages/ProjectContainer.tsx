@@ -1,10 +1,11 @@
 import type React from 'react'
-import { ProtectedRoute } from '@components/'
 import styles from './styles/ProjectContainer.module.scss'
+import { Pipeline } from '@components/'
 
 export const ProjectContainer: React.FC = () => {
   return (
-    <ProtectedRoute>
+    <>
+      <Pipeline />
       <div className={styles.pageContainer}>
         <div className={styles.pageUp}>
           <a href="#" className={styles.block}>
@@ -27,6 +28,6 @@ export const ProjectContainer: React.FC = () => {
           <p>Управление проектом. Выберите раздел для работы.</p>
         </div>
       </div>
-    </ProtectedRoute>
+    </>
   )
 }

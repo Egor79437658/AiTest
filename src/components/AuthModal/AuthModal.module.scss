@@ -108,7 +108,7 @@
 
   &:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: #40655e;
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
   }
 
@@ -140,7 +140,7 @@
 .authSubmitButton {
   width: 100%;
   padding: 12px;
-  background-color: #007bff;
+  background-color: #40655e;
   color: white;
   border: none;
   border-radius: 4px;
@@ -149,8 +149,13 @@
   cursor: pointer;
   transition: background-color 0.2s;
 
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+  &:focus {
+    box-shadow: inset 5px 5px 5px black;
+  }
+
   &:hover:not(:disabled) {
-    background-color: #0056b3;
+    background-color: #9d8229;
   }
 
   &:disabled {
@@ -173,7 +178,7 @@
 .authLinkButton {
   background: none;
   border: none;
-  color: #007bff;
+  color: #40655e;
   text-decoration: underline;
   cursor: pointer;
   font-size: inherit;
@@ -181,6 +186,6 @@
   transition: color 0.2s;
 
   &:hover {
-    color: #0056b3;
+    color: #9d8229;
   }
 }

@@ -27,7 +27,7 @@ export const Sidebar: React.FC = () => {
         }
         return () => clearTimeout(timer)
       },
-      510 + 100 * menuItems.length
+      800 + 100 * menuItems.length
     )
   }, [isOpen])
 

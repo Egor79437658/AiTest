@@ -1,7 +1,7 @@
 import React from 'react'
 import { LoginFormData, FormDataToRecord, PartialFormData } from '@types/'
 import { AuthForm } from './AuthForm'
-
+import styles from "../AuthModal.module.scss"
 interface LoginFormProps {
   formData: LoginFormData
   error: string
@@ -41,7 +41,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       Нет аккаунта?{' '}
       <button
         type="button"
-        className="authLinkButton"
+        className={styles.authLinkButton}
         onClick={onSwitchToRegister}
       >
         Зарегистрироваться
