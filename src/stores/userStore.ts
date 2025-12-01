@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 import { User } from '@interfaces/'
 
 interface UserState {
@@ -14,29 +13,21 @@ interface UserState {
   clearUser: () => void
 }
 
-export const useUserStore = create<UserState>()(
-  persist(
-    (set) => ({
-      user: null,
-      isLoading: false,
-      error: null,
+export const useUserStore = create<UserState>((set) => ({
+  user: null,
+  isLoading: false,
+  error: null,
 
-      setUser: (user) => set({ user, error: null }),
+  setUser: (user) => set({ user, error: null }),
 
-      updateUser: (updates) =>
-        set((state) => ({
-          user: state.user ? { ...state.user, ...updates } : null,
-        })),
+  updateUser: (updates) =>
+    set((state) => ({
+      user: state.user ? { ...state.user, ...updates } : null,
+    })),
 
-      setLoading: (isLoading) => set({ isLoading }),
+  setLoading: (isLoading) => set({ isLoading }),
 
-      setError: (error) => set({ error }),
+  setError: (error) => set({ error }),
 
-      clearUser: () => set({ user: null, error: null }),
-    }),
-    {
-      name: 'user-storage',
-      partialize: (state) => ({ user: state.user }),
-    }
-  )
-)
+  clearUser: () => set({ user: null, error: null }),
+}))

@@ -1,21 +1,24 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useUserStore, useAuthStore } from '@stores/'
 import { authApi, usersApi } from '@api'
 import { UserContext } from './UserContext'
 import { MOCK_MODE } from '@constants/'
-import { User, UserContextType } from '@interfaces/'
+import { UserContextType } from '@interfaces/'
 import { mockApiService } from '../../services/mockApiService'
+import { UpdateProfileData, UpdateSettingsData } from '../../api/users'
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const { user, setUser, updateUser, setLoading, setError, clearUser } =
     useUserStore()
-  const { accessToken, isAuthenticated } = useAuthStore()
+  const { accessToken } = useAuthStore()
+
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false)
 
   useEffect(() => {
     const loadUserData = async () => {
-      if (isAuthenticated && accessToken) {
+      if (accessToken) {
         try {
           setLoading(true)
           let userData
@@ -27,21 +30,58 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
           }
 
           setUser(userData)
+          setInitialLoadComplete(true)
         } catch (error) {
           console.error('Failed to load user data:', error)
-          setError(
-            error instanceof Error ? error.message : 'Failed to load user data'
-          )
+          setError('Не удалось загрузить данные пользователя')
+          setInitialLoadComplete(true)
         } finally {
           setLoading(false)
         }
       } else {
-        clearUser()
+        if (user) {
+          clearUser()
+        }
+        setInitialLoadComplete(true)
       }
     }
 
-    loadUserData()
-  }, [isAuthenticated, accessToken, setUser, setLoading, setError, clearUser])
+    const timer = setTimeout(() => {
+      loadUserData()
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [accessToken, setUser, setLoading, setError, clearUser, user])
+
+  if (!initialLoadComplete) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}
+      >
+        <div>Загрузка приложения...</div>
+      </div>
+    )
+  }
+
+  if (accessToken && useUserStore.getState().isLoading && !user) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}
+      >
+        <div>Загрузка данных пользователя...</div>
+      </div>
+    )
+  }
 
   const refreshUser = async (): Promise<void> => {
     if (!user) return
@@ -59,9 +99,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
       setUser(userData)
     } catch (error) {
       console.error('Failed to refresh user data:', error)
-      setError(
-        error instanceof Error ? error.message : 'Failed to refresh user data'
-      )
+      setError('Не удалось обновить данные пользователя')
       throw error
     } finally {
       setLoading(false)
@@ -69,7 +107,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   }
 
   const updateUserProfile = async (
-    profileData: Partial<User['profileData']>
+    profileData: UpdateProfileData
   ): Promise<void> => {
     if (!user) return
 
@@ -83,15 +121,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
           profileData
         )
       } else {
-        updatedUser = await usersApi.updateUserProfile(user.id, { profileData })
+        updatedUser = await usersApi.updateMyProfile(profileData)
       }
 
       setUser(updatedUser)
     } catch (error) {
       console.error('Failed to update user profile:', error)
-      setError(
-        error instanceof Error ? error.message : 'Failed to update profile'
-      )
+      setError('Не удалось обновить профиль')
       throw error
     } finally {
       setLoading(false)
@@ -99,7 +135,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   }
 
   const updateUserSettings = async (
-    settingsData: Partial<User['settingsData']>
+    settingsData: UpdateSettingsData
   ): Promise<void> => {
     if (!user) return
 
@@ -113,17 +149,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
           settingsData
         )
       } else {
-        updatedUser = await usersApi.updateUserSettings(user.id, {
-          settingsData,
-        })
+        updatedUser = await usersApi.updateMySettings(settingsData)
       }
 
       setUser(updatedUser)
     } catch (error) {
       console.error('Failed to update user settings:', error)
-      setError(
-        error instanceof Error ? error.message : 'Failed to update settings'
-      )
+      setError('Не удалось обновить настройки')
       throw error
     } finally {
       setLoading(false)
@@ -144,9 +176,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
       })
     } catch (error) {
       console.error('Failed to update user confirmation:', error)
-      setError(
-        error instanceof Error ? error.message : 'Failed to update confirmation'
-      )
+      setError('Не удалось обновить подтверждение')
       throw error
     }
   }

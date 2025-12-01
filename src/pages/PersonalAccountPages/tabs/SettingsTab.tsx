@@ -1,4 +1,4 @@
-import { useAuth } from '@contexts/'
+import { useUser } from '@contexts/'
 import { SettingsData } from '@interfaces/'
 import type React from 'react'
 import { useForm, Controller } from 'react-hook-form'
@@ -6,7 +6,7 @@ import stylesSettings from '../styles/SettingsTab.module.scss'
 import stylesGeneral from '../styles/Account.module.scss'
 
 export const SettingsTab: React.FC = () => {
-  const { user, updateUser } = useAuth()
+  const { user, updateUserSettings, isLoading } = useUser()
   const {
     control,
     handleSubmit,
@@ -19,11 +19,19 @@ export const SettingsTab: React.FC = () => {
       data.jobPosition = !!data.jobPosition
       user.settingsData = data
       console.log(user)
-      updateUser(user)
+      updateUserSettings(user)
     }
   }
 
   const hasCompany = user?.profileData.company !== null
+
+  if (isLoading) {
+    return (
+      <div className={stylesGeneral.pageContainer}>
+        <div>Загрузка профиля...</div>
+      </div>
+    )
+  }
 
   return (
     <div className={stylesGeneral.pageContainer}>

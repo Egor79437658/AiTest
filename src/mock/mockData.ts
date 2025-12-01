@@ -3,6 +3,7 @@ import { User } from '@interfaces/'
 export const mockUsers: User[] = [
   {
     id: '1',
+    uuid: 'mock_uuid',
     profileData: {
       status: 'active' as const,
       username: 'testuser',
@@ -48,6 +49,7 @@ export const mockUsers: User[] = [
   },
   {
     id: '2',
+    uuid: 'mock_uuid2',
     profileData: {
       status: 'active' as const,
       username: 'demo',

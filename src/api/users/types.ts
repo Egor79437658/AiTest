@@ -7,3 +7,7 @@ export interface UpdateProfileData {
 export interface UpdateSettingsData {
   settingsData: Partial<User['settingsData']>
 }
+
+export interface UpdateFinancialData {
+  financialData: Partial<User['financeData']>
+}

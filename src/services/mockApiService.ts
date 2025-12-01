@@ -1,26 +1,25 @@
 import { User } from '@interfaces/'
 import { MOCK_CODE } from '@constants/'
 import { MOCK_PASSWORD, mockTokens, mockUsers } from '../mock/mockData'
+import { UpdateProfileData, UpdateSettingsData } from '../api/users'
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 class MockApiService {
-  private currentUser: User | null = null
+  private findUserByEmail(email: string): User | undefined {
+    return mockUsers.find((u) => u.profileData.email === email)
+  }
 
   async login(credentials: { email: string; password: string }) {
     await delay(1000)
 
-    const user = mockUsers.find(
-      (u) =>
-        u.profileData.email === credentials.email &&
-        credentials.password === MOCK_PASSWORD
-    )
+    const user = this.findUserByEmail(credentials.email)
 
-    if (!user) {
+    if (!user || credentials.password !== MOCK_PASSWORD) {
       throw new Error('Invalid email or password')
     }
 
-    this.currentUser = user
+    localStorage.setItem('mock_user_id', user.id)
 
     return {
       user,
@@ -32,8 +31,7 @@ class MockApiService {
   async register(data: { username: string; email: string; password: string }) {
     await delay(1000)
 
-    const userExists = mockUsers.some((u) => u.profileData.email === data.email)
-    if (userExists) {
+    if (this.findUserByEmail(data.email)) {
       throw new Error('User already exists')
     }
 
@@ -48,7 +46,9 @@ class MockApiService {
       },
     }
 
-    this.currentUser = newUser
+    mockUsers.push(newUser)
+
+    localStorage.setItem('mock_user_id', newUser.id)
 
     return {
       user: newUser,
@@ -60,11 +60,40 @@ class MockApiService {
   async getCurrentUser() {
     await delay(500)
 
-    if (!this.currentUser) {
+    const storedAuth = localStorage.getItem('auth-storage')
+    if (!storedAuth) {
       throw new Error('Not authenticated')
     }
 
-    return this.currentUser
+    try {
+      const parsedAuth = JSON.parse(storedAuth)
+      const accessToken = parsedAuth.state?.accessToken
+
+      if (!accessToken) {
+        throw new Error('No access token')
+      }
+
+      const userId = localStorage.getItem('mock_user_id')
+
+      console.log('getCurrentUser - userId from localStorage:', userId)
+      console.log('getCurrentUser - accessToken:', accessToken)
+
+      if (!userId) {
+        throw new Error('Not authenticated - no user id')
+      }
+
+      const user = mockUsers.find((u) => u.id === userId)
+      console.log('getCurrentUser - found user:', user)
+
+      if (!user) {
+        throw new Error('User not found')
+      }
+
+      return user
+    } catch (error) {
+      console.error('Failed to get current user:', error)
+      throw new Error('Not authenticated')
+    }
   }
 
   async confirmEmail(data: { email: string; code: string }) {
@@ -74,14 +103,17 @@ class MockApiService {
       throw new Error('Invalid confirmation code')
     }
 
-    if (this.currentUser) {
-      this.currentUser = {
-        ...this.currentUser,
-        profileData: {
-          ...this.currentUser.profileData,
-          emailConfirmed: true,
-        },
-      }
+    const userIndex = mockUsers.findIndex(
+      (u) => u.profileData.email === data.email
+    )
+    if (userIndex === -1) throw new Error('User not found')
+
+    mockUsers[userIndex] = {
+      ...mockUsers[userIndex],
+      profileData: {
+        ...mockUsers[userIndex].profileData,
+        emailConfirmed: true,
+      },
     }
 
     return { success: true }
@@ -94,14 +126,17 @@ class MockApiService {
       throw new Error('Invalid confirmation code')
     }
 
-    if (this.currentUser) {
-      this.currentUser = {
-        ...this.currentUser,
-        profileData: {
-          ...this.currentUser.profileData,
-          phoneConfirmed: true,
-        },
-      }
+    const userIndex = mockUsers.findIndex(
+      (u) => u.profileData.phone === data.phone
+    )
+    if (userIndex === -1) throw new Error('User not found')
+
+    mockUsers[userIndex] = {
+      ...mockUsers[userIndex],
+      profileData: {
+        ...mockUsers[userIndex].profileData,
+        phoneConfirmed: true,
+      },
     }
 
     return { success: true }
@@ -118,42 +153,44 @@ class MockApiService {
     return user
   }
 
-  async updateUserProfile(
-    userId: string,
-    profileData: Partial<User['profileData']>
-  ) {
+  async updateUserProfile(userId: string, profileData: UpdateProfileData) {
     await delay(800)
 
-    if (this.currentUser && this.currentUser.id === userId) {
-      this.currentUser = {
-        ...this.currentUser,
-        profileData: {
-          ...this.currentUser.profileData,
-          ...profileData,
-        },
-      }
+    const userIndex = mockUsers.findIndex((u) => u.id === userId)
+    if (userIndex === -1) throw new Error('User not found')
+
+    const updatedUser = {
+      ...mockUsers[userIndex],
+      profileData: {
+        ...mockUsers[userIndex].profileData,
+        ...profileData,
+      },
     }
 
-    return this.currentUser!
+    mockUsers[userIndex] = updatedUser
+    return updatedUser
   }
 
-  async updateUserSettings(
-    userId: string,
-    settingsData: Partial<User['settingsData']>
-  ) {
+  async updateUserSettings(userId: string, settingsData: UpdateSettingsData) {
     await delay(800)
 
-    if (this.currentUser && this.currentUser.id === userId) {
-      this.currentUser = {
-        ...this.currentUser,
-        settingsData: {
-          ...this.currentUser.settingsData,
-          ...settingsData,
-        },
-      }
+    const userIndex = mockUsers.findIndex((u) => u.id === userId)
+    if (userIndex === -1) throw new Error('User not found')
+
+    const updatedUser = {
+      ...mockUsers[userIndex],
+      settingsData: {
+        ...mockUsers[userIndex].settingsData,
+        ...settingsData,
+      },
     }
 
-    return this.currentUser!
+    mockUsers[userIndex] = updatedUser
+    return updatedUser
+  }
+
+  async logout() {
+    localStorage.removeItem('mock_user_id')
   }
 }
 

@@ -1,37 +1,59 @@
-import { User } from '@interfaces/'
-import { UpdateProfileData, UpdateSettingsData } from './types'
+import { Project, User } from '@interfaces/'
+import {
+  UpdateFinancialData,
+  UpdateProfileData,
+  UpdateSettingsData,
+} from './types'
 import { apiClient } from '@api'
+import { API_URL } from '@constants/'
 
 class UsersApi {
+  async getMyProfile(): Promise<User> {
+    const response = await apiClient.get<User>(`${API_URL.USER}/me/`)
+    return response
+  }
+
+  async updateMyProfile(data: UpdateProfileData): Promise<User> {
+    const response = await apiClient.patch<User>(`${API_URL.USER}/me/`, data)
+    return response
+  }
+
+  async getMyProjects(): Promise<Project[]> {
+    const response = await apiClient.get<Project[]>('/projects/me/')
+    return response
+  }
+
+  async getMyFinancial(): Promise<User> {
+    const response = await apiClient.get<User>('/financial/me/')
+    return response
+  }
+
+  async updateMyFinancial(data: UpdateFinancialData): Promise<User> {
+    const response = await apiClient.patch<User>('/financial/me/', data)
+    return response
+  }
+
+  async getMySettings(): Promise<User> {
+    const response = await apiClient.get<User>('/settings/me/')
+    return response
+  }
+
+  async updateMySettings(data: UpdateSettingsData): Promise<User> {
+    const response = await apiClient.patch<User>('/settings/me/', data)
+    return response
+  }
+
+  async deleteMyAccount(): Promise<void> {
+    await apiClient.delete(`${API_URL.USER}/me/`)
+  }
+
   async getUserProfile(userId: string): Promise<User> {
-    const response = await apiClient.get<User>(`/users/${userId}/profile`)
-    return response
-  }
-
-  async updateUserProfile(
-    userId: string,
-    data: UpdateProfileData
-  ): Promise<User> {
-    const response = await apiClient.patch<User>(
-      `/users/${userId}/profile`,
-      data
-    )
-    return response
-  }
-
-  async updateUserSettings(
-    userId: string,
-    data: UpdateSettingsData
-  ): Promise<User> {
-    const response = await apiClient.patch<User>(
-      `/users/${userId}/settings`,
-      data
-    )
+    const response = await apiClient.get<User>(`${API_URL.USER}/${userId}/`)
     return response
   }
 
   async deleteUser(userId: string): Promise<void> {
-    await apiClient.delete(`/users/${userId}`)
+    await apiClient.delete(`/user/${userId}/`)
   }
 }
 

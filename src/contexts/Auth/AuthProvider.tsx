@@ -3,14 +3,7 @@ import { useAuthStore } from '@stores/'
 import { useUserStore } from '@stores/'
 import { authApi } from '@api'
 import { AuthContext } from './AuthContext'
-import {
-  AuthModalType,
-  AuthContextType,
-  ApiError,
-  AuthError,
-  NetworkError,
-} from '@interfaces/'
-import { getTokenExpirationTime } from '@utils/'
+import { AuthModalType, AuthContextType } from '@interfaces/'
 import { MOCK_MODE } from '@constants/'
 import { mockApiService } from '../../services/mockApiService'
 
@@ -35,23 +28,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (accessToken) {
-      const expirationTime = getTokenExpirationTime(accessToken)
-      if (expirationTime) {
-        const timeUntilExpiration = expirationTime - Date.now()
+      // in prod check token expires
+      const timer = setTimeout(() => {
+        // in prod there will be auto-logout
+      }, 3600000)
 
-        if (timeUntilExpiration > 0) {
-          const timer = setTimeout(() => {
-            storeLogout()
-            clearUser()
-            console.log('Auto-logout due to token expiration')
-          }, timeUntilExpiration)
-
-          return () => clearTimeout(timer)
-        } else {
-          storeLogout()
-          clearUser()
-        }
-      }
+      return () => clearTimeout(timer)
     }
   }, [accessToken, storeLogout, clearUser])
 
@@ -79,7 +61,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       return true
     } catch (error) {
-      handleAuthError(error)
+      console.error('Login failed:', error)
       return false
     } finally {
       setLoading(false)
@@ -108,7 +90,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       openAuthModal('confirmEmail', email)
       return true
     } catch (error) {
-      handleAuthError(error)
+      console.error('Registration failed:', error)
       return false
     } finally {
       setLoading(false)
@@ -175,21 +157,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
 
-  const handleAuthError = (error: unknown): void => {
-    console.error('Auth error:', error)
-
-    if (error instanceof AuthError) {
-      console.error('Authentication error:', error.message)
-    } else if (error instanceof NetworkError) {
-      console.error('Network error:', error.message)
-    } else if (error instanceof ApiError) {
-      console.error('API error:', error.message)
-    } else if (error instanceof Error) {
-      console.error('Mock API error:', error.message)
-    }
-  }
-
   const logout = (): void => {
+    if (MOCK_MODE) {
+      mockApiService.logout()
+    }
     storeLogout()
     clearUser()
   }

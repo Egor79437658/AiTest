@@ -13,6 +13,7 @@ import {
 } from './pages'
 
 import './index.css'
+import { useEffect } from 'react'
 
 const router = createBrowserRouter([
   {
@@ -74,6 +75,13 @@ const router = createBrowserRouter([
 ])
 
 function App() {
+  useEffect(() => {
+    console.log('Токен в localStorage:', localStorage.getItem('auth-storage'))
+    console.log(
+      'ID пользователя в localStorage:',
+      localStorage.getItem('mock_user_id')
+    )
+  }, [])
   return (
     <AuthProvider>
       <UserProvider>
