@@ -1,6 +1,7 @@
 import type React from 'react'
 import styles from './styles/ContainerHome.module.scss'
 import { Pipeline } from '@components/'
+import { Link } from 'react-router-dom'
 
 export const HomeContainer: React.FC = () => {
   return (
@@ -8,18 +9,18 @@ export const HomeContainer: React.FC = () => {
       <Pipeline />
       <div className={styles.pageContainer}>
         <div className={styles.pageUp}>
-          <a href="/project" className={`${styles.block} ${styles.first}`}>
+          <Link to="/project" className={`${styles.block} ${styles.first}`}>
             <p>Проект 1</p>
             <p>перейти {'>>'}</p>
-          </a>
-          <a href="#" className={`${styles.block} ${styles.second}`}>
+          </Link>
+          <Link to="#" className={`${styles.block} ${styles.second}`}>
             <p>Проект 2</p>
             <p>перейти {'>>'}</p>
-          </a>
-          <a href="#" className={`${styles.block} ${styles.third}`}>
+          </Link>
+          <Link to="#" className={`${styles.block} ${styles.third}`}>
             <p>Новый проект</p>
             <p>+</p>
-          </a>
+          </Link>
         </div>
         <div className={styles.pageDown}>
           <p>

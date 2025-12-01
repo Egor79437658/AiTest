@@ -2,6 +2,7 @@ import type React from 'react'
 import styles from './styles/ProjectContainer.module.scss'
 import { Pipeline } from '@components/'
 import { useAuth, useUser } from '@contexts/'
+import { Link } from 'react-router-dom'
 
 export const ProjectContainer: React.FC = () => {
   const { isAuthenticated, logout } = useAuth()
@@ -59,26 +60,26 @@ export const ProjectContainer: React.FC = () => {
         </div>
 
         <div className={styles.pageUp}>
-          <a href="#" className={styles.block}>
+          <Link to="#" className={styles.block}>
             <p>Тест-кейсы</p>
             <span>Manage test cases</span>
-          </a>
-          <a href="#" className={styles.block}>
+          </Link>
+          <Link to="#" className={styles.block}>
             <p>Тест-план</p>
             <span>Create test plans</span>
-          </a>
-          <a href="#" className={styles.block}>
+          </Link>
+          <Link to="#" className={styles.block}>
             <p>Скрипты</p>
             <span>Testing scripts</span>
-          </a>
-          <a href="#" className={styles.block}>
+          </Link>
+          <Link to="#" className={styles.block}>
             <p>Автотестинг</p>
             <span>Automated testing</span>
-          </a>
-          <a href="#" className={styles.block}>
+          </Link>
+          <Link to="#" className={styles.block}>
             <p>Отчеты</p>
             <span>Generate reports</span>
-          </a>
+          </Link>
         </div>
         <div className={styles.pageDown}>
           <p>
