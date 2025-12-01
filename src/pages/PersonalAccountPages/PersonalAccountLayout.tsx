@@ -1,7 +1,7 @@
 import { Pipeline, Tabs } from '@components/'
 import type React from 'react'
 import { useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import styles from './styles/Account.module.scss'
 import { PAGE_ENDPOINTS } from '@constants/'
 
@@ -12,9 +12,13 @@ export const PersonalAccountLayout: React.FC = () => {
     { id: 'settings', label: 'Настройки' },
   ]
 
+  const navigate = useNavigate()
+  const location = useLocation()
+  
   const [activeTab, setActiveTab] = useState(
-    window.location.pathname.split('/')[2]
+    location.pathname.split('/')[2]
   )
+
   return (
     <>
       <Pipeline>
@@ -23,7 +27,7 @@ export const PersonalAccountLayout: React.FC = () => {
           currentTab={activeTab}
           onChange={(tabId: string) => {
             setActiveTab(tabId)
-            window.location.href = `${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${tabId}`
+            navigate(`${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${tabId}`)
           }}
           className={styles.tabs}
         />

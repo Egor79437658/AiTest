@@ -2,6 +2,7 @@ import React, { JSX, useEffect, useRef, useState } from 'react'
 import { useSidebar } from '@contexts/'
 import styles from './Sidebar.module.scss'
 import { MenuItem, useSidebarNavigation } from './hooks/useSidebarNavigation'
+import { Link } from 'react-router-dom'
 
 export const Sidebar: React.FC = () => {
   const { isOpen, closeSidebar } = useSidebar()
@@ -58,8 +59,8 @@ export const Sidebar: React.FC = () => {
     return (
       <li key={`${item.link}-${level}`} className={styles.menuItem}>
         <div className={styles.menuItemContainer}>
-          <a
-            href={item.link}
+          <Link
+            to={item.link}
             className={`${isOpen ? styles.menuLink : styles.iconLink} ${
               item.requireAuth && !isAuthenticated ? styles.requireAuth : ''
             } ${level > 0 ? styles.submenuLink : ''}`}
@@ -98,7 +99,7 @@ export const Sidebar: React.FC = () => {
                 )}
               </span>
             )}
-          </a>
+          </Link>
         </div>
 
         {hasChildren && isOpen && item.children && (
@@ -133,9 +134,9 @@ export const Sidebar: React.FC = () => {
             </button>
           )}
           <div className={styles.logoCont}>
-            <a href="/" className={`${!isOpen ? styles.miniLogo : ''}`}>
+            <Link to="/" className={`${!isOpen ? styles.miniLogo : ''}`}>
               <img src="#" alt="логотип" />
-            </a>
+            </Link>
           </div>
           <ul
             ref={listRef}

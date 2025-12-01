@@ -4,6 +4,7 @@ import { MenuButton } from '@components/'
 import styles from './Header.module.scss'
 import { useState } from 'react'
 import { PAGE_ENDPOINTS } from '@constants/'
+import { useNavigate } from 'react-router-dom'
 
 interface HeaderProps {
   actionText?: string
@@ -15,9 +16,11 @@ export const Header: React.FC<HeaderProps> = () => {
   const { user, isAuthenticated, logout, openAuthModal } = useAuth()
   const [openDropdown, setOpenDropdown] = useState(false)
   const [timeoutID, setTimeOutId] = useState<number>()
+  const navigate = useNavigate()
+
   const handleLogout = () => {
     logout()
-    window.location.href = '/'
+    navigate('/')
   }
 
   return (
@@ -92,7 +95,7 @@ export const Header: React.FC<HeaderProps> = () => {
           <button
             className={styles.headerAction}
             onClick={() =>
-              (window.location.href = `${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.PROFILE}`)
+              navigate(`${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.PROFILE}`)
             }
           >
             Профиль
@@ -100,7 +103,7 @@ export const Header: React.FC<HeaderProps> = () => {
           <button
             className={styles.headerAction}
             onClick={() =>
-              (window.location.href = `${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.FINANCES}`)
+              navigate(`${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.FINANCES}`)
             }
           >
             Финансы
@@ -108,7 +111,7 @@ export const Header: React.FC<HeaderProps> = () => {
           <button
             className={styles.headerAction}
             onClick={() =>
-              (window.location.href = `${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.SETTINGS}`)
+              navigate(`${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.SETTINGS}`)
             }
           >
             Настройки
