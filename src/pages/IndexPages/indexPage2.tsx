@@ -11,15 +11,15 @@ export const IndexPage: React.FC = () => {
 
   return (
     <div className={styles.indexPage}>
-      <div className={styles.divWithImage}>
+      <header className={styles.divWithImage}>
         <div className={styles.indexHeader}>
           <img className={styles.indexLogo} src='/images/logo.png' alt="YAMP logo" onClick={() => window.location.hash = "#introduction"}></img>
-          <div className={styles.longreadNavLinks}>
+          <nav className={styles.longreadNavLinks}>
             <a href="#products">Продукы</a>
             <a href="#innovations">Инновации</a>
             <a href="#pricing">Цены</a>
             <a href="#documentation">Документация</a>
-          </div>
+          </nav>
           <div className={styles.indexLogin}>
             <button
               className={styles.indexLoginBtn}
@@ -40,9 +40,9 @@ export const IndexPage: React.FC = () => {
                 <span className={styles[`span${i+1}`]} key={i}>{el}</span>
             ))}
         </div>
-      </div>
+      </header>
 
-      <div className={styles.pageContainer}>
+      <main className={styles.pageContainer}>
         <div className={styles.pageUp} id={"introduction"}>
           <h2>Описание платформы</h2>
           <p>Текст текст текст</p>
@@ -113,8 +113,11 @@ export const IndexPage: React.FC = () => {
             Документация Документация Документация Документация Документация Документация Документация Документация
           </p>
         </div>
-      </div>
+      </main>
       <AuthModal />
+      <footer className={styles.indexFooter}>
+            наши контактные данные: +763535670932, город Санкт-Петербург, улица такая-то, дом-такой-то
+      </footer>
     </div>
   )
 }
