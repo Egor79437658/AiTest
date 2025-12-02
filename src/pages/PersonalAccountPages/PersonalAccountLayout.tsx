@@ -27,7 +27,7 @@ export const PersonalAccountLayout: React.FC = () => {
           currentTab={activeTab}
           onChange={(tabId: string) => {
             setActiveTab(tabId)
-            navigate(`${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${tabId}`)
+            navigate(`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${tabId}`)
           }}
           className={styles.tabs}
         />

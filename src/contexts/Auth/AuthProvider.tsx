@@ -6,6 +6,7 @@ import { AuthContext } from './AuthContext'
 import { AuthModalType, AuthContextType } from '@interfaces/'
 import { MOCK_MODE } from '@constants/'
 import { mockApiService } from '../../services/mockApiService'
+import { useNavigate } from 'react-router-dom'
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,

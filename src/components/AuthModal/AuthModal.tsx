@@ -4,7 +4,8 @@ import React, { useState } from 'react'
 import { ConfirmForm, LoginForm, RegisterForm } from './Forms/'
 
 import styles from './AuthModal.module.scss'
-import { useAuthStore } from '@stores/'
+import { useNavigate } from 'react-router-dom'
+import { PAGE_ENDPOINTS } from '@constants/'
 
 export const AuthModal: React.FC = () => {
   const {
@@ -17,6 +18,7 @@ export const AuthModal: React.FC = () => {
     pendingPhone,
     openAuthModal,
   } = useAuth()
+  const navigate = useNavigate()
 
   const [loginData, setLoginData] = useState<LoginFormData>({
     email: '',
@@ -80,6 +82,9 @@ export const AuthModal: React.FC = () => {
       if (!success) {
         setError('Неверный email или пароль')
       }
+      else {
+        navigate(`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.HOME}`)
+      }
     } catch {
       setError('Ошибка при входе')
     } finally {
@@ -141,6 +146,9 @@ export const AuthModal: React.FC = () => {
       }
       else {
         closeAuthModal(authModal)
+        if(window.location.pathname === PAGE_ENDPOINTS.INDEX) {
+          navigate(`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.HOME}`)
+        }
       }
     } catch {
       setError('Ошибка при подтверждении')
@@ -172,9 +180,9 @@ export const AuthModal: React.FC = () => {
       <div className={styles.authModalContent}>
         <div className={styles.authModalHeader}>
           <h2>{getModalTitle()}</h2>
-          <button className={styles.authCloseButton} onClick={handleClose}>
+          {/* <button className={styles.authCloseButton} onClick={handleClose}>
             ×
-          </button>
+          </button> */}
         </div>
 
         {authModal === 'login' && (

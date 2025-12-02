@@ -22,16 +22,16 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   const fields = [
     {
       name: 'email',
-      label: 'E-mail',
+      // label: 'E-mail',
       type: 'email',
-      placeholder: 'test@test.com',
+      placeholder: 'E-mail',
       required: true,
     },
     {
       name: 'password',
-      label: 'Пароль',
+      // label: 'Пароль',
       type: 'password',
-      placeholder: 'password123',
+      placeholder: 'Пароль',
       required: true,
     },
   ]
@@ -59,7 +59,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       formData={formData as FormDataToRecord<LoginFormData>}
       error={error}
       isLoading={isLoading}
-      submitText="Войти"
+      submitText="Вход"
       loadingText="Вход..."
       footerContent={footerContent}
       onChange={handleFormChange}

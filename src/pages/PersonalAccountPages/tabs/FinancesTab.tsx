@@ -3,6 +3,8 @@ import type React from 'react'
 import stylesFinance from '../styles/FinanceTab.module.scss'
 import stylesGeneral from '../styles/Account.module.scss'
 import { useEffect, useState } from 'react'
+import { useHeaderStore } from '@stores/'
+import { Link } from 'react-router-dom'
 
 const statusMap = {
   active: 'Активен',
@@ -17,7 +19,18 @@ export const FinanceTab: React.FC = () => {
   const [hidden, setHidden] = useState(true)
   const [balanceAddintion, setBalanceAddition] = useState(0)
   const [error, setError] = useState('')
+  const { setHeaderContent } = useHeaderStore()
 
+  useEffect(
+    () =>
+      setHeaderContent(
+        <div>
+          <Link to="/">ЯМП&nbsp;</Link>
+          &mdash;&nbsp; {user?.profileData.username} &nbsp;&mdash;&nbsp; финансы
+        </div>
+      ),
+    [setHeaderContent]
+  )
   const changeBalance = (val: number) => {
     console.log('change balance: +', val)
     if (user) {

@@ -30,7 +30,7 @@ export const ConfirmForm: React.FC<ConfirmFormProps> = ({
   const fields = [
     {
       name: 'code',
-      label: `Код из ${confirmType == 'phone' ? 'sms' : 'e-mail'}`,
+      // label: `Код из ${confirmType == 'phone' ? 'sms' : 'e-mail'}`,
       type: 'text',
       placeholder: 'Введите 6-значный код',
       required: true,

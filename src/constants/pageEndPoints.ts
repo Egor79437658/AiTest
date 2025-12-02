@@ -1,11 +1,13 @@
 export const PAGE_ENDPOINTS = {
   INDEX: '/',
-  HOME: '/home',
-  PROJECT: '/project',
+  OUTLET: '/app',
+  HOME: 'home',
+  PROJECT: 'project',
   ACCOUNT: {
-    INDEX: '/account',
+    INDEX: 'account',
     SETTINGS: 'settings',
     PROFILE: 'profile',
     FINANCES: 'finances'
-  }
+  },
+  ADMIN: 'admin',
 } as const

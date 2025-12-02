@@ -6,6 +6,7 @@ import {
   FinanceTab,
   HomeContainer,
   IndexContainer,
+  IndexPage,
   PersonalAccountLayout,
   ProfileTab,
   ProjectContainer,
@@ -17,17 +18,22 @@ import { useEffect } from 'react'
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: PAGE_ENDPOINTS.INDEX,
+    element: <IndexPage/>,
+  },
+  {
+    // path: '/',
+    path: PAGE_ENDPOINTS.OUTLET,
     element: <Layout />,
     children: [
-      {
-        path: PAGE_ENDPOINTS.INDEX,
-        element: (
-          <ProtectedRoute requireAuth={false}>
-            <IndexContainer />
-          </ProtectedRoute>
-        ),
-      },
+      // {
+      //   path: PAGE_ENDPOINTS.INDEX,
+      //   element: (
+      //     <ProtectedRoute requireAuth={false}>
+      //       <IndexContainer />
+      //     </ProtectedRoute>
+      //   ),
+      // },
       {
         path: PAGE_ENDPOINTS.HOME,
         element: (

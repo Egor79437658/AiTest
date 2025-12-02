@@ -13,7 +13,7 @@
   transition: width 0.3s ease-in-out;
   overflow: hidden;
   z-index: 100;
-  border: 1px vars.$secondaryColor solid;
+  border: 1px vars.$darkColor solid;
 
   @media (max-width: 1450px) {
     display: none;
@@ -80,7 +80,7 @@
   white-space: inherit;
   width: 90%;
   margin: 0 auto;
-  border: 2px vars.$secondaryColor solid;
+  border: 2px vars.$darkColor solid;
 
   @for $i from 1 through 10 {
     &:nth-child(#{$i}) {
@@ -111,10 +111,9 @@
 }
 
 .menuLink {
-  color: vars.$secondaryColor;
+  color: vars.$darkColor;
   text-decoration: none;
   display: flex;
-  width: 100%;
   align-items: center;
   padding: 9px 27px;
   font-size: 20px;

@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: vars.$primaryColor;
+  background-color: white;
 }
 
 .userPanel {
@@ -14,8 +14,8 @@
   align-items: center;
   background: linear-gradient(
     135deg,
-    vars.$primaryColor 0%,
-    vars.$secondaryColor 100%
+    white 0%,
+    #222 100%
   );
   padding: 20px 30px;
   margin: 20px;
@@ -99,7 +99,7 @@
   width: inherit;
   gap: 20px;
   padding: 20px;
-  border-bottom: 2px vars.$secondaryColor solid;
+  border-bottom: 2px vars.$darkColor solid;
   flex-wrap: wrap;
 
   @media (max-width: 768px) {
@@ -114,12 +114,12 @@
   align-items: center;
   justify-content: center;
   background: linear-gradient(145deg, #ffffff, #f0f0f0);
-  color: vars.$secondaryColor;
+  color: vars.$darkColor;
   width: 200px;
   min-height: 150px;
   gap: 15px;
   padding: 25px 20px;
-  border: 2px solid vars.$secondaryColor;
+  border: 2px solid vars.$darkColor;
   border-radius: 20px;
   text-decoration: none;
   transition: all 0.3s ease;
@@ -133,7 +133,7 @@
     box-shadow:
       8px 8px 20px rgba(0, 0, 0, 0.15),
       -8px -8px 20px rgba(255, 255, 255, 0.9);
-    border-color: vars.$primaryColor;
+    border-color: white;
   }
 
   p {
@@ -158,7 +158,7 @@
   justify-content: center;
   padding: 30px 20px;
   text-align: center;
-  background-color: rgba(vars.$secondaryColor, 0.05);
+  background-color: rgba(vars.$darkColor, 0.05);
   margin: 20px;
   border-radius: 12px;
 
@@ -171,7 +171,7 @@
     &:first-child {
       font-size: 1.1rem;
       font-weight: 500;
-      color: vars.$secondaryColor;
+      color: vars.$darkColor;
     }
   }
 }

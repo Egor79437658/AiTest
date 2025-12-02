@@ -1,0 +1,158 @@
+@use "@styles/_variables.scss" as vars;
+@import "@styles/_fonts.scss";
+
+.indexPage {
+  color: vars.$lightColor;
+}
+
+.divWithImage {
+  background:
+  linear-gradient(120deg, rgba(0, 0, 0), rgba(0, 0, 0), rgba(255, 255, 255, 0.3), rgba(0, 0, 0)),
+  url("/images/mountain.png");
+  background-position:
+  0px top,
+  80px top;
+  background-color: vars.$darkColor;
+  font-family: "Bounded";
+  // padding-bottom: 100px;
+  height: 55vh;
+  
+  
+  * {
+    font-family: inherit;
+  }
+
+  .slogan {
+    font-size: 80px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    left: 10vw;
+    font-weight: bold;
+    margin-top: 100px;
+    width: 50%;
+
+    & > * {
+      // height: 80px;
+      text-transform: uppercase;
+    }
+
+    .span1 {
+      transform: translateX(150px);
+    }
+    .span2 {
+      transform: translateX(30px);
+    }
+    .span3 {
+      transform: translateX(110px);
+    }
+  }
+}
+
+.indexHeader {
+  display: flex;
+  justify-content: end;
+  padding-top: 100px;
+  padding-bottom: 20px;
+  align-items: center;
+  // margin-top: 40px;
+  color: vars.$darkColor;
+  background: transparent;
+
+  .indexLogo {
+    margin-right: auto;
+    margin-left: 50px;
+    width: 250px;
+    height: auto;
+  }
+
+  .longreadNavLinks {
+    display: flex;
+    align-items: center;
+    & > * {
+      margin: 0 30px;
+      color: vars.$lightColor;
+    }
+  }
+
+  .indexLogin {
+    margin-right: 10vw;
+    margin-left: 10%;
+
+    // использовать это когда будет нормальная картинка на фоне
+    // margin-right: 15vw;
+    // margin-left: 50px;
+
+    .indexLoginBtn {
+      padding: 10px;
+      padding-left: 30px;
+      font-size: 16px;
+      color: vars.$darkBlueColor;
+      border: 2px solid vars.$darkBlueColor;
+      cursor: pointer;
+
+      // использовать это когда будет нормальная картинка на фоне
+      // border: 2px solid vars.$mainGrayBlueColor;
+      // color: vars.$mainGrayBlueColor;
+
+      background-color: transparent;
+      border-radius: 0 100px 100px 0;
+      width: 250px;
+      text-align: left;
+    }
+  }
+}
+.pageContainer {
+  font-family: "Roboto for Learning";
+  * {
+    font-family: inherit;
+  }
+
+  h2 {
+    text-transform: uppercase;
+  }
+
+  p {
+    line-height: 2;
+    // font-size: 14px;
+  }
+  .pageUp {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    width: inherit;
+    gap: 20px;
+    padding: 0 20vw;
+    // padding-top: 100px;
+    border-bottom: 2px vars.$darkColor solid;
+    background: linear-gradient(45deg, #000, #393939);
+    height: 45vh;
+  }
+  
+  .pageDown {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    width: inherit;
+    gap: 20px;
+    padding: 100px 20vw;
+    border-bottom: 2px vars.$darkColor solid;
+    background-color: #2c2c2c;
+
+    // &:nth-child(4n) {
+    //   background-color: #000;
+    //   // background: linear-gradient(45deg, #000, #393939);
+    // }
+    // &:nth-child(4n+1) {
+    //   background: linear-gradient(135deg, #393939, #000);
+    // }
+    // &:nth-child(4n+2) {
+    //   background-color: #2c2c2c;
+    // }
+    // &:nth-child(4n+3) {
+    //   background: linear-gradient(45deg, #000, #393939);
+    // }
+  }
+}

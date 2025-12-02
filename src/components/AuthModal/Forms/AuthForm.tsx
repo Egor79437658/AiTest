@@ -3,7 +3,7 @@ import { FormDataToRecord } from '@interfaces/'
 import styles from '../AuthModal.module.scss'
 interface FormField {
   name: string
-  label: string
+  label?: string
   type: string
   placeholder?: string
   required?: boolean
@@ -50,9 +50,11 @@ export function AuthForm<T extends Record<string, unknown>>({
       <form onSubmit={onSubmit} className={styles.authForm}>
         {fields.map((field) => (
           <div key={field.name} className={styles.authFormGroup}>
-            <label htmlFor={field.name} className={styles.label}>
-              {field.label}
-            </label>
+            {field.label && (
+              <label htmlFor={field.name} className={styles.label}>
+                {field.label}
+              </label>
+            )}
             <input
               type={field.type}
               id={field.name}
@@ -69,13 +71,15 @@ export function AuthForm<T extends Record<string, unknown>>({
 
         {error && <div className={styles.authErrorMessage}>{error}</div>}
 
-        <button
-          type="submit"
-          className={styles.authSubmitButton}
-          disabled={isLoading}
-        >
-          {isLoading ? loadingText : submitText}
-        </button>
+        <div style={{textAlign: "center"}}>
+          <button
+            type="submit"
+            className={styles.authSubmitButton}
+            disabled={isLoading}
+          >
+            {isLoading ? loadingText : submitText}
+          </button>
+        </div>
       </form>
 
       <div className={styles.authModalFooter}>{footerContent}</div>

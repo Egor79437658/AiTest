@@ -9,7 +9,7 @@ export const MockInfo: React.FC = () => {
     <div
       style={{
         position: 'fixed',
-        top: 10,
+        bottom: 10,
         left: 100,
         background: 'rgba(255, 255, 0, 0.9)',
         padding: '10px',

@@ -26,25 +26,26 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   const fields = [
     {
       name: 'username',
-      label: 'User name',
+      // label: 'User name',
+      placeholder: "username",
       type: 'text',
       required: true,
     },
     {
       name: 'email',
-      label: 'E-mail',
+      placeholder: 'E-mail',
       type: 'email',
       required: true,
     },
     {
       name: 'password',
-      label: 'Пароль',
+      placeholder: 'Пароль',
       type: 'password',
       required: true,
     },
     {
       name: 'confirmPassword',
-      label: 'Подтверждение пароля',
+      placeholder: 'Подтверждение пароля',
       type: 'password',
       required: true,
     },

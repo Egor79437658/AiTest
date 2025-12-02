@@ -2,10 +2,26 @@ import type React from 'react'
 import { useAuth } from '@contexts/'
 import styles from './styles/IndexContainer.module.scss'
 import { Pipeline } from '@components/'
+import { useHeaderStore } from '@stores/'
+import { useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
 export const IndexContainer: React.FC = () => {
   const { openAuthModal, isAuthenticated } = useAuth()
+  const { setHeaderContent } = useHeaderStore()
 
+  useEffect(
+    () =>
+      setHeaderContent(
+        <div className={styles.longridNavLinks}>
+          <Link to="/">Продукы</Link>
+          <Link to="/">Инновации</Link>
+          <Link to="/">Цены</Link>
+          <Link to="/">Документация</Link>
+        </div>
+      ),
+    [setHeaderContent]
+  )
   return (
     <>
       <Pipeline />

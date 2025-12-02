@@ -5,8 +5,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  border: 2px vars.$secondaryColor solid;
-  color: vars.$secondaryColor;
+  border: 2px vars.$darkColor solid;
+  color: vars.$darkColor;
   background: #fff;
 }
 
@@ -15,31 +15,11 @@
   flex-direction: column;
   min-width: 50%;
   gap: 12px;
+  font-size: 30px;
+  text-decoration: none;
+  & * {
+    color: black;
 
-  .inputUrl {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-  }
-
-  .inputsLow {
-    display: flex;
-    width: 100%;
-    gap: 12px;
-
-    .inputLow {
-      display: flex;
-      width: 50%;
-      gap: 10px;
-    }
-  }
-
-  label {
-    font-weight: 600;
-  }
-
-  input {
-    width: 100%;
   }
 }
 

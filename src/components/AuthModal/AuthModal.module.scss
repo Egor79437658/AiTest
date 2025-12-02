@@ -1,10 +1,14 @@
+@use "sass:color";
+@use "@styles/_variables.scss" as vars;
+@import "@styles/_fonts.scss";
+
 .authModalOverlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,11 +24,23 @@
 }
 
 .authModalContent {
-  background: white;
-  border-radius: 8px;
+  background: rgba(
+    color.channel(vars.$darkGrayColor, "red"),
+    color.channel(vars.$darkGrayColor, "green"),
+    color.channel(vars.$darkGrayColor, "blue"),
+    0.2
+  );
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  border: 2px solid vars.$darkGrayColor;
   padding: 0;
-  width: 90%;
-  max-width: 400px;
+  padding-top: 60px;
+  width: 50vw;
+  min-height: 50vh;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transform: translateY(-20px) scale(0.95);
   opacity: 0;
@@ -49,72 +65,63 @@
 
 .authModalHeader {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 0;
+  font-family: "Bounded";
+  margin-top: auto;
+  margin-bottom: 20px;
 }
 
 .authModalHeader h2 {
+  font-family: inherit;
   margin: 0;
   font-size: 1.5rem;
-  color: #333;
-}
-
-.authCloseButton {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #666;
-  padding: 0;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background-color: #f5f5f5;
-    color: #333;
-  }
+  color: vars.$lightColor;
 }
 
 .authForm {
   padding: 24px;
+  margin-bottom: auto;
 }
 
 .authFormGroup {
   margin-bottom: 16px;
-}
+  font-family: "Roboto for Learning";
 
-.authFormGroup label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 500;
-  color: #333;
-}
-
-.authFormGroup input {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  box-sizing: border-box;
-  transition: border-color 0.2s;
-
-  &:active {
-    outline: none;
-    border-color: #40655e;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  * {
+    font-family: inherit;
   }
 
-  &:disabled {
-    background-color: #f8f9fa;
-    cursor: not-allowed;
+  label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  input {
+    width: 25vw;
+    padding: 10px 12px;
+    background-color: rgba(198, 198, 198, 0.8);
+    box-sizing: border-box;
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+    border-radius: 100px;
+    margin-bottom: 20px;
+
+    &:active,
+    &:focus {
+      outline: none;
+      border-color: vars.$lightColor;
+      // box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    }
+
+    &:disabled {
+      background-color: rgba(131, 131, 131, 0.8);
+      cursor: not-allowed;
+    }
   }
 }
 
@@ -138,16 +145,20 @@
 }
 
 .authSubmitButton {
-  width: 100%;
-  padding: 12px;
-  background-color: #40655e;
-  color: white;
+  // width: min(50%, 150px);
+  padding: 12px 30px;
+  text-transform: uppercase;
+  background-color: vars.$mainGrayBlueColor;
+  color: black;
   border: none;
-  border-radius: 4px;
+  border-radius: 100px;
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
+  font-family: "Bounded";
+  margin: 0 auto;
+  margin-top: 50px;
 
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
   &:active {
@@ -155,7 +166,7 @@
   }
 
   &:hover:not(:disabled) {
-    background-color: #9d8229;
+    background-color: vars.$lightGrayBlueColor;
   }
 
   &:disabled {
@@ -166,19 +177,23 @@
 
 .authModalFooter {
   padding: 16px 24px 24px;
-  border-top: 1px solid #e5e5e5;
   text-align: center;
+  font-family: "Roboto for Learning";
+
+  * {
+    font-family: inherit;
+  }
 }
 
 .authModalFooter p {
   margin: 0 0 12px 0;
-  color: #666;
+  color: vars.$lightColor;
 }
 
 .authLinkButton {
   background: none;
   border: none;
-  color: #40655e;
+  color: vars.$mainGrayBlueColor;
   text-decoration: underline;
   cursor: pointer;
   font-size: inherit;
@@ -186,6 +201,6 @@
   transition: color 0.2s;
 
   &:hover {
-    color: #9d8229;
+    color: vars.$lightGrayBlueColor;
   }
 }

@@ -3,6 +3,9 @@ import { SettingsData } from '@interfaces/'
 import type React from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import stylesSettings from '../styles/SettingsTab.module.scss'
+import { useHeaderStore } from '@stores/'
+import { useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import stylesGeneral from '../styles/Account.module.scss'
 
 export const SettingsTab: React.FC = () => {
@@ -12,6 +15,18 @@ export const SettingsTab: React.FC = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<SettingsData>({ defaultValues: user?.settingsData })
+  const { setHeaderContent } = useHeaderStore()
+
+  useEffect(
+    () =>
+      setHeaderContent(
+        <div>
+          <Link to="/">ЯМП&nbsp;</Link>
+          &mdash;&nbsp; {user?.profileData.username} &nbsp;&mdash;&nbsp; настройки
+        </div>
+      ),
+    [setHeaderContent]
+  )
 
   const handleSave = (data: SettingsData) => {
     if (user) {

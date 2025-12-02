@@ -1,10 +1,11 @@
 import type React from 'react'
 import { useSidebar, useAuth, useUser } from '@contexts/'
 import { MenuButton } from '@components/'
-import styles from './Header.module.scss'
 import { useState } from 'react'
 import { PAGE_ENDPOINTS } from '@constants/'
 import { useNavigate } from 'react-router-dom'
+import { useHeaderStore } from '@stores/'
+import styles from './Header.module.scss'
 
 interface HeaderProps {
   actionText?: string
@@ -17,6 +18,7 @@ export const Header: React.FC<HeaderProps> = () => {
   const { isAuthenticated, logout, openAuthModal } = useAuth()
   const [openDropdown, setOpenDropdown] = useState(false)
   const [timeoutID, setTimeOutId] = useState<number>()
+  const {headerContent} = useHeaderStore()
   const navigate = useNavigate()
 
   const handleLogout = () => {
@@ -30,20 +32,7 @@ export const Header: React.FC<HeaderProps> = () => {
         <MenuButton onClick={toggleSidebar} />
       </div>
       <div className={styles.headerMid}>
-        <div className={styles.inputUrl}>
-          <label htmlFor="url">URL:</label>
-          <input id="url" type="text" className={styles.url} />
-        </div>
-        <div className={styles.inputsLow}>
-          <div className={styles.inputLow}>
-            <label htmlFor="login">Login:</label>
-            <input id="login" type="text" className={styles.login} />
-          </div>
-          <div className={styles.inputLow}>
-            <label htmlFor="password">Password: </label>
-            <input id="password" type="text" className={styles.password} />
-          </div>
-        </div>
+        {headerContent}
       </div>
       <div className={styles.headerRight}>
         {isAuthenticated && (
@@ -96,7 +85,7 @@ export const Header: React.FC<HeaderProps> = () => {
           <button
             className={styles.headerAction}
             onClick={() =>
-              navigate(`${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.PROFILE}`)
+              navigate(`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.PROFILE}`)
             }
           >
             Профиль
@@ -104,7 +93,7 @@ export const Header: React.FC<HeaderProps> = () => {
           <button
             className={styles.headerAction}
             onClick={() =>
-              navigate(`${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.FINANCES}`)
+              navigate(`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.FINANCES}`)
             }
           >
             Финансы
@@ -112,7 +101,7 @@ export const Header: React.FC<HeaderProps> = () => {
           <button
             className={styles.headerAction}
             onClick={() =>
-              navigate(`${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.SETTINGS}`)
+              navigate(`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.SETTINGS}`)
             }
           >
             Настройки

@@ -10,7 +10,7 @@ export interface AuthContextType {
     email: string,
     password: string
   ) => Promise<boolean>
-  confirmPending: (code: string, type: 'phone' | 'email', id: number) => Promise<boolean>
+  confirmPending: (code: string, type: 'phone' | 'email') => Promise<boolean>
   logout: () => void
   openAuthModal: (type: AuthModalType, value?: string) => void
   closeAuthModal: (type: AuthModalType) => void

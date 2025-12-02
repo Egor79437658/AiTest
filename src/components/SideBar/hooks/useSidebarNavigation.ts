@@ -1,5 +1,6 @@
 // useSidebarNavigation.ts
-import { useAuth } from '@contexts/'
+import { PAGE_ENDPOINTS } from '@constants/'
+import { useAuth, useUser } from '@contexts/'
 
 export interface MenuItem {
   title: string
@@ -11,6 +12,7 @@ export interface MenuItem {
 
 export const useSidebarNavigation = () => {
   const { isAuthenticated, openAuthModal } = useAuth()
+  const {user} = useUser()
 
   const baseItems: MenuItem[] = [
     {
@@ -21,7 +23,7 @@ export const useSidebarNavigation = () => {
     },
     {
       title: 'О проекте',
-      link: '/about',
+      link: '#',
       icon: '#',
       requireAuth: false,
     },
@@ -30,19 +32,21 @@ export const useSidebarNavigation = () => {
   const authItems: MenuItem[] = [
     {
       title: 'Проекты',
-      link: '/home',
+      link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.HOME}`,
       icon: '#',
       requireAuth: true,
       children: [
-        {
-          title: 'Список проектов',
-          link: '/home',
-          icon: '#',
-          requireAuth: true,
-        },
+        ...(user?.projectData || []).map((el) => { 
+          return {
+            title: el.name,
+            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/`,
+            icon: '#',
+            requireAuth: true
+          }
+        }),
         {
           title: 'Создать новый',
-          link: '/project/new',
+          link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/new`,
           icon: '#',
           requireAuth: true,
         },
