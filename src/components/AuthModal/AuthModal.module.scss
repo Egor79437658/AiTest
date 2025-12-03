@@ -1,5 +1,5 @@
-@use "@styles/_variables.scss" as vars;
-@import "@styles/_fonts.scss";
+@use '@styles/_variables.scss' as vars;
+@use '@styles/fonts.scss';
 
 .authModalOverlay {
   position: fixed;
@@ -67,7 +67,7 @@
   align-items: center;
   padding: 20px 24px;
   padding-bottom: 0;
-  font-family: "Bounded";
+  font-family: 'Bounded';
   margin-top: auto;
   margin-bottom: 20px;
 }
@@ -86,7 +86,7 @@
 
 .authFormGroup {
   margin-bottom: 16px;
-  font-family: "Roboto for Learning";
+  font-family: 'Roboto for Learning';
 
   * {
     font-family: inherit;
@@ -158,7 +158,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
-  font-family: "Bounded";
+  font-family: 'Bounded';
   margin: 0 auto;
   margin-top: 50px;
 
@@ -184,7 +184,7 @@
 .authModalFooter {
   padding: 16px 24px 24px;
   text-align: center;
-  font-family: "Roboto for Learning";
+  font-family: 'Roboto for Learning';
 
   * {
     font-family: inherit;
