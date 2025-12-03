@@ -40,6 +40,10 @@
   opacity: 0;
   transition: all 0.3s ease;
 
+  @media (max-width: 768px) {
+    width: 90vw;
+  }
+
   .authModalOverlay.active & {
     transform: translateY(0) scale(1);
     opacity: 1;
@@ -105,6 +109,10 @@
     border-radius: 100px;
     margin-bottom: 20px;
 
+    @media (max-width: 768px) {
+      width: 70vw;
+    }
+
     &:active,
     &:focus {
       outline: none;
@@ -153,6 +161,10 @@
   font-family: "Bounded";
   margin: 0 auto;
   margin-top: 50px;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
   &:active {
