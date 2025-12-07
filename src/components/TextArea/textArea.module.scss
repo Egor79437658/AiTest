@@ -1,0 +1,50 @@
+.textAreaDiv {
+  display: flex;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+}
+
+.textAreaDiv:hover,
+.textAreaDiv:focus {
+  border-color: var(--border-color-accent);
+}
+
+.textareaInput:disabled {
+  background-color: var(--input-background-color-disabled);
+}
+
+.textareaInput {
+  padding: 8px;
+  border: none;
+  font-size: 14px;
+  outline: none;
+  width: 100%;
+}
+
+.textareaInput{
+  border: 1px solid transparent;
+}
+
+.textareaInput::placeholder {
+  color: var(--color-typography-primary);
+  opacity: 0.6;
+}
+
+.textareaInput::-ms-input-placeholder {
+  color: var(--color-typography-primary);
+  opacity: 0.6;
+}
+
+.textareaInput::-moz-placeholder {
+  color: var(--color-typography-primary);
+  opacity: 0.6;
+}
+
+
+.textareaInput{
+  height: 21px;
+  transition: background-color 0.3s ease-in-out;
+}

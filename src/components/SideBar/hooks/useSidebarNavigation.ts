@@ -12,22 +12,9 @@ export interface MenuItem {
 
 export const useSidebarNavigation = () => {
   const { isAuthenticated, openAuthModal } = useAuth()
-  const {user} = useUser()
+  const { user } = useUser()
 
-  const baseItems: MenuItem[] = [
-    {
-      title: 'Главная',
-      link: '/',
-      icon: '#',
-      requireAuth: false,
-    },
-    {
-      title: 'О проекте',
-      link: '#',
-      icon: '#',
-      requireAuth: false,
-    },
-  ]
+  const baseItems: MenuItem[] = []
 
   const authItems: MenuItem[] = [
     {
@@ -36,12 +23,12 @@ export const useSidebarNavigation = () => {
       icon: '#',
       requireAuth: true,
       children: [
-        ...(user?.projectData || []).map((el) => { 
+        ...(user?.projectData || []).map((el) => {
           return {
             title: el.name,
             link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/`,
             icon: '#',
-            requireAuth: true
+            requireAuth: true,
           }
         }),
         {

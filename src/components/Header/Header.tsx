@@ -1,9 +1,8 @@
 import type React from 'react'
-import { useSidebar, useAuth, useUser } from '@contexts/'
-import { MenuButton } from '@components/'
+import { useAuth, useUser } from '@contexts/'
 import { useState } from 'react'
 import { PAGE_ENDPOINTS } from '@constants/'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useHeaderStore } from '@stores/'
 import styles from './Header.module.scss'
 
@@ -13,13 +12,13 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = () => {
-  const { toggleSidebar } = useSidebar()
   const { user } = useUser()
   const { isAuthenticated, logout, openAuthModal } = useAuth()
   const [openDropdown, setOpenDropdown] = useState(false)
   const [timeoutID, setTimeOutId] = useState<number>()
   const { headerContent } = useHeaderStore()
   const navigate = useNavigate()
+  const location = useLocation()
 
   const handleLogout = () => {
     logout()
@@ -29,20 +28,21 @@ export const Header: React.FC<HeaderProps> = () => {
   return (
     <div className={styles.header}>
       <div className={styles.headerLeft}>
-        <MenuButton onClick={toggleSidebar} />
+        <img
+          src="/images/logo_light.png"
+          alt="YAMP logo"
+          onClick={() => navigate('/')}
+        ></img>
       </div>
       <div className={styles.headerMid}>{headerContent}</div>
+      {isAuthenticated && (
+        <>
+          <span className={styles.userGreeting}>
+            Привет, {user?.profileData?.username || 'Пользователь'}{' '}
+          </span>
+        </>
+      )}
       <div className={styles.headerRight}>
-        {isAuthenticated && (
-          <>
-            <span className={styles.userGreeting}>
-              Привет, {user?.profileData?.username || 'Пользователь'}{' '}
-            </span>
-            <button onClick={handleLogout} className={styles.headerAction}>
-              Выйти
-            </button>
-          </>
-        )}
         <button
           className={`${styles.headerAction} ${styles.openDropdownBtn}`}
           onClick={() => {
@@ -63,7 +63,8 @@ export const Header: React.FC<HeaderProps> = () => {
             )
           }}
         >
-          {`Личный кабинет ${openDropdown ? '▼' : '▶'}`}
+          Личный кабинет &nbsp;&nbsp;&nbsp;{' '}
+          <span className={openDropdown ? styles.rotated : ''}>▶</span>
         </button>
         <div
           className={`${styles.dropdownDiv} ${openDropdown ? '' : styles.hidden}`}
@@ -78,35 +79,29 @@ export const Header: React.FC<HeaderProps> = () => {
             )
           }}
         >
-          <button
-            className={styles.headerAction}
-            onClick={() =>
-              navigate(
-                `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.PROFILE}`
-              )
-            }
-          >
-            Профиль
-          </button>
-          <button
-            className={styles.headerAction}
-            onClick={() =>
-              navigate(
-                `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.FINANCES}`
-              )
-            }
-          >
-            Финансы
-          </button>
-          <button
-            className={styles.headerAction}
-            onClick={() =>
-              navigate(
-                `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.SETTINGS}`
-              )
-            }
-          >
-            Настройки
+          {[
+            {
+              text: 'Профиль',
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.PROFILE}`,
+            },
+            {
+              text: 'Финансы',
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.FINANCES}`,
+            },
+            {
+              text: 'Настройки',
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.SETTINGS}`,
+            },
+          ].map((el) => (
+            <button
+              className={`${styles.headerAction} ${location.pathname === el.link ? styles.selected : ""}`}
+              onClick={() => navigate(el.link)}
+            >
+              {el.text}
+            </button>
+          ))}
+          <button onClick={handleLogout} className={styles.headerAction}>
+            Выйти
           </button>
         </div>
       </div>

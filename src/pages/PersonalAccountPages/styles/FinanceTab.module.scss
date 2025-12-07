@@ -1,3 +1,5 @@
+@use "@styles/_variables.scss" as vars;
+
 .profileTab {
     max-width: 800px;
     margin: 0 auto;
@@ -7,18 +9,19 @@
 .mainDiv {
     display: flex;
     flex-direction: column;
-    background: #fffbf5;
+    background: vars.$lightColor;
     padding: 24px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 2px solid rgb(240, 240, 240);
+    box-shadow: 35px 35px 55px rgba(0, 0, 0, 0.3);
     input {
-        background-color: #fffbf5;
+        background-color: vars.$lightColor;
     }
 }
 
 .balanceDiv {
     padding-bottom: 10px;
-    border-bottom: 2px solid #efbf04;
+    border-bottom: 2px solid vars.$mainTealColor;
     & > label {
         font-size: 36px;
         font-weight: 600;
@@ -62,7 +65,7 @@
         }
 
         td:hover {
-            background-color: #fef6ed;
+            background-color: #f8f8f8;
             box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
         }
     }

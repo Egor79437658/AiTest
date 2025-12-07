@@ -2,11 +2,12 @@ import React, { JSX, useEffect, useRef, useState } from 'react'
 import { useSidebar } from '@contexts/'
 import styles from './Sidebar.module.scss'
 import { MenuItem, useSidebarNavigation } from './hooks/useSidebarNavigation'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+import { MenuButton } from '../MenuButton'
 
 export const Sidebar: React.FC = () => {
-  const { isOpen, closeSidebar } = useSidebar()
-  // const [loading, setLoading] = useState(true);
+  const { isOpen, toggleSidebar } = useSidebar()
+  const location = useLocation()
   const listRef = useRef<HTMLUListElement>(null)
 
   const { menuItems, handleMenuItemClick, isAuthenticated } =
@@ -18,6 +19,7 @@ export const Sidebar: React.FC = () => {
     // return;
     // }
     const className = isOpen ? styles.animateOpen : styles.animateClose
+    console.log(className)
     if (listRef.current) {
       listRef.current.classList.add(className)
     }
@@ -57,55 +59,36 @@ export const Sidebar: React.FC = () => {
     const isOpen = isDropdownOpen(item.title)
 
     return (
-      <li key={`${item.link}-${level}`} className={styles.menuItem}>
-        <div className={styles.menuItemContainer}>
+      <li
+        key={`${item.link}-${level}`}
+        className={`${styles.menuItem}
+           ${location.pathname === item.link ? styles.selected : ''}
+           ${isOpen || item.children?.some((child) => location.pathname === child.link) ? styles.liOpen : ''}
+           `}
+      >
+        <div
+          className={styles.menuItemContainer}
+          onClick={(e) => {
+            if (!item.children) return
+            if (e.currentTarget === e.target) {
+              toggleDropdown(item.title)
+            }
+          }}
+        >
           <Link
             to={item.link}
-            className={`${isOpen ? styles.menuLink : styles.iconLink} ${
-              item.requireAuth && !isAuthenticated ? styles.requireAuth : ''
-            } ${level > 0 ? styles.submenuLink : ''}`}
+            className={`${styles.menuLink} ${level > 0 ? styles.submenuLink : ''}`}
             title={!isOpen && level === 0 ? item.title : undefined}
             onClick={(e: React.MouseEvent) => {
-              if (hasChildren && isOpen) {
-                e.preventDefault()
-                toggleDropdown(item.title)
-              } else if (hasChildren && !isOpen) {
-                e.preventDefault()
-                toggleDropdown(item.title)
-              } else {
-                handleMenuItemClick(e, item)
-              }
+              handleMenuItemClick(e, item)
             }}
           >
-            <img
-              src={item.icon}
-              alt={item.title}
-              className={`${isOpen ? styles.menuIcon : styles.iconImg}`}
-            />
-            {isOpen && (
-              <span className={styles.menuText}>
-                {item.title}
-                {item.requireAuth && !isAuthenticated && (
-                  <span className={styles.authRequired}>*</span>
-                )}
-                {hasChildren && (
-                  <span
-                    className={`${styles.dropdownArrow} ${
-                      isOpen ? styles.dropdownArrowOpen : ''
-                    }`}
-                  >
-                    ▼
-                  </span>
-                )}
-              </span>
-            )}
+            <span>{item.title}</span>
           </Link>
         </div>
 
         {hasChildren && isOpen && item.children && (
-          <ul
-            className={`${styles.submenu} ${level > 0 ? styles.nestedSubmenu : ''}`}
-          >
+          <ul className={`${styles.submenu} ${styles.menuList}`}>
             {item.children.map((child: MenuItem) =>
               renderMenuItem(child, level + 1)
             )}
@@ -117,31 +100,15 @@ export const Sidebar: React.FC = () => {
 
   return (
     <>
-      {isOpen && (
+      {/* {isOpen && (
         <div
-          className={`${styles.sidebarOverlay} ${isOpen ? styles.active : ''}`}
-          onClick={closeSidebar}
+        className={`${styles.sidebarOverlay} ${isOpen ? styles.active : ''}`}
+        onClick={closeSidebar}
         />
-      )}
+        )} */}
       <div className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
         <nav className={`${styles.sidebarMenu} ${isOpen ? styles.open : ''}`}>
-          {isOpen && (
-            <button
-              className={styles.closeSidebarMobile}
-              onClick={closeSidebar}
-            >
-              ×
-            </button>
-          )}
-          <div className={styles.logoCont}>
-            <Link to="/" className={`${!isOpen ? styles.miniLogo : ''}`}>
-              <img src="#" alt="логотип" />
-            </Link>
-          </div>
-          <ul
-            ref={listRef}
-            className={`${isOpen ? styles.menuList : styles.sidebarIcons}`}
-          >
+          <ul ref={listRef} className={styles.menuList}>
             {menuItems.map((item) => renderMenuItem(item))}
           </ul>
         </nav>
