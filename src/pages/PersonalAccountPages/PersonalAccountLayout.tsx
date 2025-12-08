@@ -1,9 +1,10 @@
 import { Pipeline, Tabs } from '@components/'
 import type React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import styles from './styles/Account.module.scss'
 import { PAGE_ENDPOINTS } from '@constants/'
+import { usePipelineStore } from '@stores/'
 
 export const PersonalAccountLayout: React.FC = () => {
   const tabs = [
@@ -14,25 +15,32 @@ export const PersonalAccountLayout: React.FC = () => {
 
   const navigate = useNavigate()
   const location = useLocation()
-  
-  const [activeTab, setActiveTab] = useState(
-    location.pathname.split('/')[2]
-  )
+  const { setPipelineContent } = usePipelineStore()
 
-  return (
-    <>
-      <Pipeline>
+  const [activeTab, setActiveTab] = useState(location.pathname.split('/')[3])
+  useEffect(() => {
+    setActiveTab(location.pathname.split('/')[3])
+    console.log(location)
+    console.log(location.pathname.split('/')[3])
+  }, [location])
+
+  useEffect(
+    () =>
+      setPipelineContent(
         <Tabs
           tabs={tabs}
           currentTab={activeTab}
           onChange={(tabId: string) => {
             setActiveTab(tabId)
-            navigate(`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${tabId}`)
+            navigate(
+              `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${tabId}`
+            )
           }}
           className={styles.tabs}
         />
-      </Pipeline>
-      <Outlet />
-    </>
+      ),
+    [setPipelineContent, activeTab]
   )
+
+  return <Outlet />
 }

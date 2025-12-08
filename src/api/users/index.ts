@@ -1,4 +1,4 @@
-import { Project, User } from '@interfaces/'
+import { ProjectMinimal, User } from '@interfaces/'
 import {
   UpdateFinancialData,
   UpdateProfileData,
@@ -18,8 +18,8 @@ class UsersApi {
     return response
   }
 
-  async getMyProjects(): Promise<Project[]> {
-    const response = await apiClient.get<Project[]>('/projects/me/')
+  async getMyProjects(): Promise<ProjectMinimal[]> {
+    const response = await apiClient.get<ProjectMinimal[]>('/projects/me/')
     return response
   }
 

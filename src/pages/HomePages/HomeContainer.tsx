@@ -1,42 +1,51 @@
 import type React from 'react'
-import styles from './styles/ContainerHome.module.scss'
-import { Pipeline } from '@components/'
 import { Link } from 'react-router-dom'
 import { useUser } from '@contexts/'
-import { useHeaderStore } from '@stores/'
+import { useHeaderStore, usePipelineStore } from '@stores/'
 import { useEffect } from 'react'
 import { PAGE_ENDPOINTS } from '@constants/'
+import styles from './styles/ContainerHome.module.scss'
 
 export const HomeContainer: React.FC = () => {
-
   const { user } = useUser()
-  const {setHeaderContent} = useHeaderStore()
-  
-  useEffect(() => setHeaderContent(
-    <div >
-      <Link to="/">
-        ЯМП&nbsp;
-      </Link>
-       &mdash;&nbsp; {user?.profileData.username} &nbsp;&mdash;&nbsp; проекты
-    </div>
-  ), [setHeaderContent])
+  const { setHeaderContent } = useHeaderStore()
+  const { setPipelineContent } = usePipelineStore()
+
+  useEffect(
+    () =>
+      setHeaderContent(
+        <div>
+          <Link to="/">ЯМП&nbsp;</Link>
+          &mdash;&nbsp; {user?.profileData.username} &nbsp;&mdash;&nbsp; проекты
+        </div>
+      ),
+    [setHeaderContent]
+  )
+  useEffect(() => setPipelineContent(null), [setPipelineContent])
 
   return (
     <>
-      <Pipeline />
+      {/* <Pipeline /> */}
       <div className={styles.pageContainer}>
         <div className={styles.pageUp}>
-          {user?.projectData.map(project => (
-          <Link key={project.id} to={`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}`} className={styles.block}>
-            <p>{project.name}</p>
-            <p>перейти {'>>'}</p>
-          </Link>
+          {user?.projectData.map((project) => (
+            <Link
+              key={project.id}
+              to={`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}`}
+              className={styles.block}
+            >
+              <p>{project.name}</p>
+              <p>перейти {'>>'}</p>
+            </Link>
           ))}
           {/* <Link to="/project" className={`${styles.block} ${styles.second}`}>
             <p>Проект 2</p>
             <p>перейти {'>>'}</p>
           </Link> */}
-          <Link to={`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/new`} className={`${styles.block} ${styles.new}`}>
+          <Link
+            to={`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/new`}
+            className={`${styles.block} ${styles.new}`}
+          >
             <p>Новый проект</p>
             <p>+</p>
           </Link>

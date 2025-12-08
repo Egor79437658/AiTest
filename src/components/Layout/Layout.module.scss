@@ -1,35 +1,46 @@
 @use "/src/styles/_variables.scss" as vars;
 
 .bodyLayout {
-  display: flex;
+  // display: flex;s
+  padding: 40px;
   font-weight: 500;
   background-color: white;
   height: 100vh;
 }
 
+.flexDiv {
+  display: flex;
+
+  & > *:last-child {
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+.sidebarButton {
+  position: sticky;
+  left: 0;
+  top: 40px;
+  transition: left 0.3s ease-in-out;
+
+  // &.moved {
+  //   left: 15vw;
+  // }
+}
+
 .contentLayout {
-  padding-left: 5%;
   transition: padding-left 0.3s;
   width: 100%;
-  transition: padding-left 0.3s ease-in-out;
+  transition: padding-left 0.3s ease-in-out, width 0.3s ease-in-out;
 
   @media (max-width: 1450px) {
     padding-left: 0;
   }
 }
 
-.contentShifted {
-  padding-left: 20%;
-
-  @media (max-width: 768px) {
-    padding-left: 0;
-  }
-}
-
-.mainContent > *:not(:first-child) {
+.mainContent > * {
   display: flex;
   flex-direction: column;
-  background-color: #253b37;
   // background-color: #ffc1c1;
   // background-color: #074f32;
   padding: 20px;

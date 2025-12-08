@@ -13,7 +13,7 @@ export const IndexPage: React.FC = () => {
     <div className={styles.indexPage}>
       <header className={styles.divWithImage}>
         <div className={styles.indexHeader}>
-          <img className={styles.indexLogo} src='/images/logo.png' alt="YAMP logo" onClick={() => window.location.hash = "#introduction"}></img>
+          <img className={styles.indexLogo} src='/images/logo_dark.png' alt="YAMP logo" onClick={() => window.location.hash = "#introduction"}></img>
           <nav className={styles.longreadNavLinks}>
             <a href="#products">Продукы</a>
             <a href="#innovations">Инновации</a>

@@ -116,11 +116,6 @@ export const ProfileTab: React.FC = () => {
     openAuthModal('confirmPhone', phone)
   }
 
-  useEffect(() => {
-    console.log('sdfsdfsdg')
-    console.log(user)
-  }, [user])
-  // useEffect(() => console.log("pg", phone, email), [phone, email])
   if (isLoading) {
     return (
       <div className={stylesGeneral.pageContainer}>
@@ -238,7 +233,8 @@ export const ProfileTab: React.FC = () => {
             <div className={stylesProfile.fieldGroup}>
               <label className={stylesProfile.label}>
                 Почта
-                {(!user?.profileData.emailConfirmed || user?.profileData.email !== email) && (
+                {(!user?.profileData.emailConfirmed ||
+                  user?.profileData.email !== email) && (
                   <button
                     type="button"
                     onClick={handleConfirmEmail}
@@ -276,7 +272,8 @@ export const ProfileTab: React.FC = () => {
             <div className={stylesProfile.fieldGroup}>
               <label className={stylesProfile.label}>
                 Номер телефона
-                {(!user?.profileData.phoneConfirmed || user?.profileData.phone !== phone) && (
+                {(!user?.profileData.phoneConfirmed ||
+                  user?.profileData.phone !== phone) && (
                   <button
                     type="button"
                     onClick={handleConfirmPhone}
@@ -459,16 +456,15 @@ export const ProfileTab: React.FC = () => {
                 </span>
               )}
             </div>
-          </div>
-
-          <div className={stylesProfile.actions}>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className={stylesGeneral.submitButton}
-            >
-              {isSubmitting ? 'Сохранение...' : 'Сохранить'}
-            </button>
+            <div className={stylesProfile.actions}>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={stylesGeneral.submitButton}
+              >
+                {isSubmitting ? 'Сохранение...' : 'Сохранить'}
+              </button>
+            </div>
           </div>
 
           <div className={stylesProfile.teamsSection}>
@@ -488,7 +484,11 @@ export const ProfileTab: React.FC = () => {
                       <td>
                         {' '}
                         {team.role === 2 ? (
-                          <Link to={`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.ADMIN}`}>{userRoleMap[team.role]}</Link>
+                          <Link
+                            to={`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.ADMIN}`}
+                          >
+                            {userRoleMap[team.role]}
+                          </Link>
                         ) : (
                           userRoleMap[team.role]
                         )}

@@ -44,7 +44,7 @@ export const ProjectContainer: React.FC = () => {
 
   return (
     <>
-      <Pipeline />
+      {/* <Pipeline /> */}
       <div className={styles.pageContainer}>
         <div className={styles.userPanel}>
           <div className={styles.userInfo}>

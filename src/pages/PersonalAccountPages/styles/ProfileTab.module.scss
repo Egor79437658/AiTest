@@ -1,3 +1,5 @@
+@use '@styles/_variables.scss' as vars;
+
 .profileTab {
   max-width: 800px;
   min-width: 41%;
@@ -16,20 +18,21 @@
   font-size: 18px;
   font-weight: 600;
   color: #333;
-  border-bottom: 2px solid #efbf04;
+  border-bottom: 2px solid vars.$mainTealColor;
   padding-bottom: 10px;
 }
 
 .editableSection,
 .teamsSection {
-  background-color: #fffbf5;
+  background-color: vars.$lightColor;
   padding: 24px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgb(240, 240, 240);
+  box-shadow: 35px 35px 55px rgba(0, 0, 0, 0.3);
   input,
   select,
   option {
-    background-color: #fffbf5;
+    background-color: vars.$lightColor;
   }
 }
 
@@ -68,7 +71,7 @@
 
   &:active {
     outline: none;
-    border-color: #9d8229;
+    border-color: vars.$lightBlueColor;
   }
 }
 
@@ -86,7 +89,7 @@
 
 .confirmButton {
   padding: 4px 8px;
-  background-color: #40655e;
+  background-color: vars.$darkColor;
   color: white;
   border: none;
   border-radius: 4px;
@@ -95,7 +98,7 @@
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: #9d8229;
+    background-color: vars.$lightBlueColor;
   }
 }
 
@@ -126,7 +129,7 @@
   }
   tbody {
     tr:hover {
-      background-color: #fef6ed;
+      background-color: #f8f8f8;
       box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
     }
   }

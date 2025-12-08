@@ -1,3 +1,5 @@
+@use "@styles/_variables.scss" as vars;
+
 .settingsTab {
   max-width: 800px;
   min-width: 41%;
@@ -16,12 +18,13 @@
   background: #fff;
   padding: 24px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: #fffbf5;
+  border: 2px solid rgb(240, 240, 240);
+  box-shadow: 35px 35px 55px rgba(0, 0, 0, 0.3);
+  background-color: vars.$lightColor;
   input,
   select,
   option {
-    background-color: #fffbf5;
+    background-color: vars.$lightColor;
   }
 }
 
@@ -30,7 +33,7 @@
   font-size: 18px;
   font-weight: 600;
   color: #333;
-  border-bottom: 2px solid #efbf04;
+  border-bottom: 2px solid vars.$mainTealColor;
   padding-bottom: 10px;
 }
 
@@ -66,7 +69,7 @@
 
   &:active {
     outline: none;
-    border-color: #efbf04;
+    border-color: vars.$mainTealColor;
   }
 }
 
@@ -105,7 +108,7 @@
   width: 18px;
   height: 18px;
   cursor: pointer;
-  accent-color: #efbf04;
+  accent-color: vars.$mainTealColor;
 
   &:active {
     outline: none;

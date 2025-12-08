@@ -5,7 +5,7 @@ import { PAGE_ENDPOINTS } from '@constants/'
 import {
   FinanceTab,
   HomeContainer,
-  IndexContainer,
+  NewProjectContainer,
   IndexPage,
   PersonalAccountLayout,
   ProfileTab,
@@ -51,6 +51,14 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: PAGE_ENDPOINTS.PROJECT+'/new',
+        element: (
+          <ProtectedRoute>
+            <NewProjectContainer />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: PAGE_ENDPOINTS.ACCOUNT.INDEX,
         element: (
           <ProtectedRoute>
@@ -92,7 +100,7 @@ function App() {
     <AuthProvider>
       <UserProvider>
         <SidebarProvider>
-          <MockInfo />
+          {/* <MockInfo /> */}
           <RouterProvider router={router} />
         </SidebarProvider>
       </UserProvider>

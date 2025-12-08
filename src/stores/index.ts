@@ -1,3 +1,3 @@
 export * from './authStore'
 export * from './userStore'
-export * from './headerStore'
+export * from './contentStores'

@@ -66,8 +66,6 @@ export const FinanceTab: React.FC = () => {
     }
   }
 
-  useEffect(() => console.log(balanceAddintion), [balanceAddintion])
-
   if (isLoading) {
     return (
       <div className={stylesGeneral.pageContainer}>
