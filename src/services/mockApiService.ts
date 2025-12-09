@@ -1,6 +1,19 @@
-import { User } from '@interfaces/'
+import {
+  Project,
+  ProjectMinimal,
+  ProjectStats,
+  ProjectUser,
+  TestPlanRun,
+  User,
+} from '@interfaces/'
 import { MOCK_CODE } from '@constants/'
-import { MOCK_PASSWORD, mockTokens, mockUsers } from '../mock/mockData'
+import {
+  MOCK_PASSWORD,
+  mockProjects,
+  mockProjectsMinimal,
+  mockTokens,
+  mockUsers,
+} from '../mock/mockData'
 import { UpdateProfileData, UpdateSettingsData } from '../api/users'
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -191,6 +204,92 @@ class MockApiService {
 
   async logout() {
     localStorage.removeItem('mock_user_id')
+  }
+
+  async getProjects(): Promise<ProjectMinimal[]> {
+    await delay(500)
+    return [...mockProjectsMinimal]
+  }
+
+  async getProject(projectId: number): Promise<Project> {
+    await delay(500)
+
+    const project = mockProjects.find((p) => p.id === projectId)
+
+    if (!project) {
+      throw new Error('Project not found')
+    }
+
+    return {
+      ...project,
+      stats: { ...project.stats },
+      users: [...project.users],
+      recentTestPlanRuns: [...project.recentTestPlanRuns],
+    }
+  }
+
+  async getProjectUsers(projectId: number): Promise<ProjectUser[]> {
+    await delay(300)
+
+    const project = mockProjects.find((p) => p.id === projectId)
+
+    if (!project) {
+      throw new Error('Project not found')
+    }
+
+    return [...project.users]
+  }
+
+  async getProjectStats(projectId: number): Promise<ProjectStats> {
+    await delay(300)
+
+    const project = mockProjects.find((p) => p.id === projectId)
+
+    if (!project) {
+      throw new Error('Project not found')
+    }
+
+    return { ...project.stats }
+  }
+
+  async getRecentTestPlanRuns(projectId: number): Promise<TestPlanRun[]> {
+    await delay(300)
+
+    const project = mockProjects.find((p) => p.id === projectId)
+
+    if (!project) {
+      throw new Error('Project not found')
+    }
+
+    return [...project.recentTestPlanRuns]
+  }
+
+  async updateProject(
+    projectId: number,
+    updates: Partial<Project>
+  ): Promise<Project> {
+    await delay(800)
+
+    const projectIndex = mockProjects.findIndex((p) => p.id === projectId)
+
+    if (projectIndex === -1) {
+      throw new Error('Project not found')
+    }
+
+    const updatedProject = {
+      ...mockProjects[projectIndex],
+      ...updates,
+      updatedAt: new Date().toISOString().split('T')[0],
+    }
+
+    mockProjects[projectIndex] = updatedProject
+
+    return {
+      ...updatedProject,
+      stats: { ...updatedProject.stats },
+      users: [...updatedProject.users],
+      recentTestPlanRuns: [...updatedProject.recentTestPlanRuns],
+    }
   }
 }
 

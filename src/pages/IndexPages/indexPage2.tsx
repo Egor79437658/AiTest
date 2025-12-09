@@ -3,7 +3,6 @@ import { useAuth } from '@contexts/'
 import styles from './styles/IndexPage2.module.scss'
 import { AuthModal } from '@components/'
 import { IndexHeader } from '../../components/IndexHeader/IndexHeader'
-import LiquidGlass from 'liquid-glass-react'
 
 export const IndexPage: React.FC = () => {
   const { openAuthModal, isAuthenticated } = useAuth()
