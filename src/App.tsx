@@ -50,7 +50,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: PAGE_ENDPOINTS.PROJECT + '/new',
+        path: PAGE_ENDPOINTS.PROJECT + PAGE_ENDPOINTS.PROJECT_NEW,
         element: (
           <ProtectedRoute>
             <NewProjectContainer />
