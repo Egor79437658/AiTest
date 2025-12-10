@@ -26,6 +26,7 @@ import {
   ProjectSettings,
   ProjectTestCases,
   ProjectTestPlan,
+  ProjectTestPlanRuns,
 } from './pages/ProjectPages/components/ProjectSubPages'
 
 const router = createBrowserRouter([
@@ -57,7 +58,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: ':projectId',
+            path: `${PAGE_ENDPOINTS.PROJECT_ID}`,
             element: (
               <ProtectedRoute>
                 <ProjectContainer />
@@ -65,7 +66,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: ':projectId/test-cases',
+            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}`,
             element: (
               <ProtectedRoute>
                 <ProjectTestCases />
@@ -73,7 +74,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: ':projectId/test-plan',
+            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}`,
             element: (
               <ProtectedRoute>
                 <ProjectTestPlan />
@@ -81,7 +82,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: ':projectId/scripts',
+            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.SCRIPT}`,
             element: (
               <ProtectedRoute>
                 <ProjectScripts />
@@ -89,7 +90,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: ':projectId/auto-testing',
+            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.AUTO_TEST}`,
             element: (
               <ProtectedRoute>
                 <ProjectAutoTesting />
@@ -97,7 +98,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: ':projectId/reports',
+            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.REPORTS}`,
             element: (
               <ProtectedRoute>
                 <ProjectReports />
@@ -105,10 +106,18 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: ':projectId/settings',
+            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.SETTINGS}`,
             element: (
               <ProtectedRoute>
                 <ProjectSettings />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN_RUNS}`,
+            element: (
+              <ProtectedRoute>
+                <ProjectTestPlanRuns />
               </ProtectedRoute>
             ),
           },

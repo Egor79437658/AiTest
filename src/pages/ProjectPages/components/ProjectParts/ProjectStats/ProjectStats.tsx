@@ -1,8 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import styles from './ProjectStats.module.scss'
+import { PAGE_ENDPOINTS } from '@constants/'
 
 interface ProjectStatsProps {
+  projectId: number
   stats: {
     testCaseCount: number
     scriptCount: number
@@ -11,30 +13,33 @@ interface ProjectStatsProps {
   }
 }
 
-export const ProjectStats: React.FC<ProjectStatsProps> = ({ stats }) => {
+export const ProjectStats: React.FC<ProjectStatsProps> = ({
+  projectId,
+  stats,
+}) => {
   const statCards = [
     {
       number: stats.testCaseCount,
       label: 'Тест-кейсов',
-      link: '/test-cases',
+      link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${projectId}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}`,
       linkText: 'Перейти к списку ТК',
     },
     {
       number: stats.scriptCount,
       label: 'Скриптов',
-      link: '/scripts',
+      link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${projectId}/${PAGE_ENDPOINTS.PROJECT_PARTS.SCRIPT}`,
       linkText: 'Перейти к списку скриптов',
     },
     {
       number: stats.testPlanCount,
       label: 'Тест-планов',
-      link: '/test-plans',
+      link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${projectId}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}`,
       linkText: 'Перейти к списку прогонов',
     },
     {
       number: stats.testPlanRunCount,
       label: 'Запусков тест-планов',
-      link: '/test-plan-runs',
+      link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${projectId}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN_RUNS}`,
       linkText: 'Перейти к журналу запусков',
     },
   ]
