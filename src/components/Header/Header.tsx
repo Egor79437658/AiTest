@@ -94,7 +94,7 @@ export const Header: React.FC<HeaderProps> = () => {
             },
           ].map((el) => (
             <button
-              className={`${styles.headerAction} ${location.pathname === el.link ? styles.selected : ""}`}
+              className={`${styles.headerAction} ${location.pathname === el.link ? styles.selected : ''}`}
               onClick={() => navigate(el.link)}
             >
               {el.text}

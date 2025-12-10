@@ -1,0 +1,50 @@
+.projectSection {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  animation: fadeIn 0.5s ease-out;
+  animation-delay: 0.1s;
+
+  h3 {
+    margin: 0 0 20px 0;
+    color: #212529;
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+}
+
+.tableContainer {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.usersTable {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    background-color: #f8f9fa;
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #dee2e6;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #e9ecef;
+    color: #212529;
+  }
+
+  tr:hover {
+    background-color: #f8f9fa;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}

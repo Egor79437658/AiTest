@@ -1,4 +1,4 @@
-import { Project, ProjectMinimal } from './project'
+import { ProjectMinimal } from './project'
 import { UpdateProfileData, UpdateSettingsData } from '../api/users'
 
 export interface ProfileData {
@@ -17,7 +17,7 @@ export interface ProfileData {
   employeeCount: '<10' | '11-30' | '30-100' | '>100' | null
   jobPosition: string | null
   usePurpose: 'personal' | 'testPersonal' | 'testCompany' | 'testJob'
-  teams: { id: number, name: string; role: 0 | 1 | 2 | 3 | 4 | 5 }[]
+  teams: { id: number; name: string; role: 0 | 1 | 2 | 3 | 4 | 5 }[]
 }
 
 export interface FinanceData {
@@ -26,12 +26,12 @@ export interface FinanceData {
 }
 
 export const userRoleMap = {
-  1: "ИТ-Лидер",
-  2: "Администратор проекта",
-  3: "Аналитик",
-  4: "Тестировщик",
-  5: "Автомитизатор",
-  0: "Пользователь"
+  1: 'ИТ-Лидер',
+  2: 'Администратор проекта',
+  3: 'Аналитик',
+  4: 'Тестировщик',
+  5: 'Автомитизатор',
+  0: 'Пользователь',
 }
 
 export interface SettingsData {
@@ -43,7 +43,7 @@ export interface SettingsData {
   city: boolean
   company: boolean | null
   jobPosition: boolean | null
-  teams: {id: number, flag:boolean}[]
+  teams: { id: number; flag: boolean }[]
   language: 'ru' | 'en'
 }
 

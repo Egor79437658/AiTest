@@ -11,27 +11,38 @@ export const HomeContainer: React.FC = () => {
   const { setHeaderContent } = useHeaderStore()
   const { setPipelineContent } = usePipelineStore()
 
-  useEffect(
-    () =>
-      setHeaderContent(
-        <div>
-          <Link to="/">ЯМП&nbsp;</Link>
-          &mdash;&nbsp; {user?.profileData.username} &nbsp;&mdash;&nbsp; проекты
-        </div>
-      ),
-    [setHeaderContent]
-  )
-  useEffect(() => setPipelineContent(null), [setPipelineContent])
+  useEffect(() => {
+    setHeaderContent(
+      <div>
+        <Link to="/home">ЯМП&nbsp;</Link>
+        &mdash;&nbsp; {user?.profileData.username} &nbsp;&mdash;&nbsp; проекты
+      </div>
+    )
+
+    return () => {
+      setHeaderContent(null)
+    }
+  }, [setHeaderContent, user?.profileData.username])
+
+  useEffect(() => {
+    setPipelineContent(null)
+    return () => {
+      setPipelineContent(null)
+    }
+  }, [setPipelineContent])
 
   return (
     <>
       {/* <Pipeline /> */}
       <div className={styles.pageContainer}>
         <div className={styles.pageUp}>
+          Всего: {user?.projectData.length} проекта
+        </div>
+        <div className={styles.pageUp}>
           {user?.projectData.map((project) => (
             <Link
               key={project.id}
-              to={`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}`}
+              to={`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}`}
               className={styles.block}
             >
               <p>{project.name}</p>

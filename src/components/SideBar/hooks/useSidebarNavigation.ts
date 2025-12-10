@@ -1,4 +1,4 @@
-// useSidebarNavigation.ts
+import { useMemo, useCallback } from 'react'
 import { PAGE_ENDPOINTS } from '@constants/'
 import { useAuth, useUser } from '@contexts/'
 
@@ -14,82 +14,94 @@ export const useSidebarNavigation = () => {
   const { isAuthenticated, openAuthModal } = useAuth()
   const { user } = useUser()
 
-  const baseItems: MenuItem[] = []
+  const menuItems = useMemo(() => {
+    const baseItems: MenuItem[] = []
 
-  const authItems: MenuItem[] = [
-    {
-      title: 'Проекты',
-      link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.HOME}`,
-      icon: '#',
-      requireAuth: true,
-      children: [
-        ...(user?.projectData || []).map((el) => {
-          return {
-            title: el.name,
-            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/`,
+    if (!isAuthenticated) {
+      return baseItems
+    }
+
+    const authItems: MenuItem[] = [
+      {
+        title: 'Проекты',
+        link: `#`,
+        icon: '#',
+        requireAuth: true,
+        children: [
+          {
+            title: 'Список проектов',
+            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.HOME}`,
             icon: '#',
             requireAuth: true,
-          }
-        }),
-        {
-          title: 'Создать новый',
-          link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/new`,
-          icon: '#',
-          requireAuth: true,
-        },
-      ],
-    },
-    {
-      title: 'Планировщик',
-      link: '#',
-      icon: '#',
-      requireAuth: true,
-      children: [
-        {
-          title: 'Список задач',
-          link: '#',
-          icon: '#',
-          requireAuth: true,
-        },
-        {
-          title: 'Создать задачу',
-          link: '#',
-          icon: '#',
-          requireAuth: true,
-        },
-      ],
-    },
-    {
-      title: 'Ресурсы',
-      link: '/resources',
-      icon: '#',
-      requireAuth: true,
-      children: [
-        {
-          title: 'Мониторинг',
-          link: '#',
-          icon: '#',
-          requireAuth: true,
-        },
-        {
-          title: 'Аналитика',
-          link: '#',
-          icon: '#',
-          requireAuth: true,
-        },
-      ],
-    },
-  ]
+          },
+          ...(user?.projectData || []).map((el) => ({
+            title: el.name,
+            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${el.id}`,
+            icon: '#',
+            requireAuth: true,
+          })),
+          {
+            title: 'Новый проект',
+            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/new`,
+            icon: '#',
+            requireAuth: true,
+          },
+        ],
+      },
+      {
+        title: 'Планировщик',
+        link: '#',
+        icon: '#',
+        requireAuth: true,
+        children: [
+          {
+            title: 'Список задач',
+            link: '#',
+            icon: '#',
+            requireAuth: true,
+          },
+          {
+            title: 'Создать задачу',
+            link: '#',
+            icon: '#',
+            requireAuth: true,
+          },
+        ],
+      },
+      {
+        title: 'Ресурсы',
+        link: '/resources',
+        icon: '#',
+        requireAuth: true,
+        children: [
+          {
+            title: 'Мониторинг',
+            link: '#',
+            icon: '#',
+            requireAuth: true,
+          },
+          {
+            title: 'Аналитика',
+            link: '#',
+            icon: '#',
+            requireAuth: true,
+          },
+        ],
+      },
+    ]
 
-  const menuItems = [...baseItems, ...(isAuthenticated ? authItems : [])]
+    return [...baseItems, ...authItems]
+  }, [isAuthenticated, user?.projectData])
 
-  const handleMenuItemClick = (e: React.MouseEvent, item: MenuItem) => {
-    if (item.requireAuth && !isAuthenticated) {
-      e.preventDefault()
-      openAuthModal('login')
-      return
-    }
-  }
+  const handleMenuItemClick = useCallback(
+    (e: React.MouseEvent, item: MenuItem) => {
+      if (item.requireAuth && !isAuthenticated) {
+        e.preventDefault()
+        openAuthModal('login')
+      }
+    },
+    [isAuthenticated, openAuthModal]
+  )
 
   return {
     menuItems,
