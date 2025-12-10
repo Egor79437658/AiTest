@@ -3,7 +3,7 @@ export const PAGE_ENDPOINTS = {
   OUTLET: '/app',
   HOME: 'home',
   PROJECT: 'project',
-  PROJECT_NEW: 'new',
+  PROJECT_NEW: 'project/new',
   ACCOUNT: {
     INDEX: 'account',
     SETTINGS: 'settings',

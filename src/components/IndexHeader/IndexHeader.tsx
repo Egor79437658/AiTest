@@ -6,7 +6,6 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import type { Swiper as SwiperType } from 'swiper'
 import styles from './IndexHeader.module.scss'
 import { PAGE_ENDPOINTS } from '@constants/'
-import { GlassCard } from '@developer-hub/liquid-glass'
 
 import 'swiper/css'
 import 'swiper/css/navigation'
@@ -15,57 +14,88 @@ import 'swiper/css/mousewheel'
 interface IndexHeaderProps {
   isAuthenticated: boolean
   openAuthModal: (type: 'login' | 'register') => void
+  className?: string
+  currentPart: string
 }
 
 const NAV_LINKS = [
-  { id: 1, href: '#products', label: 'Продукты' },
-  { id: 2, href: '#innovations', label: 'Инновации' },
-  { id: 3, href: '#pricing', label: 'Цены' },
-  { id: 4, href: '#documentation', label: 'Документация' },
-  { id: 5, href: '#about', label: 'О нас' },
-  { id: 6, href: '#contacts', label: 'Контакты' },
-  { id: 7, href: '#blog', label: 'Блог' },
-  { id: 8, href: '#support', label: 'Поддержка' },
+  { id: 1, href: '#simplisity', label: 'Простота' },
+  { id: 2, href: '#flexibility', label: 'Гибкость' },
+  { id: 3, href: '#autoscripts', label: 'Автоскрипты' },
+  { id: 4, href: '#instruments', label: 'Инструменты' },
+  { id: 5, href: '#automatisation', label: 'Автоматизация' },
+  { id: 6, href: '#integration', label: 'Интеграция' },
+  { id: 7, href: '#tests', label: 'Виды тестирования' },
+  { id: 8, href: '#managment', label: 'Управление' },
+  { id: 9, href: '#AI', label: 'ИИ' },
+  { id: 10, href: '#control', label: 'Контроль' },
+  { id: 11, href: '#whyYAMP', label: 'Почему YAMP?' },
 ]
 
 export const IndexHeader = ({
   isAuthenticated,
   openAuthModal,
+  className = '',
+  currentPart,
 }: IndexHeaderProps) => {
   const navigate = useNavigate()
   const swiperRef = useRef<SwiperType | null>(null)
-  const [showCarousel, setShowCarousel] = useState(false)
-  const navLinksRef = useRef<HTMLDivElement>(null)
+  const [showOneSlide, setShowOneSlide] = useState(false)
+  const [scrolledEnough, setScrolledEnough] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
+  const prevBtnRef = useRef<HTMLButtonElement>(null)
+  const nextBtnRef = useRef<HTMLButtonElement>(null)
 
+  // инициацилизация всякого разного
   useEffect(() => {
     const checkLayout = () => {
       const width = window.innerWidth
 
-      if (width >= 900 && width <= 1650) {
-        setShowCarousel(true)
+      if (width > 800) {
+        setShowOneSlide(false)
       } else {
-        setShowCarousel(false)
+        setShowOneSlide(true)
       }
     }
-
     checkLayout()
     window.addEventListener('resize', checkLayout)
 
-    const timer = setTimeout(checkLayout, 100)
+    const checkScrolling = () => {
+      if (window.pageYOffset > 3*window.innerHeight/4) setScrolledEnough(2)
+      else if (window.pageYOffset > window.innerHeight / 2) setScrolledEnough(1)
+      else setScrolledEnough(0)
+    }
+    checkScrolling()
+    window.addEventListener('scroll', checkScrolling)
 
+    // prevBtnRef.current?.classList.add(styles.hiddenBtn)
     return () => {
       window.removeEventListener('resize', checkLayout)
-      clearTimeout(timer)
+      window.removeEventListener('scroll', checkScrolling)
     }
   }, [])
 
+  useEffect(() => {
+    for (let i = 0; i < NAV_LINKS.length; ++i) {
+      if ('#' + currentPart === NAV_LINKS[i].href) {
+        swiperRef.current?.slideTo(i, 500)
+        if (i === 0) {
+          prevBtnRef.current?.classList.add(styles.hiddenBtn)
+        } else {
+          prevBtnRef.current?.classList.remove(styles.hiddenBtn)
+        }
+        if (i === NAV_LINKS.length - 1) {
+          nextBtnRef.current?.classList.add(styles.hiddenBtn)
+        } else {
+          nextBtnRef.current?.classList.remove(styles.hiddenBtn)
+        }
+      }
+    }
+  }, [currentPart])
+
   return (
-    <GlassCard
-      className={styles.glassWrapper}
-      displacementScale={64}
-      blurAmount={0.1}
-      cornerRadius={60}
+    <div
+      className={`${styles.glassWrapper} ${scrolledEnough == 2 ? styles.scrolled : scrolledEnough === 1 ? styles.hide : ''} ${className}`}
     >
       <div className={styles.indexHeader}>
         <img
@@ -76,7 +106,7 @@ export const IndexHeader = ({
         />
 
         <div ref={containerRef} className={styles.navContainer}>
-          <div
+          {/* <div
             ref={navLinksRef}
             className={styles.longreadNavLinks}
             style={{
@@ -90,54 +120,83 @@ export const IndexHeader = ({
             ))}
           </div>
 
-          {showCarousel && (
-            <div className={styles.carouselWrapper}>
-              <button
-                className={styles.navButtonPrev}
-                onClick={() => swiperRef.current?.slidePrev()}
-                aria-label="Предыдущий слайд"
-              >
-                <FaChevronLeft />
-              </button>
+          {showCarousel && ( */}
+          <div className={styles.carouselWrapper}>
+            <button
+              ref={prevBtnRef}
+              className={`${styles.navButtonPrev} ${styles.hiddenBtn}`}
+              onClick={() => {
+                swiperRef.current?.slidePrev()
+                nextBtnRef.current?.classList.remove(styles.hiddenBtn)
+                if (swiperRef.current?.realIndex === 0) {
+                  prevBtnRef.current?.classList.add(styles.hiddenBtn)
+                }
+              }}
+              // style={swiperRef?.current?.realIndex === 0 ? {opacity: 0} : {opacity: 1}}
+              aria-label="Предыдущий слайд"
+            >
+              <FaChevronLeft />
+            </button>
 
-              <Swiper
-                modules={[Navigation, Mousewheel]}
-                slidesPerView="auto"
-                centeredSlides={false}
-                freeMode={true}
-                mousewheel={{
-                  forceToAxis: true,
-                  sensitivity: 1,
-                }}
-                onSwiper={(swiper) => {
-                  swiperRef.current = swiper
-                }}
-                className={styles.swiperContainer}
-              >
-                {NAV_LINKS.map((link) => (
-                  <SwiperSlide
-                    key={link.id}
-                    className={styles.swiperSlide}
-                    style={{
-                      width: 'auto',
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <a href={link.href}>{link.label}</a>
-                  </SwiperSlide>
-                ))}
-              </Swiper>
+            <Swiper
+              modules={[Navigation, Mousewheel]}
+              slidesPerView={showOneSlide ? 1 : 'auto'}
+              centeredSlides={false}
+              freeMode={true}
+              mousewheel={{
+                // forceToAxis: true,
+                sensitivity: 1,
+              }}
+              onSwiper={(swiper) => {
+                swiperRef.current = swiper
+              }}
+              className={styles.swiperContainer}
+              onScroll={(swiper, e) => {
+                if (swiper.realIndex === 0) {
+                  prevBtnRef.current?.classList.add(styles.hiddenBtn)
+                } else {
+                  prevBtnRef.current?.classList.remove(styles.hiddenBtn)
+                }
+                if (swiper.isEnd) {
+                  nextBtnRef.current?.classList.add(styles.hiddenBtn)
+                } else {
+                  nextBtnRef.current?.classList.remove(styles.hiddenBtn)
+                }
+              }}
+            >
+              {NAV_LINKS.map((link) => (
+                <SwiperSlide
+                  key={link.id}
+                  className={`${styles.swiperSlide} ${'#' + currentPart === link.href ? styles.currentPart : ''}`}
+                  style={{
+                    width: 'auto',
+                    display: 'flex',
+                    alignItems: 'center',
+                    // padding: showOneSlide ? '0' : '0 10px',
+                  }}
+                >
+                  <a href={link.href}>{link.label}</a>
+                </SwiperSlide>
+              ))}
+            </Swiper>
 
-              <button
-                className={styles.navButtonNext}
-                onClick={() => swiperRef.current?.slideNext()}
-                aria-label="Следующий слайд"
-              >
-                <FaChevronRight />
-              </button>
-            </div>
-          )}
+            <button
+              className={styles.navButtonNext}
+              ref={nextBtnRef}
+              onClick={() => {
+                swiperRef.current?.slideNext()
+                prevBtnRef.current?.classList.remove(styles.hiddenBtn)
+                if (swiperRef.current?.isEnd) {
+                  nextBtnRef.current?.classList.add(styles.hiddenBtn)
+                }
+              }}
+              aria-label="Следующий слайд"
+              // style={swiperRef?.current?.realIndex === NAV_LINKS.length - 1 ? {opacity: 0} : {opacity: 1}}
+            >
+              <FaChevronRight />
+            </button>
+          </div>
+          {/* )} */}
         </div>
 
         <div className={styles.indexLogin}>
@@ -155,6 +214,6 @@ export const IndexHeader = ({
           </button>
         </div>
       </div>
-    </GlassCard>
+    </div>
   )
 }
