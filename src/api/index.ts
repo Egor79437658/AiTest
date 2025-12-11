@@ -75,4 +75,5 @@ const enhancedApiClient = {
 export { enhancedApiClient as apiClient }
 export { authApi } from './auth'
 export { usersApi } from './users'
+export { projectsApi } from './projects'
 export type { LoginCredentials, RegisterData, AuthResponse } from './auth/types'

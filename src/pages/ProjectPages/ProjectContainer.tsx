@@ -2,8 +2,8 @@ import type React from 'react'
 import styles from './styles/ProjectContainer.module.scss'
 import { useAuth, useProject, useUser } from '@contexts/'
 import { Link, useParams } from 'react-router-dom'
-import { useEffect, useRef } from 'react'
-import { useHeaderStore } from '@stores/'
+import { useEffect, useRef, useState } from 'react'
+import { useHeaderStore, usePipelineStore } from '@stores/'
 import {
   ProjectOverview,
   ProjectStats,
@@ -15,7 +15,9 @@ export const ProjectContainer: React.FC = () => {
   const { isAuthenticated } = useAuth()
   const { user } = useUser()
   const { project, loadProject, isLoading } = useProject()
+  const [errorMsg, setErrorMsg] = useState('')
   const { setHeaderContent } = useHeaderStore()
+  const { setPipelineContent } = usePipelineStore()
   const { projectId } = useParams<{ projectId: string }>()
 
   const targetProjectId = projectId
@@ -32,6 +34,7 @@ export const ProjectContainer: React.FC = () => {
     )
 
     setHeaderContent(headerContent)
+    setPipelineContent(null)
 
     return () => {
       setHeaderContent(null)
@@ -45,7 +48,11 @@ export const ProjectContainer: React.FC = () => {
       (!hasLoadedRef.current || project?.id !== targetProjectId)
     ) {
       hasLoadedRef.current = true
-      loadProject(targetProjectId)
+      try {
+        loadProject(targetProjectId)
+      } catch(e:any) {
+        setErrorMsg(e.message)
+      }
     }
   }, [targetProjectId, project?.id, isLoading, loadProject])
 
@@ -53,7 +60,16 @@ export const ProjectContainer: React.FC = () => {
     return <div>Пожалуйста, войдите в систему для доступа к проектам</div>
   }
 
-  if (isLoading && !project) {
+  if (errorMsg) {
+    return (
+      <div>
+        Прозошла ошибка: {errorMsg} <br/>
+        <Link to="/home">Вернуться к списку проектов</Link>
+      </div>
+    )
+  }
+
+  if (isLoading) {
     return <div>Загрузка данных проекта...</div>
   }
 
@@ -67,7 +83,15 @@ export const ProjectContainer: React.FC = () => {
 
   return (
     <div className={styles.pageContainer}>
-      <ProjectStats projectId={project.id} stats={project.stats} />
+      <ProjectStats
+        projectId={project.id}
+        stats={{
+          testCaseCount: project.testCases.length,
+          testPlanCount: project.testPlans.length,
+          testPlanRunCount: project.recentTestPlanRuns.length,
+          scriptCount: project.scripts.length,
+        }}
+      />
       <ProjectOverview project={project} />
       <ProjectUsers users={project.users} />
       <RecentTestPlan runs={project.recentTestPlanRuns} />

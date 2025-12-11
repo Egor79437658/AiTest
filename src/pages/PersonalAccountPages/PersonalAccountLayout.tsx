@@ -25,7 +25,7 @@ export const PersonalAccountLayout: React.FC = () => {
   }, [location])
 
   useEffect(
-    () =>
+    () => {
       setPipelineContent(
         <Tabs
           tabs={tabs}
@@ -38,7 +38,9 @@ export const PersonalAccountLayout: React.FC = () => {
           }}
           className={styles.tabs}
         />
-      ),
+      )
+      return () => setPipelineContent(null)
+    },
     [setPipelineContent, activeTab]
   )
 

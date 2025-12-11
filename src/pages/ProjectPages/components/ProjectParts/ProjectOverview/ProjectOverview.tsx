@@ -38,11 +38,11 @@ export const ProjectOverview: React.FC<ProjectOverviewProps> = ({
         </div>
         <div className={styles.infoRow}>
           <span className={styles.label}>Дата создания:</span>
-          <span className={styles.value}>{project.createdAt}</span>
+          <span className={styles.value}>{project.createdAt.toLocaleDateString()}</span>
         </div>
         <div className={styles.infoRow}>
           <span className={styles.label}>Последнее обновление:</span>
-          <span className={styles.value}>{project.updatedAt}</span>
+          <span className={styles.value}>{project.updatedAt.toLocaleString()}</span>
         </div>
       </div>
     </section>

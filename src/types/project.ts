@@ -1,28 +1,34 @@
 export interface ProjectMinimal {
   id: number
   name: string
+  lastUpdated: Date
 }
 
 export interface ProjectUser {
   id: number
-  name: string
+  firstName: string
+  lastName: string
+  fatherName: string | null
   email: string
-  role: string
+  role: 0 | 1 | 2 | 3 | 4 | 5
   permissions: string
 }
 
 export interface TestPlanRun {
   id: number
   name: string
-  lastRunDate: string
+  lastRunDate: Date
   status: 'успешно' | 'с ошибками'
 }
 
-export interface ProjectStats {
-  testCaseCount: number
-  scriptCount: number
-  testPlanCount: number
-  testPlanRunCount: number
+export interface testCase {
+  id: number
+}
+export interface testPlan {
+  id: number
+}
+export interface script {
+  id: number
 }
 
 export interface Project {
@@ -31,12 +37,14 @@ export interface Project {
   url: string
   hasDatapool: boolean
   description: string
-  stats: ProjectStats
   users: ProjectUser[]
+  testCases: testCase[]
+  scripts: script[]
+  testPlans: testPlan[]
   recentTestPlanRuns: TestPlanRun[]
-  createdAt: string
-  updatedAt: string
-  createdBy: string
+  createdAt: Date
+  updatedAt: Date
+  createdBy: number
 }
 
 export interface ProjectContextType {
@@ -45,38 +53,8 @@ export interface ProjectContextType {
   isLoading: boolean
   error: string | null
   loadProject: (projectId: number) => Promise<void>
-  loadProjects: () => Promise<void>
+  loadShortProjects: () => Promise<void>
   updateProject: (updates: Partial<Project>) => Promise<void>
   clearProject: () => void
   clearError: () => void
-}
-
-export interface MockProject {
-  id: number
-  name: string
-  url: string
-  hasDatapool: boolean
-  description: string
-  stats: {
-    testCaseCount: number
-    scriptCount: number
-    testPlanCount: number
-    testPlanRunCount: number
-  }
-  users: Array<{
-    id: number
-    name: string
-    email: string
-    role: string
-    permissions: string
-  }>
-  recentTestPlanRuns: Array<{
-    id: number
-    name: string
-    lastRunDate: string
-    status: 'успешно' | 'с ошибками'
-  }>
-  createdAt: string
-  updatedAt: string
-  createdBy: string
 }

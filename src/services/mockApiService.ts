@@ -1,7 +1,6 @@
 import {
   Project,
   ProjectMinimal,
-  ProjectStats,
   ProjectUser,
   TestPlanRun,
   User,
@@ -10,7 +9,6 @@ import { MOCK_CODE } from '@constants/'
 import {
   MOCK_PASSWORD,
   mockProjects,
-  mockProjectsMinimal,
   mockTokens,
   mockUsers,
 } from '../mock/mockData'
@@ -32,7 +30,7 @@ class MockApiService {
       throw new Error('Invalid email or password')
     }
 
-    localStorage.setItem('mock_user_id', user.id)
+    localStorage.setItem('mock_user_id', `${user.id}`)
 
     return {
       user,
@@ -50,7 +48,7 @@ class MockApiService {
 
     const newUser: User = {
       ...mockUsers[1],
-      id: Date.now().toString(),
+      id: Date.now(),
       profileData: {
         ...mockUsers[1].profileData,
         username: data.username,
@@ -61,7 +59,7 @@ class MockApiService {
 
     mockUsers.push(newUser)
 
-    localStorage.setItem('mock_user_id', newUser.id)
+    localStorage.setItem('mock_user_id', `${newUser.id}`)
 
     return {
       user: newUser,
@@ -86,7 +84,7 @@ class MockApiService {
         throw new Error('No access token')
       }
 
-      const userId = localStorage.getItem('mock_user_id')
+      const userId = parseInt(localStorage.getItem('mock_user_id') || '', 10)
 
       console.log('getCurrentUser - userId from localStorage:', userId)
       console.log('getCurrentUser - accessToken:', accessToken)
@@ -155,7 +153,7 @@ class MockApiService {
     return { success: true }
   }
 
-  async getUserProfile(userId: string) {
+  async getUserProfile(userId: number) {
     await delay(600)
 
     const user = mockUsers.find((u) => u.id === userId)
@@ -166,7 +164,7 @@ class MockApiService {
     return user
   }
 
-  async updateUserProfile(userId: string, profileData: UpdateProfileData) {
+  async updateUserProfile(userId: number, profileData: UpdateProfileData) {
     await delay(800)
 
     const userIndex = mockUsers.findIndex((u) => u.id === userId)
@@ -184,7 +182,7 @@ class MockApiService {
     return updatedUser
   }
 
-  async updateUserSettings(userId: string, settingsData: UpdateSettingsData) {
+  async updateUserSettings(userId: number, settingsData: UpdateSettingsData) {
     await delay(800)
 
     const userIndex = mockUsers.findIndex((u) => u.id === userId)
@@ -206,9 +204,10 @@ class MockApiService {
     localStorage.removeItem('mock_user_id')
   }
 
-  async getProjects(): Promise<ProjectMinimal[]> {
+  async getShortProjects(): Promise<ProjectMinimal[]> {
     await delay(500)
-    return [...mockProjectsMinimal]
+    const user = await this.getCurrentUser()
+    return [...user.projectData]
   }
 
   async getProject(projectId: number): Promise<Project> {
@@ -220,12 +219,7 @@ class MockApiService {
       throw new Error('Project not found')
     }
 
-    return {
-      ...project,
-      stats: { ...project.stats },
-      users: [...project.users],
-      recentTestPlanRuns: [...project.recentTestPlanRuns],
-    }
+    return structuredClone(project)
   }
 
   async getProjectUsers(projectId: number): Promise<ProjectUser[]> {
@@ -240,18 +234,6 @@ class MockApiService {
     return [...project.users]
   }
 
-  async getProjectStats(projectId: number): Promise<ProjectStats> {
-    await delay(300)
-
-    const project = mockProjects.find((p) => p.id === projectId)
-
-    if (!project) {
-      throw new Error('Project not found')
-    }
-
-    return { ...project.stats }
-  }
-
   async getRecentTestPlanRuns(projectId: number): Promise<TestPlanRun[]> {
     await delay(300)
 
@@ -262,6 +244,42 @@ class MockApiService {
     }
 
     return [...project.recentTestPlanRuns]
+  }
+
+  async createProject(data: {url: string, description: string, name: string}): Promise<Project> {
+    await delay(500)
+    const user  = await this.getCurrentUser()
+    const newProject: Project = {
+      id: 100 + Math.floor(100 * Math.random()),
+      name: data.name,
+      url: data.url,
+      description: data.description,
+      hasDatapool: false,
+      users: [
+        {
+          id: user.id,
+          email: user.profileData.email,
+          firstName: user.profileData.firstName,
+          lastName: user.profileData.lastName,
+          fatherName: user.profileData.fatherName,
+          role: 0,
+          permissions: '',
+        },
+      ],
+      scripts: [],
+      testCases: [],
+      testPlans: [],
+      recentTestPlanRuns: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      createdBy: user.id
+
+    }
+
+    mockProjects.push(newProject)
+    const index = mockUsers.findIndex((u) => u.id === user.id)
+    mockUsers[index].projectData.push({id: newProject.id, name: newProject.name, lastUpdated: newProject.updatedAt})
+    return newProject
   }
 
   async updateProject(
@@ -279,17 +297,12 @@ class MockApiService {
     const updatedProject = {
       ...mockProjects[projectIndex],
       ...updates,
-      updatedAt: new Date().toISOString().split('T')[0],
+      updatedAt: new Date(),
     }
 
     mockProjects[projectIndex] = updatedProject
 
-    return {
-      ...updatedProject,
-      stats: { ...updatedProject.stats },
-      users: [...updatedProject.users],
-      recentTestPlanRuns: [...updatedProject.recentTestPlanRuns],
-    }
+    return structuredClone(updatedProject)
   }
 }
 

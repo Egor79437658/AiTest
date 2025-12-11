@@ -1,107 +1,128 @@
-import { useMemo, useCallback } from 'react'
+// useSidebarNavigation.ts
 import { PAGE_ENDPOINTS } from '@constants/'
-import { useAuth, useUser } from '@contexts/'
+import { useAuth, useProject, useUser } from '@contexts/'
 
 export interface MenuItem {
   title: string
   link: string
-  icon: string
+  icon?: string
   requireAuth?: boolean
   children?: MenuItem[]
 }
 
 export const useSidebarNavigation = () => {
   const { isAuthenticated, openAuthModal } = useAuth()
-  const { user } = useUser()
+  const { projects, project } = useProject()
+  const {user} = useUser()
 
-  const menuItems = useMemo(() => {
-    const baseItems: MenuItem[] = []
+  const baseItems: MenuItem[] = []
 
-    if (!isAuthenticated) {
-      return baseItems
-    }
-
-    const authItems: MenuItem[] = [
-      {
-        title: 'Проекты',
-        link: `#`,
-        icon: '#',
-        requireAuth: true,
-        children: [
-          {
-            title: 'Список проектов',
-            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.HOME}`,
-            icon: '#',
-            requireAuth: true,
-          },
-          ...(user?.projectData || []).map((el) => ({
+  const authItems: MenuItem[] = [
+    {
+      title: 'Проекты',
+      link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.HOME}`,
+      icon: '#',
+      requireAuth: true,
+      children: [
+        ...(!project ? projects : []).sort((a, b) => b.lastUpdated.getTime() - a.lastUpdated.getTime()).map((el) => {
+          return {
             title: el.name,
             link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${el.id}`,
-            icon: '#',
             requireAuth: true,
-          })),
+          }
+        }),
+        {
+          title: 'Создать новый',
+          link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/new`,
+          requireAuth: true,
+        },
+        ...(project ? [
           {
-            title: 'Новый проект',
-            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/new`,
-            icon: '#',
-            requireAuth: true,
-          },
-        ],
-      },
-      {
-        title: 'Планировщик',
-        link: '#',
-        icon: '#',
-        requireAuth: true,
-        children: [
-          {
-            title: 'Список задач',
-            link: '#',
-            icon: '#',
+            title: 'Обзор',
+            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}`,
             requireAuth: true,
           },
           {
-            title: 'Создать задачу',
-            link: '#',
-            icon: '#',
-            requireAuth: true,
-          },
-        ],
-      },
-      {
-        title: 'Ресурсы',
-        link: '/resources',
-        icon: '#',
-        requireAuth: true,
-        children: [
-          {
-            title: 'Мониторинг',
-            link: '#',
-            icon: '#',
+            title: 'Тест-кейсы',
+            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}`,
             requireAuth: true,
           },
           {
-            title: 'Аналитика',
-            link: '#',
-            icon: '#',
+            title: 'Тест-план',
+            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}`,
             requireAuth: true,
           },
-        ],
-      },
-    ]
-
-    return [...baseItems, ...authItems]
-  }, [isAuthenticated, user?.projectData])
-
-  const handleMenuItemClick = useCallback(
-    (e: React.MouseEvent, item: MenuItem) => {
-      if (item.requireAuth && !isAuthenticated) {
-        e.preventDefault()
-        openAuthModal('login')
-      }
+          {
+            title: 'Скрипты',
+            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.SCRIPT}`,
+            requireAuth: true,
+          },
+          {
+            title: 'Автотестинг',
+            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.AUTO_TEST}`,
+            requireAuth: true,
+          },
+          {
+            title: 'Отчеты',
+            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.REPORTS}`,
+            requireAuth: true,
+          },
+          ...( project.users.find(el => el.id === user?.id)?.role === 2 ? [
+            {
+              title: 'Настройки',
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}`,
+              requireAuth: true,
+            },
+          ] : [])
+          
+        ] : [])
+      ],
     },
-    [isAuthenticated, openAuthModal]
-  )
+    {
+      title: 'Планировщик',
+      link: '#',
+      requireAuth: true,
+      children: [
+        {
+          title: 'Список задач',
+          link: '#',
+          requireAuth: true,
+        },
+        {
+          title: 'Создать задачу',
+          link: '#',
+          requireAuth: true,
+        },
+      ],
+    },
+    {
+      title: 'Ресурсы',
+      link: '/resources',
+      requireAuth: true,
+      children: [
+        {
+          title: 'Мониторинг',
+          link: '#',
+          requireAuth: true,
+        },
+        {
+          title: 'Аналитика',
+          link: '#',
+          requireAuth: true,
+        },
+      ],
+    },
+  ]
+
+  const menuItems = [...baseItems, ...(isAuthenticated ? authItems : [])]
+
+  const handleMenuItemClick = (e: React.MouseEvent, item: MenuItem) => {
+    if (item.requireAuth && !isAuthenticated) {
+      e.preventDefault()
+      openAuthModal('login')
+      return
+    }
+  }
 
   return {
     menuItems,

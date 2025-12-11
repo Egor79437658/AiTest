@@ -48,8 +48,7 @@ export interface SettingsData {
 }
 
 export interface User {
-  id: string
-  uuid: string
+  id: number
   isAdmin: boolean
   profileData: ProfileData
   financeData: FinanceData

@@ -172,7 +172,7 @@ export const IndexHeader = ({
                     width: 'auto',
                     display: 'flex',
                     alignItems: 'center',
-                    // padding: showOneSlide ? '0' : '0 10px',
+                    padding: showOneSlide ? '0' : '0 10px',
                   }}
                 >
                   <a href={link.href}>{link.label}</a>

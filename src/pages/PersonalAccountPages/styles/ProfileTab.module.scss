@@ -1,4 +1,4 @@
-@use '@styles/_variables.scss' as vars;
+@use "@styles/_variables.scss" as vars;
 
 .profileTab {
   max-width: 800px;
@@ -28,7 +28,7 @@
   padding: 24px;
   border-radius: 8px;
   border: 2px solid rgb(240, 240, 240);
-  box-shadow: 35px 35px 55px rgba(0, 0, 0, 0.3);
+  box-shadow: 10px 10px 25px rgba(124, 124, 124, 0.2);
   input,
   select,
   option {

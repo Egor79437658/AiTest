@@ -1,82 +1,67 @@
 import { Link, useLocation } from 'react-router-dom'
 import { MenuItem } from './hooks/useSidebarNavigation'
 import styles from './Sidebar.module.scss'
-import { useSidebar } from '@contexts/'
 
 interface SidebarItemProps {
   item: MenuItem
   level: number
-  openDropdowns: Set<string>
+  isDropdownOpen: (title: string) => boolean
   toggleDropdown: (title: string) => void
-  handleMenuItemClick: (e: React.MouseEvent, item: MenuItem) => void
-  location: ReturnType<typeof useLocation>
+  handleMenuItemClick: (
+    e: React.MouseEvent<Element, MouseEvent>,
+    item: MenuItem
+  ) => void
 }
 
 export const SidebarItem: React.FC<SidebarItemProps> = ({
   item,
-  level,
-  openDropdowns,
+  level = 0,
+  isDropdownOpen,
   toggleDropdown,
   handleMenuItemClick,
-  location,
 }) => {
-  const { isOpen: sidebarIsOpen } = useSidebar()
   const hasChildren = item.children && item.children.length > 0
-  const isOpen = openDropdowns.has(item.title)
-  const isActive = location.pathname === item.link
-  const isChildActive = item.children?.some(
-    (child) =>
-      location.pathname === child.link ||
-      child.children?.some((subChild) => location.pathname === subChild.link)
-  )
-
-  const handleClick = (e: React.MouseEvent) => {
-    if (hasChildren && sidebarIsOpen) {
-      e.preventDefault()
-      toggleDropdown(item.title)
-    } else {
-      handleMenuItemClick(e, item)
-    }
-  }
-
-  const getItemClasses = () => {
-    const classes = [styles.menuItem, styles[`level-${level}`]]
-
-    if (hasChildren) classes.push(styles.hasChildren)
-    if (isOpen) classes.push(styles.open)
-    if (isActive) classes.push(styles.selected)
-    if (isChildActive && !isActive) classes.push(styles.childActive)
-
-    return classes.join(' ')
-  }
+  const isOpen = isDropdownOpen(item.title)
+  const location = useLocation()
 
   return (
-    <li className={getItemClasses()}>
-      <div className={styles.menuItemContainer}>
+    <li
+      key={`${item.link}-${level}`}
+      className={`${styles.menuItem}
+           ${location.pathname === item.link ? styles.selected : ''}
+           ${isOpen || item.children?.some((child) => location.pathname === child.link) ? styles.liOpen : ''}
+           `}
+    >
+      <div
+        className={styles.menuItemContainer}
+        onClick={(e) => {
+          if (!item.children) return
+          if (e.currentTarget === e.target) {
+            toggleDropdown(item.title)
+          }
+        }}
+      >
         <Link
           to={item.link}
           className={`${styles.menuLink} ${level > 0 ? styles.submenuLink : ''}`}
-          onClick={handleClick}
+          title={!isOpen && level === 0 ? item.title : undefined}
+          onClick={(e: React.MouseEvent) => {
+            handleMenuItemClick(e, item)
+          }}
         >
-          {item.icon && <span className={styles.icon}>{item.icon}</span>}
-          <span className={styles.title}>{item.title}</span>
-          {hasChildren && sidebarIsOpen && (
-            <span className={styles.arrow}>›</span>
-          )}
+          <span>{item.title}</span>
         </Link>
       </div>
 
-      {hasChildren && isOpen && sidebarIsOpen && (
-        <ul className={`${styles.submenu} ${styles[`level-${level + 1}`]}`}>
-          {item.children?.map((child) => (
+      {hasChildren && isOpen && item.children && (
+        <ul className={`${styles.submenu} ${styles.menuList}`}>
+          {item.children.map((child: MenuItem) => (
             <SidebarItem
-              key={`${child.link}-${level + 1}`}
               item={child}
               level={level + 1}
-              openDropdowns={openDropdowns}
+              isDropdownOpen={isDropdownOpen}
               toggleDropdown={toggleDropdown}
               handleMenuItemClick={handleMenuItemClick}
-              location={location}
             />
           ))}
         </ul>

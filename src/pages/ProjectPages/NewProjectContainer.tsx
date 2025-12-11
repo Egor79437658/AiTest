@@ -1,22 +1,28 @@
 import type React from 'react'
 import styles from './styles/NewProjectContainer.module.scss'
-import { useAuth, useUser } from '@contexts/'
-import { Link } from 'react-router-dom'
+import { useAuth, useProject, useUser } from '@contexts/'
+import { Link, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useHeaderStore } from '@stores/'
 import { TextArea } from '@components/'
 import { Controller, useForm } from 'react-hook-form'
+import { MOCK_MODE, PAGE_ENDPOINTS } from '@constants/'
+import { mockApiService } from '../../services/mockApiService'
+import { projectsApi } from '@api'
 
 type FormData = {
+  name: string
   url: string
   description: string
 }
 
 export const NewProjectContainer: React.FC = () => {
   const { isAuthenticated } = useAuth()
-  const { user, updateUserSettings, isLoading } = useUser()
+  const { user, isLoading } = useUser()
+  const { loadProject, loadShortProjects } = useProject()
   const { setHeaderContent } = useHeaderStore()
-  const [description, setDescription] = useState('')
+  const navigator = useNavigate()
+  const [errorMsg, setErrorMsg] = useState("")
   const {
     control,
     handleSubmit,
@@ -44,8 +50,24 @@ export const NewProjectContainer: React.FC = () => {
     return <div>Loading user data...</div>
   }
 
-  function handleCreate(data: FormData) {
+  async function handleCreate(data: FormData) {
     console.log(data)
+
+    let newProject
+    try {
+      if (MOCK_MODE) {
+        newProject = await mockApiService.createProject(data)
+      } else {
+        newProject = await projectsApi.createProject(data)
+      }
+      await loadProject(newProject.id)
+      await loadShortProjects()
+      navigator(`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${newProject.id}`)
+    }
+    catch(e: any) {
+      setErrorMsg("что-то пошло не так - " + e.message)
+    }
+  
   }
 
   return (
@@ -54,6 +76,23 @@ export const NewProjectContainer: React.FC = () => {
       <div className={styles.pageContainer}>
         <form className={styles.form} onSubmit={handleSubmit(handleCreate)}>
           <h2>Новый проект</h2>
+          <label htmlFor="name">Имя проекта:</label>
+          <Controller
+            name="name"
+            control={control}
+            rules={{
+              required: 'введите имя',
+              validate: () => {
+                // проверить что валидное время
+                if (false) {
+                  return 'Пожалуйста введите правильное имя'
+                }
+              },
+            }}
+            render={({ field }) => <input {...field} type="text" />}
+          />
+          <p className={styles.error}> {errors.name && errors.name.message}</p>
+
           <label htmlFor="url">URL:</label>
           <Controller
             name="url"
@@ -100,6 +139,7 @@ export const NewProjectContainer: React.FC = () => {
           >
             {isSubmitting ? 'Создание...' : 'Создать'}
           </button>
+          <p className={styles.error}> {errorMsg}</p>
         </form>
       </div>
     </>

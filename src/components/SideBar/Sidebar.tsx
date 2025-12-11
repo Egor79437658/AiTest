@@ -1,74 +1,40 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { JSX, useEffect, useRef, useState } from 'react'
 import { useSidebar } from '@contexts/'
 import styles from './Sidebar.module.scss'
 import { MenuItem, useSidebarNavigation } from './hooks/useSidebarNavigation'
-import { useLocation } from 'react-router-dom'
 import { SidebarItem } from './SidebarItem'
 
 export const Sidebar: React.FC = () => {
-  const { isOpen, closeSidebar } = useSidebar()
-  const location = useLocation()
+  const { isOpen } = useSidebar()
   const listRef = useRef<HTMLUListElement>(null)
 
-  const { menuItems, handleMenuItemClick } = useSidebarNavigation()
+  const { menuItems, handleMenuItemClick, isAuthenticated } =
+    useSidebarNavigation()
   const [openDropdowns, setOpenDropdowns] = useState<Set<string>>(new Set())
 
   useEffect(() => {
-    const findAndOpenParents = (
-      items: MenuItem[],
-      path: string,
-      parents: Set<string>
-    ): Set<string> => {
-      const newParents = new Set(parents)
-
-      items.forEach((item) => {
-        if (item.children) {
-          const childPaths = item.children.map((child) => child.link)
-          const isChildActive = childPaths.some(
-            (childPath) =>
-              path.startsWith(childPath) ||
-              (item.children &&
-                findAndOpenParents(item.children, path, newParents).has(
-                  item.title
-                ))
-          )
-
-          if (isChildActive) {
-            newParents.add(item.title)
-          }
-
-          findAndOpenParents(item.children, path, newParents)
-        }
-      })
-
-      return newParents
-    }
-
-    const activeParents = findAndOpenParents(
-      menuItems,
-      location.pathname,
-      new Set<string>()
-    )
-    setOpenDropdowns(activeParents)
-  }, [location.pathname, menuItems])
-
-  useEffect(() => {
+    // if(loading) {
+    // return;
+    // }
     const className = isOpen ? styles.animateOpen : styles.animateClose
+    console.log(className)
     if (listRef.current) {
       listRef.current.classList.add(className)
     }
-
     const timer = setTimeout(
       () => {
         if (listRef.current) {
           listRef.current.classList.remove(className)
         }
+        return () => clearTimeout(timer)
       },
-      300 + menuItems.length * 50
+      800 + 100 * menuItems.length
     )
+  }, [isOpen])
 
-    return () => clearTimeout(timer)
-  }, [isOpen, menuItems.length])
+  // useEffect(() => {
+  // setLoading(false)
+  // }, [])
 
   const toggleDropdown = (title: string) => {
     setOpenDropdowns((prev) => {
@@ -82,41 +48,32 @@ export const Sidebar: React.FC = () => {
     })
   }
 
+  const isDropdownOpen = (title: string): boolean => {
+    return openDropdowns.has(title)
+  }
+
   return (
     <>
-      {isOpen && (
+      {/* {isOpen && (
         <div
-          className={`${styles.sidebarOverlay} ${isOpen ? styles.active : ''}`}
-          onClick={closeSidebar}
+        className={`${styles.sidebarOverlay} ${isOpen ? styles.active : ''}`}
+        onClick={closeSidebar}
         />
-      )}
-
+        )} */}
       <div className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
         <nav className={`${styles.sidebarMenu} ${isOpen ? styles.open : ''}`}>
           <ul ref={listRef} className={styles.menuList}>
             {menuItems.map((item) => (
               <SidebarItem
-                key={item.link}
                 item={item}
                 level={0}
-                openDropdowns={openDropdowns}
-                toggleDropdown={toggleDropdown}
+                isDropdownOpen={isDropdownOpen}
                 handleMenuItemClick={handleMenuItemClick}
-                location={location}
+                toggleDropdown={toggleDropdown}
               />
             ))}
           </ul>
         </nav>
-
-        {isOpen && (
-          <button
-            className={styles.closeSidebarMobile}
-            onClick={closeSidebar}
-            aria-label="Закрыть меню"
-          >
-            ×
-          </button>
-        )}
       </div>
     </>
   )

@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './ProjectUsers.module.scss'
-import { ProjectUser } from '@interfaces/'
+import { ProjectUser, userRoleMap } from '@interfaces/'
 
 interface ProjectUsersProps {
   users: ProjectUser[]
@@ -32,9 +32,9 @@ export const ProjectUsers: React.FC<ProjectUsersProps> = ({ users }) => {
           <tbody>
             {users.map((user) => (
               <tr key={user.id}>
-                <td>{user.name}</td>
+                <td>{user.lastName + " " + user.firstName + " " + (user.fatherName || "")}</td>
                 <td>{user.email}</td>
-                <td>{user.role}</td>
+                <td>{userRoleMap[user.role]}</td>
                 <td>{user.permissions}</td>
               </tr>
             ))}

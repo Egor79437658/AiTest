@@ -1,10 +1,10 @@
-@use '/src/styles/animations.scss';
-@use '/src/styles/_variables.scss' as vars;
-@use '/src/styles/fonts.scss';
+@use "/src/styles/animations.scss";
+@use "/src/styles/_variables.scss" as vars;
+@use "/src/styles/fonts.scss";
 
 .sidebar {
   position: sticky;
-  top: calc(40px + 40px);
+  top: calc(40px + 40px); //отсутуп + кнопка
   width: 40px;
   height: calc(80% - 60px);
   padding: 20px 0;
@@ -16,28 +16,30 @@
   transition:
     width 0.3s ease-in-out,
     opacity 0.3s ease-in-out;
-  font-family: 'Bounded';
-  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  font-family: "Bounded";
 
   * {
     font-family: inherit;
   }
+  // z-index: 100;
+  // border: 1px vars.$darkColor solid;
 
   &.open {
     width: 20vw;
     opacity: 1;
     pointer-events: all;
-
-    @media (max-width: 1450px) {
-      width: 25vw;
-    }
+    // @media (max-width: 1450px) {
+    //   width: 20%;
+    //   position: absolute;
+    //   display: flex;
+    //   animation: slideIn 0.3s ease-in-out;
+    // }
 
     @media (max-width: 768px) {
       width: 60vw;
       position: absolute;
       display: flex;
-      z-index: 100;
-      box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+      // z-index: 100;
       animation: slideIn 0.3s ease-in-out;
     }
   }
@@ -45,256 +47,100 @@
 
 .sidebarMenu {
   height: 100%;
-  padding-left: 0;
+  padding-left: 10px;
   width: 100%;
   transition: opacity 0.4s ease;
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
 .menuList {
   display: flex;
   min-width: 100%;
   flex-direction: column;
+
   padding: 0;
-  gap: 8px;
+  gap: 17px;
 }
 
 .menuItem {
   list-style: none;
+  // overflow: hidden;
   transition: all 0.4s ease;
-  white-space: nowrap;
-  width: 100%;
+  white-space: inherit;
+  width: 90%;
+  margin: 0 auto;
   cursor: pointer;
-  position: relative;
 
-  &.level-0 {
-    margin-bottom: 10px;
-  }
+  // border: 2px vars.$darkColor solid;
 
-  &.level-1 {
-    margin-left: 15px;
-    width: calc(100% - 15px);
-
-    &::before {
-      content: '';
-      position: absolute;
-      left: -10px;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background: rgba(0, 0, 0, 0.1);
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}) {
+      transition-delay: 0.05s * $i + 0.1s;
     }
   }
+  .menuLink {
+    text-decoration: none;
+    font-size: 20px;
+    border-radius: 20px;
+    transition: background-color 0.3s ease;
+    max-width: 80%;
+    color: lightgrey;
 
-  &.level-2 {
-    margin-left: 30px;
-    width: calc(100% - 30px);
-    font-size: 0.9em;
-
-    &::before {
-      content: '';
-      position: absolute;
-      left: -10px;
-      top: 0;
-      bottom: 0;
-      width: 1px;
-      background: rgba(0, 0, 0, 0.05);
-    }
-  }
-
-  &.hasChildren {
-    > .menuItemContainer .menuLink {
-      font-weight: 600;
-      background: rgba(0, 0, 0, 0.02);
-    }
-  }
-
-  &.open {
-    > .submenu {
-      display: block;
+    span {
+      transition: all 0.3s ease;
+      border-bottom: 2px solid transparent;
     }
 
-    > .menuItemContainer .menuLink .arrow {
-      transform: rotate(90deg);
+    @media (max-width: 1200px) {
+      padding: 9px 10px;
+      font-size: 16px;
+      gap: 10px;
+    }
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
     }
   }
 
   &.selected {
-    > .menuItemContainer .menuLink {
-      color: vars.$darkColor;
-      background: rgba(vars.$darkColor, 0.05);
-      border-left: 3px solid vars.$darkColor;
-
-      span {
-        font-weight: 600;
-      }
+    list-style: square;
+    & > div > .menuLink {
+      color: black;
     }
   }
 
-  &.childActive {
-    > .menuItemContainer .menuLink {
-      color: vars.$darkColor;
-      background: rgba(vars.$darkColor, 0.02);
+  &.liOpen {
+    list-style: none;
+    & > div > .menuLink {
+      color: black;
     }
+    & > div > a > span {
+      padding-bottom: 5px;
+      border-bottom: 2px solid lightgray;
+    }
+  }
+
+  &::marker {
+    font-size: 25px;
+  }
+
+  @media (min-width: 1750px) {
+    white-space: nowrap;
   }
 }
 
-.menuItemContainer {
-  padding: 0;
-}
-
-.menuLink {
-  display: flex;
-  align-items: center;
-  padding: 12px 15px;
-  color: #666;
-  text-decoration: none;
-  border-radius: 0;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  overflow: hidden;
-  position: relative;
-  border-left: 3px solid transparent;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.03);
-    color: #333;
-  }
-
-  .icon {
-    font-size: 1.1rem;
-    margin-right: 15px;
-    min-width: 24px;
-    text-align: center;
-    opacity: 0.7;
-    transition: opacity 0.3s ease;
-  }
-
-  .title {
-    flex: 1;
-    opacity: 0;
-    transform: translateX(-10px);
-    transition:
-      opacity 0.3s ease,
-      transform 0.3s ease;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 0.95rem;
-  }
-
-  .arrow {
-    font-size: 0.8rem;
-    opacity: 0;
-    transform: translateX(-10px) rotate(0deg);
-    transition:
-      opacity 0.3s ease,
-      transform 0.3s ease,
-      transform 0.2s ease;
-    color: #999;
-  }
-}
-
-.sidebar.open {
-  .menuLink {
-    .title,
-    .arrow {
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    &:hover {
-      .icon {
-        opacity: 1;
-      }
-    }
-  }
-
-  .submenuLink {
-    padding: 10px 15px !important;
-
-    .icon {
-      font-size: 0.9rem;
-      margin-right: 12px;
-    }
-
-    .title {
-      font-size: 0.9rem;
+.animateOpen,
+.submenu {
+  @for $i from 1 through 10 {
+    > *:nth-child(#{$i}) {
+      // animation: appearLi 1s ease-in-out 0.05s * $i ;
+      animation: openLi 0.5s + 0.1s * $i;
     }
   }
 }
 
 .submenu {
-  display: none;
-  margin-top: 4px;
-  margin-bottom: 8px;
-  padding: 0;
-  list-style: none;
-
-  &.level-1 {
-    border-left: 1px solid rgba(0, 0, 0, 0.05);
-    margin-left: 15px;
-  }
-
-  &.level-2 {
-    border-left: 1px solid rgba(0, 0, 0, 0.03);
-    margin-left: 15px;
-  }
-}
-
-.animateOpen {
-  .menuItem {
-    animation: fadeInSlide 0.3s ease forwards;
-
-    @for $i from 1 through 20 {
-      &:nth-child(#{$i}) {
-        animation-delay: #{$i * 0.05}s;
-      }
-    }
-  }
-}
-
-.animateClose {
-  .menuItem {
-    animation: fadeOutSlide 0.3s ease forwards;
-
-    @for $i from 1 through 20 {
-      &:nth-child(#{$i}) {
-        animation-delay: #{$i * 0.05}s;
-      }
-    }
-  }
-}
-
-@keyframes fadeInSlide {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes fadeOutSlide {
-  from {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
+  padding: 10px 0;
+  margin: 20px 0;
 }
 
 .sidebarOverlay {
@@ -305,88 +151,52 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0);
-  z-index: 99;
+  // z-index: 99;
   pointer-events: none;
   transition: background-color 0.3s ease;
 
+  &.active {
+    display: block;
+    background-color: rgba(0, 0, 0, 0.5);
+    pointer-events: all;
+    animation: fadeIn 0.3s ease;
+  }
+
   @media (max-width: 768px) {
-    &.active {
-      display: block;
-      background-color: rgba(0, 0, 0, 0.3);
-      pointer-events: all;
-      animation: fadeIn 0.3s ease;
-    }
+    display: block;
   }
 }
 
 .closeSidebarMobile {
   display: none;
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 5px;
+  right: 5px;
   background: none;
   border: none;
-  color: #666;
+  color: white;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  font-size: 24px;
+  height: 42px;
+  font-size: 90px;
   cursor: pointer;
-  z-index: 101;
+  // z-index: 101;
   opacity: 0;
   transform: scale(0.8);
   transition: all 0.3s ease;
-  border-radius: 50%;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.05);
-  }
 
   @media (max-width: 768px) {
     display: flex;
     animation: fadeIn 0.3s ease;
 
-    .sidebar.open & {
+    text .sidebar.open & {
       opacity: 1;
       transform: scale(1);
       transition: all 0.3s ease 0.2s;
     }
-  }
-}
 
-@media (max-width: 768px) {
-  .sidebar.open {
-    .menuLink {
-      padding: 15px;
-
-      .title,
-      .arrow {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    .menuItem {
-      &.level-1 {
-        margin-left: 20px;
-      }
-
-      &.level-2 {
-        margin-left: 40px;
-      }
-    }
-  }
-}
-
-@media (min-width: 1750px) {
-  .sidebar.open {
-    .menuLink {
-      padding: 14px 20px;
-
-      .title {
-        font-size: 1rem;
-      }
+    &:hover {
+      transform: rotate(90deg) scale(1.1);
     }
   }
 }

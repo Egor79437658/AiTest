@@ -1,6 +1,6 @@
 import type React from 'react'
 import { Link } from 'react-router-dom'
-import { useUser } from '@contexts/'
+import { useProject, useUser } from '@contexts/'
 import { useHeaderStore, usePipelineStore } from '@stores/'
 import { useEffect } from 'react'
 import { PAGE_ENDPOINTS } from '@constants/'
@@ -8,9 +8,11 @@ import styles from './styles/ContainerHome.module.scss'
 
 export const HomeContainer: React.FC = () => {
   const { user } = useUser()
+  const {projects, clearProject} = useProject()
   const { setHeaderContent } = useHeaderStore()
   const { setPipelineContent } = usePipelineStore()
 
+  useEffect(() => clearProject(), [])
   useEffect(() => {
     setHeaderContent(
       <div>
@@ -39,7 +41,7 @@ export const HomeContainer: React.FC = () => {
           Всего: {user?.projectData.length} проекта
         </div>
         <div className={styles.pageUp}>
-          {user?.projectData.map((project) => (
+          {projects.sort((a, b) => (b.lastUpdated.getTime() - a.lastUpdated.getTime())).map((project) => (
             <Link
               key={project.id}
               to={`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}`}

@@ -32,7 +32,7 @@ export const RecentTestPlan: React.FC<RecentTestPlanProps> = ({ runs }) => {
             {runs.map((run) => (
               <tr key={run.id}>
                 <td>{run.name}</td>
-                <td>{run.lastRunDate}</td>
+                <td>{run.lastRunDate.toISOString()}</td>
                 <td>
                   <span
                     className={`${styles.statusBadge} ${

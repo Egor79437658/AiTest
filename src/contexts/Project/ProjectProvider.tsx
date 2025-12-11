@@ -4,6 +4,7 @@ import { ProjectContext } from './ProjectContext'
 import { mockApiService } from '../../services/mockApiService'
 import { Project } from '@interfaces/'
 import { useProjectStore } from '../../stores/projectStore'
+import { projectsApi } from '@api'
 
 export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -31,7 +32,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
         if (MOCK_MODE) {
           projectData = await mockApiService.getProject(projectId)
         } else {
-          throw new Error('Not implemented')
+          projectData = await projectsApi.getProject(projectId)
         }
 
         setProject(projectData)
@@ -46,7 +47,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
     [setLoading, setError, setProject]
   )
 
-  const loadProjects = useCallback(async (): Promise<void> => {
+  const loadShortProjects = useCallback(async (): Promise<void> => {
     try {
       setLoading(true)
       setError(null)
@@ -54,9 +55,9 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
       let projectsData
 
       if (MOCK_MODE) {
-        projectsData = await mockApiService.getProjects()
+        projectsData = await mockApiService.getShortProjects()
       } else {
-        throw new Error('Not implemented')
+        projectsData = await projectsApi.getShortProjects()
       }
 
       setProjects(projectsData)
@@ -73,7 +74,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
     const loadInitialData = async () => {
       try {
         setLoading(true)
-        await loadProjects()
+        await loadShortProjects()
       } catch (error) {
         console.error('Failed to load initial project data:', error)
         setError('Не удалось загрузить данные проектов')
@@ -84,7 +85,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     loadInitialData()
-  }, [loadProjects, setError, setLoading])
+  }, [loadShortProjects, setError, setLoading])
 
   const updateProjectData = useCallback(
     async (updates: Partial<Project>): Promise<void> => {
@@ -103,7 +104,10 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
             updates
           )
         } else {
-          throw new Error('Not implemented')
+          updatedProject = await projectsApi.updateProject(
+            project.id,
+            updates
+          )
         }
 
         setProject(updatedProject)
@@ -132,7 +136,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
     isLoading: useProjectStore.getState().isLoading,
     error: useProjectStore.getState().error,
     loadProject,
-    loadProjects,
+    loadShortProjects,
     updateProject: updateProjectData,
     clearProject: clearCurrentProject,
     clearError: clearErrorState,
