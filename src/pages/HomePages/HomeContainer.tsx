@@ -26,6 +26,8 @@ export const HomeContainer: React.FC = () => {
     }
   }, [setHeaderContent, user?.profileData.username])
 
+  // useEffect(() => console.log(projects), [projects])
+
   useEffect(() => {
     setPipelineContent(null)
     return () => {
@@ -41,7 +43,7 @@ export const HomeContainer: React.FC = () => {
           Всего: {user?.projectData.length} проекта
         </div>
         <div className={styles.pageUp}>
-          {projects.sort((a, b) => (b.lastUpdated.getTime() - a.lastUpdated.getTime())).map((project) => (
+          {user && user?.projectData.sort((a, b) => (b.lastUpdated.getTime() - a.lastUpdated.getTime())).map((project) => (
             <Link
               key={project.id}
               to={`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}`}

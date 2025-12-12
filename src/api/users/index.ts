@@ -47,12 +47,12 @@ class UsersApi {
     await apiClient.delete(`${API_URL.USER}/me/`)
   }
 
-  async getUserProfile(userId: string): Promise<User> {
+  async getUserProfile(userId: number): Promise<User> {
     const response = await apiClient.get<User>(`${API_URL.USER}/${userId}/`)
     return response
   }
 
-  async deleteUser(userId: string): Promise<void> {
+  async deleteUser(userId: number): Promise<void> {
     await apiClient.delete(`/user/${userId}/`)
   }
 }

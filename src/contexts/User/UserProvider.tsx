@@ -194,6 +194,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     updateUserSettings,
     updateUserConfirmation,
     clearError,
+    clearUser
   }
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>

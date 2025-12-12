@@ -1,5 +1,5 @@
 import type React from 'react'
-import { useAuth, useUser } from '@contexts/'
+import { useAuth, useProject, useUser } from '@contexts/'
 import { useState } from 'react'
 import { PAGE_ENDPOINTS } from '@constants/'
 import { useNavigate, useLocation } from 'react-router-dom'

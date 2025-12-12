@@ -64,5 +64,6 @@ export interface UserContextType {
   updateUserProfile: (profileData: UpdateProfileData) => Promise<void>
   updateUserSettings: (settingsData: UpdateSettingsData) => Promise<void>
   updateUserConfirmation: (type: 'email' | 'phone') => Promise<void>
-  clearError: () => void
+  clearError: () => void,
+  clearUser: () => void
 }

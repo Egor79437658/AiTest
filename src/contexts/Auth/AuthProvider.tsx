@@ -7,6 +7,8 @@ import { AuthModalType, AuthContextType } from '@interfaces/'
 import { MOCK_MODE } from '@constants/'
 import { mockApiService } from '../../services/mockApiService'
 import { useNavigate } from 'react-router-dom'
+import { useProject } from '../Project'
+import { useProjectStore } from '../../stores/projectStore'
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -26,6 +28,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   } = useAuthStore()
 
   const { setUser, clearUser } = useUserStore()
+  const {clearProject} = useProjectStore()
   const { onConfirmAction, setOnConfirmAction } = useAuthStore()
 
   useEffect(() => {
@@ -159,6 +162,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
     storeLogout()
     clearUser()
+    clearProject()
   }
 
   const openAuthModal = (type: AuthModalType, value: string = ''): void => {
