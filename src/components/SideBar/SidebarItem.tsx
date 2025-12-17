@@ -26,7 +26,7 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({
 
   return (
     <li
-      key={`${item.link}-${level}`}
+      
       className={`${styles.menuItem}
            ${location.pathname === item.link ? styles.selected : ''}
            ${isOpen || item.children?.some((child) => location.pathname === child.link) ? styles.liOpen : ''}

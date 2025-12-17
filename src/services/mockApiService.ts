@@ -2,6 +2,7 @@ import {
   Project,
   ProjectMinimal,
   ProjectUser,
+  TestCase,
   TestPlanRun,
   User,
 } from '@interfaces/'
@@ -9,6 +10,7 @@ import { MOCK_CODE } from '@constants/'
 import {
   MOCK_PASSWORD,
   mockProjects,
+  mockTestCases,
   mockTokens,
   mockUsers,
 } from '../mock/mockData'
@@ -303,6 +305,38 @@ class MockApiService {
     mockProjects[projectIndex] = updatedProject
 
     return structuredClone(updatedProject)
+  }
+
+  async getTestCases(id: number): Promise<TestCase[]> {
+    const project = await this.getProject(id)        
+    return mockTestCases.filter(el => project.testCases.some(testCase => testCase.id === el.id))
+  }
+
+  async getTestCase(projectId: number, testCaseId: number): Promise<TestCase> {
+    await delay(500)
+    return {...mockTestCases.find(el => el.id === testCaseId)}
+  }
+
+  async updateTestCase(
+    projectId: number,
+    testCaseId: number,
+    updates: Partial<TestCase>
+  ): Promise<TestCase> {
+    await delay(500)
+    const index = mockTestCases.findIndex(el => el.id === testCaseId)
+    if(index === -1) {
+      throw new Error("no test-case found")
+    }
+
+    const updated = {
+      ...mockTestCases[index],
+      ...updates
+    }
+
+    mockTestCases[index] = updated
+
+    return structuredClone(updated)
+
   }
 }
 

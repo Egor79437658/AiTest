@@ -499,7 +499,7 @@ export const ProfileTab: React.FC = () => {
               </table>
             ) : (
               <p className={stylesProfile.noTeams}>
-                У вас нет команд! {user ? 'true' : 'false'}
+                У вас нет команд!
               </p>
             )}
           </div>

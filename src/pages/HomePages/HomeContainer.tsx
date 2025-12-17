@@ -8,7 +8,7 @@ import styles from './styles/ContainerHome.module.scss'
 
 export const HomeContainer: React.FC = () => {
   const { user } = useUser()
-  const {projects, clearProject} = useProject()
+  const { projects, clearProject } = useProject()
   const { setHeaderContent } = useHeaderStore()
   const { setPipelineContent } = usePipelineStore()
 
@@ -16,7 +16,7 @@ export const HomeContainer: React.FC = () => {
   useEffect(() => {
     setHeaderContent(
       <div>
-        <Link to="/home">ЯМП&nbsp;</Link>
+        <Link to="/">ЯМП&nbsp;</Link>
         &mdash;&nbsp; {user?.profileData.username} &nbsp;&mdash;&nbsp; проекты
       </div>
     )
@@ -43,16 +43,30 @@ export const HomeContainer: React.FC = () => {
           Всего: {user?.projectData.length} проекта
         </div>
         <div className={styles.pageUp}>
-          {user && user?.projectData.sort((a, b) => (b.lastUpdated.getTime() - a.lastUpdated.getTime())).map((project) => (
-            <Link
-              key={project.id}
-              to={`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}`}
-              className={styles.block}
-            >
-              <p>{project.name}</p>
-              <p>перейти {'>>'}</p>
-            </Link>
-          ))}
+          {user &&
+            user?.projectData
+              .sort(
+                (a, b) =>
+                  new Date(b.lastUpdated).getTime() -
+                  new Date(a.lastUpdated).getTime()
+              )
+              .map((project) => (
+                <Link
+                  key={project.id}
+                  to={`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}`}
+                  className={styles.block}
+                  onClick={() => {
+                    if (user) {
+                      user.projectData.forEach((el) => {
+                        if (el.id === project.id) el.lastUpdated = new Date()
+                      })
+                    }
+                  }}
+                >
+                  <p>{project.name}</p>
+                  <p>перейти {'>>'}</p>
+                </Link>
+              ))}
           {/* <Link to="/project" className={`${styles.block} ${styles.second}`}>
             <p>Проект 2</p>
             <p>перейти {'>>'}</p>

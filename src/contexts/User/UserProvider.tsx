@@ -68,20 +68,20 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     )
   }
 
-  if (accessToken && useUserStore.getState().isLoading && !user) {
-    return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
-        }}
-      >
-        <div>Загрузка данных пользователя...</div>
-      </div>
-    )
-  }
+  // if (accessToken && useUserStore.getState().isLoading && !user) {
+  //   return (
+  //     <div
+  //       style={{
+  //         display: 'flex',
+  //         justifyContent: 'center',
+  //         alignItems: 'center',
+  //         height: '100vh',
+  //       }}
+  //     >
+  //       <div>Загрузка данных пользователя...</div>
+  //     </div>
+  //   )
+  // }
 
   const refreshUser = async (): Promise<void> => {
     if (!user) return
@@ -186,7 +186,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   }
 
   const value: UserContextType = {
-    user,
+    user: user,
     isLoading: useUserStore.getState().isLoading,
     error: useUserStore.getState().error,
     refreshUser,

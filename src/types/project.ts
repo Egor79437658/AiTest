@@ -21,9 +21,6 @@ export interface TestPlanRun {
   status: 'успешно' | 'с ошибками'
 }
 
-export interface testCase {
-  id: number
-}
 export interface testPlan {
   id: number
 }
@@ -38,9 +35,9 @@ export interface Project {
   hasDatapool: boolean
   description: string
   users: ProjectUser[]
-  testCases: testCase[]
-  scripts: script[]
-  testPlans: testPlan[]
+  testCases: {id: number}[]
+  scripts: {id: number}[]
+  testPlans: {id: number}[]
   recentTestPlanRuns: TestPlanRun[]
   createdAt: Date
   updatedAt: Date

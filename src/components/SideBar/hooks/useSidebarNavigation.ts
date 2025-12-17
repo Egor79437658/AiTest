@@ -24,7 +24,7 @@ export const useSidebarNavigation = () => {
       icon: '#',
       requireAuth: true,
       children: [
-        ...(!project && user ? user?.projectData : []).sort((a, b) => b.lastUpdated.getTime() - a.lastUpdated.getTime()).map((el) => {
+        ...(!project && user ? user?.projectData : []).sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime()).map((el) => {
           return {
             title: el.name,
             link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${el.id}`,

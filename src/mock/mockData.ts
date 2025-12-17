@@ -1,4 +1,4 @@
-import { Project, User } from '@interfaces/'
+import { Project, TestCase, User } from '@interfaces/'
 
 export const mockUsers: User[] = [
   {
@@ -225,20 +225,143 @@ export const mockProjects: Project[] = [
         permissions: 'Полные',
       },
     ],
-    testPlans: [{ id: 4 }],
-    testCases: [{ id: 3 }],
-    scripts: [{ id: 3 }],
+    testPlans: [{ id: 5 }],
+    testCases: [{ id: 5 }, { id: 6 }],
+    scripts: [{ id: 5 }],
     recentTestPlanRuns: [
       {
-        id: 4,
+        id: 5,
         name: 'Мобильное регрессионное тестирование',
         lastRunDate: new Date('2023-12-26T10:00:00'),
-        status: "с ошибками",
+        status: 'с ошибками',
       },
     ],
     createdAt: new Date('2023-12-26T10:00:00'),
     updatedAt: new Date('2023-12-26T10:00:00'),
     createdBy: 2,
+  },
+]
+
+export const mockTestCases: TestCase[] = [
+  {
+    id: 1,
+    flag: true,
+    name: 'тест-кейс 1',
+    positive: true,
+    version: '000.000.000',
+    scriptIds: [{ id: 1, name: 'тест-скрипт 1' }],
+    precondition: '{x == 0}',
+    testCases: [{ id: 1, name: 'тест-кейс 1' }],
+    owner: {
+      id: 2,
+      username: 'demo',
+    },
+    creationDate: new Date('2023-12-26T10:00:00'),
+    status: 1,
+    usedInTestPlans: true,
+    testPlans: [
+      { id: 1, name: 'тест-план 1', date: new Date('2023-12-26T10:00:00') },
+    ],
+  },
+  {
+    id: 2,
+    flag: true,
+    name: 'тест-кейс 2',
+    positive: true,
+    version: '000.000.000',
+    scriptIds: [{ id: 2, name: 'тест-скрипт 2' }],
+    precondition: '{x == 0}',
+    testCases: [{ id: 2, name: 'тест-кейс 2' }],
+    owner: {
+      id: 1,
+      username: 'testuser',
+    },
+    creationDate: new Date('2023-12-26T10:00:00'),
+    status: 2,
+    usedInTestPlans: true,
+    testPlans: [
+      { id: 3, name: 'тест-план 3', date: new Date('2023-12-26T10:00:00') },
+    ],
+  },
+  {
+    id: 3,
+    flag: true,
+    name: 'тест-кейс 3',
+    positive: true,
+    version: '000.000.000',
+    scriptIds: [{ id: 3, name: 'тест-скрипт 3' }],
+    precondition: '{x == 0}',
+    testCases: [{ id: 3, name: 'тест-кейс 3' }],
+    owner: {
+      id: 1,
+      username: 'testuser',
+    },
+    creationDate: new Date('2023-12-25T10:00:00'),
+    status: 1,
+    usedInTestPlans: true,
+    testPlans: [
+      { id: 4, name: 'тест-план 4', date: new Date('2023-12-26T10:00:00') },
+    ],
+  },
+  {
+    id: 5,
+    flag: true,
+    name: 'тест-кейс 5',
+    positive: true,
+    version: '000.000.000',
+    scriptIds: [{ id: 5, name: 'тест-скрипт 5' }],
+    precondition: '{x == 0}',
+    testCases: [{ id: 6, name: 'тест-кейс 6' }],
+    owner: {
+      id: 2,
+      username: 'demo',
+    },
+    creationDate: new Date('2023-12-26T10:00:00'),
+    status: 2,
+    usedInTestPlans: true,
+    testPlans: [
+      { id: 5, name: 'тест-план 5', date: new Date('2023-12-26T10:00:00') },
+    ],
+  },
+  {
+    id: 5,
+    flag: true,
+    name: 'тест-кейс 5',
+    positive: true,
+    version: '000.000.001',
+    scriptIds: [{ id: 5, name: 'тест-скрипт 5' }],
+    precondition: '{x == 0}',
+    testCases: [{ id: 6, name: 'тест-кейс 6' }],
+    owner: {
+      id: 2,
+      username: 'demo',
+    },
+    creationDate: new Date('2023-12-27T10:00:00'),
+    status: 1,
+    usedInTestPlans: true,
+    testPlans: [
+      { id: 5, name: 'тест-план 5', date: new Date('2023-12-26T10:00:00') },
+    ],
+  },
+  {
+    id: 6,
+    flag: true,
+    name: 'тест-кейс 6',
+    positive: true,
+    version: '000.000.000',
+    scriptIds: [{ id: 5, name: 'тест-скрипт 5' }],
+    precondition: '{x == 0}',
+    testCases: [{ id: 5, name: 'тест-кейс 5' }],
+    owner: {
+      id: 2,
+      username: 'demo',
+    },
+    creationDate: new Date('2023-12-27T10:00:00'),
+    status: 2,
+    usedInTestPlans: true,
+    testPlans: [
+      { id: 5, name: 'тест-план 5', date: new Date('2023-12-26T10:00:00') },
+    ],
   },
 ]
 

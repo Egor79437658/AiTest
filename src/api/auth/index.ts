@@ -57,6 +57,7 @@ class AuthApi {
     return response
   }
 
+  //нужно ли, если есть getUserProfile(user.id)
   async getCurrentUser(): Promise<User> {
     const response = await apiClient.get<User>(`${API_URL.AUTH}/me`)
     return response

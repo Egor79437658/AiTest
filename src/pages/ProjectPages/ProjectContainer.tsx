@@ -28,7 +28,7 @@ export const ProjectContainer: React.FC = () => {
   useEffect(() => {
     const headerContent = (
       <div>
-        <Link to="/home">ЯМП&nbsp;</Link>
+        <Link to="/">ЯМП&nbsp;</Link>
         &mdash;&nbsp; проект &mdash;&nbsp; {project?.name}
       </div>
     )
@@ -64,7 +64,7 @@ export const ProjectContainer: React.FC = () => {
     return (
       <div>
         Прозошла ошибка: {errorMsg} <br/>
-        <Link to="/home">Вернуться к списку проектов</Link>
+        <Link to="/">Вернуться к списку проектов</Link>
       </div>
     )
   }
@@ -76,7 +76,7 @@ export const ProjectContainer: React.FC = () => {
   if (!project) {
     return (
       <div>
-        Проект не найден. <Link to="/home">Вернуться к списку проектов</Link>
+        Проект не найден. <Link to="/">Вернуться к списку проектов</Link>
       </div>
     )
   }

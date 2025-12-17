@@ -14,12 +14,13 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
     projects,
     setProject,
     setProjects,
+    updateProject,
     setLoading,
     setError,
     clearProject,
   } = useProjectStore()
 
-  const [initialLoadComplete, setInitialLoadComplete] = useState(false)
+  const [initialLoadComplete, setInitialLoadComplete] = useState(true)
 
   const loadProject = useCallback(
     async (projectId: number): Promise<void> => {
@@ -35,6 +36,10 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
           projectData = await projectsApi.getProject(projectId)
         }
 
+        const date =  new Date()
+        projectData.updatedAt = date
+        updateProject({updatedAt: date})
+        
         setProject(projectData)
       } catch (error) {
         console.error('Failed to load project:', error)

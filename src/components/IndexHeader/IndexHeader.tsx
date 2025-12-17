@@ -61,7 +61,8 @@ export const IndexHeader = ({
     window.addEventListener('resize', checkLayout)
 
     const checkScrolling = () => {
-      if (window.pageYOffset > 3*window.innerHeight/4) setScrolledEnough(2)
+      if (window.pageYOffset > (3 * window.innerHeight) / 4)
+        setScrolledEnough(2)
       else if (window.pageYOffset > window.innerHeight / 2) setScrolledEnough(1)
       else setScrolledEnough(0)
     }
@@ -151,7 +152,7 @@ export const IndexHeader = ({
                 swiperRef.current = swiper
               }}
               className={styles.swiperContainer}
-              onScroll={(swiper, e) => {
+              onTransitionEnd={(swiper) => {
                 if (swiper.realIndex === 0) {
                   prevBtnRef.current?.classList.add(styles.hiddenBtn)
                 } else {

@@ -8,3 +8,4 @@ export * from './ProtectedRoute'
 export * from './Tabs'
 export * from './MockInfo'
 export * from "./TextArea"
+export * from "./MySwiper"

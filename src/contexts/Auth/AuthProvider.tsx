@@ -24,12 +24,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setPendingEmail,
     setPendingPhone,
     setLoading,
+    onConfirmAction,
+    setOnConfirmAction,
     logout: storeLogout,
   } = useAuthStore()
 
   const { setUser, clearUser } = useUserStore()
   const {clearProject} = useProjectStore()
-  const { onConfirmAction, setOnConfirmAction } = useAuthStore()
 
   useEffect(() => {
     if (accessToken) {
