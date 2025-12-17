@@ -91,15 +91,36 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
       let userData
 
       if (MOCK_MODE) {
-        userData = await mockApiService.getUserProfile(user.id)
+        userData = await mockApiService.getCurrentUser()
       } else {
-        userData = await usersApi.getUserProfile(user.id)
+        userData = await usersApi.getCurrentUser()
       }
 
       setUser(userData)
     } catch (error) {
       console.error('Failed to refresh user data:', error)
       setError('Не удалось обновить данные пользователя')
+      throw error
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const getUserProfile = async (userId: number) => {
+    try {
+      setLoading(true)
+      let profile
+
+      if (MOCK_MODE) {
+        profile = await mockApiService.getUserProfile(userId)
+      } else {
+        profile = await usersApi.getUserProfile(userId)
+      }
+
+      return profile
+    } catch (error) {
+      console.error('Failed to refresh user data:', error)
+      setError('Не удалось получить данные профиля пользователя')
       throw error
     } finally {
       setLoading(false)
@@ -194,7 +215,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     updateUserSettings,
     updateUserConfirmation,
     clearError,
-    clearUser
+    clearUser,
+    getUserProfile: getUserProfile
   }
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>

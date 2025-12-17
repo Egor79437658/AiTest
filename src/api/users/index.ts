@@ -1,4 +1,4 @@
-import { ProjectMinimal, User } from '@interfaces/'
+import { ProfileData, ProjectMinimal, User } from '@interfaces/'
 import {
   UpdateFinancialData,
   UpdateProfileData,
@@ -8,7 +8,7 @@ import { apiClient } from '@api'
 import { API_URL } from '@constants/'
 
 class UsersApi {
-  async getMyProfile(): Promise<User> {
+  async getCurrentUser(): Promise<User> {
     const response = await apiClient.get<User>(`${API_URL.USER}/me/`)
     return response
   }
@@ -47,8 +47,8 @@ class UsersApi {
     await apiClient.delete(`${API_URL.USER}/me/`)
   }
 
-  async getUserProfile(userId: number): Promise<User> {
-    const response = await apiClient.get<User>(`${API_URL.USER}/${userId}/`)
+  async getUserProfile(userId: number): Promise<Partial<ProfileData>> {
+    const response = await apiClient.get<Partial<ProfileData>>(`${API_URL.USER}/${userId}/`)
     return response
   }
 

@@ -17,6 +17,7 @@ import {
   ProfileTab,
   ProjectContainer,
   SettingsTab,
+  ViewProfileTab,
 } from './pages'
 
 import './index.css'
@@ -28,6 +29,7 @@ import {
   ProjectTestCases,
   ProjectTestPlan,
   ProjectTestPlanRuns,
+  RedactTestCase,
 } from './pages/ProjectPages/components/ProjectSubPages'
 
 const router = createBrowserRouter([
@@ -45,74 +47,56 @@ const router = createBrowserRouter([
     children: [
       {
         path: PAGE_ENDPOINTS.HOME,
-        element: (
-            <HomeContainer />
-        ),
+        element: <HomeContainer />,
       },
       {
         path: PAGE_ENDPOINTS.PROJECT,
         children: [
           {
             path: 'new',
-            element: (
-                <NewProjectContainer />
-            ),
+            element: <NewProjectContainer />,
           },
           {
             path: `${PAGE_ENDPOINTS.PROJECT_ID}`,
-            element: (
-                <ProjectContainer />
-            ),
+            element: <ProjectContainer />,
           },
           {
             path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}`,
-            element: (
-                <ProjectTestCases />
-            ),
+            element: <ProjectTestCases />,
+          },
+          {
+            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}/${PAGE_ENDPOINTS.TEST_CASE_ID}`,
+            element: <RedactTestCase />,
           },
           {
             path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}`,
-            element: (
-                <ProjectTestPlan />
-            ),
+            element: <ProjectTestPlan />,
           },
           {
             path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.SCRIPT}`,
-            element: (
-                <ProjectScripts />
-            ),
+            element: <ProjectScripts />,
           },
           {
             path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.AUTO_TEST}`,
-            element: (
-                <ProjectAutoTesting />
-            ),
+            element: <ProjectAutoTesting />,
           },
           {
             path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.REPORTS}`,
-            element: (
-                <ProjectReports />
-            ),
+            element: <ProjectReports />,
           },
           {
             path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.SETTINGS}`,
-            element: (
-                <ProjectSettings />
-            ),
+            element: <ProjectSettings />,
           },
           {
             path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN_RUNS}`,
-            element: (
-                <ProjectTestPlanRuns />
-            ),
+            element: <ProjectTestPlanRuns />,
           },
         ],
       },
       {
         path: PAGE_ENDPOINTS.ACCOUNT.INDEX,
-        element: (
-            <PersonalAccountLayout />
-        ),
+        element: <PersonalAccountLayout />,
         children: [
           {
             path: PAGE_ENDPOINTS.ACCOUNT.PROFILE,
@@ -129,6 +113,10 @@ const router = createBrowserRouter([
         ],
       },
       {
+        path: `${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.VIEW_ACCOUNT}`,
+        element: <ViewProfileTab />,
+      },
+      {
         path: '*',
         element: <Navigate to={PAGE_ENDPOINTS.INDEX} replace />,
       },
@@ -143,7 +131,7 @@ function App() {
         <ProjectProvider>
           <SidebarProvider>
             <TestCaseProvider>
-            <RouterProvider router={router} />
+              <RouterProvider router={router} />
             </TestCaseProvider>
           </SidebarProvider>
         </ProjectProvider>

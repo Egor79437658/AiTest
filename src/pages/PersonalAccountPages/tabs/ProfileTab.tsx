@@ -1,5 +1,5 @@
 import { useAuth, useUser } from '@contexts/'
-import { ProfileData, userRoleMap } from '@interfaces/'
+import { ProfileData, statusMap, userRoleMap } from '@interfaces/'
 import type React from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useEffect } from 'react'
@@ -9,13 +9,6 @@ import stylesGeneral from '../styles/Account.module.scss'
 import { useAuthStore, useHeaderStore } from '@stores/'
 import { Link } from 'react-router-dom'
 import { PAGE_ENDPOINTS } from '@constants/'
-
-const statusMap = {
-  active: 'Активен',
-  blocked: 'Заблокирован',
-  deleted: 'Удалён',
-  unknown: 'неизвестно',
-}
 
 export const ProfileTab: React.FC = () => {
   const { openAuthModal } = useAuth()

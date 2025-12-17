@@ -18,6 +18,7 @@ export interface TestCase {
   status: 0 | 1 | 2
   usedInTestPlans: boolean
   testPlans: { id: number; name: string; date: Date }[]
+  steps: {precondition: string, action: string, result: string}[]
 }
 
 export interface TestCaseContextType {

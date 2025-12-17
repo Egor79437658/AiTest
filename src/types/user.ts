@@ -66,4 +66,12 @@ export interface UserContextType {
   updateUserConfirmation: (type: 'email' | 'phone') => Promise<void>
   clearError: () => void,
   clearUser: () => void
+  getUserProfile: (id: number) => Promise<Partial<ProfileData>>
+}
+
+export const statusMap = {
+  active: 'Активен',
+  blocked: 'Заблокирован',
+  deleted: 'Удалён',
+  unknown: 'неизвестно',
 }

@@ -61,7 +61,9 @@
     font-size: 14px;
     height: 34px;
     box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    transition:
+      background-color 0.3s ease-in-out,
+      opacity 0.3s ease-in-out;
 
     &:hover {
       background-color: vars.$lightBlueColor;
@@ -96,11 +98,14 @@
     overflow: hidden;
     height: calc(34px * 4);
     transition: height 0.3s ease-in-out;
-    
+
     button {
       width: 100%;
       text-align: center;
       border-radius: 0;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
       &:last-child {
         border-top: 2px solid vars.$mainTealColor;
       }

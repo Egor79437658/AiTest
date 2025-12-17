@@ -262,6 +262,7 @@ export const mockTestCases: TestCase[] = [
     testPlans: [
       { id: 1, name: 'тест-план 1', date: new Date('2023-12-26T10:00:00') },
     ],
+    steps: [{precondition: "pre  1", action: "act 1", result: "res1"}]
   },
   {
     id: 2,
@@ -282,6 +283,7 @@ export const mockTestCases: TestCase[] = [
     testPlans: [
       { id: 3, name: 'тест-план 3', date: new Date('2023-12-26T10:00:00') },
     ],
+    steps: [{precondition: "pre  1", action: "act 1", result: "res1"}]
   },
   {
     id: 3,
@@ -302,6 +304,7 @@ export const mockTestCases: TestCase[] = [
     testPlans: [
       { id: 4, name: 'тест-план 4', date: new Date('2023-12-26T10:00:00') },
     ],
+    steps: [{precondition: "pre  1", action: "act 1", result: "res1"}]
   },
   {
     id: 5,
@@ -322,6 +325,7 @@ export const mockTestCases: TestCase[] = [
     testPlans: [
       { id: 5, name: 'тест-план 5', date: new Date('2023-12-26T10:00:00') },
     ],
+    steps: [{precondition: "pre  1", action: "act 1", result: "res1"}]
   },
   {
     id: 5,
@@ -342,6 +346,7 @@ export const mockTestCases: TestCase[] = [
     testPlans: [
       { id: 5, name: 'тест-план 5', date: new Date('2023-12-26T10:00:00') },
     ],
+    steps: [{precondition: "pre  1", action: "act 1", result: "res1"}]
   },
   {
     id: 6,
@@ -362,6 +367,7 @@ export const mockTestCases: TestCase[] = [
     testPlans: [
       { id: 5, name: 'тест-план 5', date: new Date('2023-12-26T10:00:00') },
     ],
+    steps: [{precondition: "pre  1", action: "act 1", result: "res1"}]
   },
 ]
 

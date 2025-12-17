@@ -1,4 +1,5 @@
 import {
+  ProfileData,
   Project,
   ProjectMinimal,
   ProjectUser,
@@ -159,11 +160,41 @@ class MockApiService {
     await delay(600)
 
     const user = mockUsers.find((u) => u.id === userId)
+
     if (!user) {
       throw new Error('User not found')
     }
 
-    return user
+    const profileData: Partial<ProfileData> = {
+      status: user.profileData.status,
+      username: user.profileData.username,
+      teams: []
+    }
+
+    for(const [key, value] of Object.entries(user.settingsData)) {
+      if (["theme", "language", "teams", "name"].includes(key)) continue
+
+      if(value) {
+        profileData[key] = user.profileData[key]
+      }
+    }
+
+    if(user.settingsData.name) {
+      profileData.firstName = user.profileData.firstName
+      profileData.lastName = user.profileData.lastName
+      profileData.fatherName = user.profileData.fatherName
+    }
+
+    for (let i = 0; i < user.profileData.teams.length; ++i) {
+      const {id, flag} = user.settingsData.teams[i]
+      if(flag) {
+        profileData.teams?.push(user.profileData.teams.find(el => el.id === id))
+      }
+    }
+
+    return profileData
+
+
   }
 
   async updateUserProfile(userId: number, profileData: UpdateProfileData) {
@@ -248,9 +279,13 @@ class MockApiService {
     return [...project.recentTestPlanRuns]
   }
 
-  async createProject(data: {url: string, description: string, name: string}): Promise<Project> {
+  async createProject(data: {
+    url: string
+    description: string
+    name: string
+  }): Promise<Project> {
     await delay(500)
-    const user  = await this.getCurrentUser()
+    const user = await this.getCurrentUser()
     const newProject: Project = {
       id: 100 + Math.floor(100 * Math.random()),
       name: data.name,
@@ -274,13 +309,16 @@ class MockApiService {
       recentTestPlanRuns: [],
       createdAt: new Date(),
       updatedAt: new Date(),
-      createdBy: user.id
-
+      createdBy: user.id,
     }
 
     mockProjects.push(newProject)
     const index = mockUsers.findIndex((u) => u.id === user.id)
-    mockUsers[index].projectData.push({id: newProject.id, name: newProject.name, lastUpdated: newProject.updatedAt})
+    mockUsers[index].projectData.push({
+      id: newProject.id,
+      name: newProject.name,
+      lastUpdated: newProject.updatedAt,
+    })
     return newProject
   }
 
@@ -308,13 +346,15 @@ class MockApiService {
   }
 
   async getTestCases(id: number): Promise<TestCase[]> {
-    const project = await this.getProject(id)        
-    return mockTestCases.filter(el => project.testCases.some(testCase => testCase.id === el.id))
+    const project = await this.getProject(id)
+    return mockTestCases.filter((el) =>
+      project.testCases.some((testCase) => testCase.id === el.id)
+    )
   }
 
   async getTestCase(projectId: number, testCaseId: number): Promise<TestCase> {
     await delay(500)
-    return {...mockTestCases.find(el => el.id === testCaseId)}
+    return { ...mockTestCases.find((el) => el.id === testCaseId) }
   }
 
   async updateTestCase(
@@ -323,20 +363,19 @@ class MockApiService {
     updates: Partial<TestCase>
   ): Promise<TestCase> {
     await delay(500)
-    const index = mockTestCases.findIndex(el => el.id === testCaseId)
-    if(index === -1) {
-      throw new Error("no test-case found")
+    const index = mockTestCases.findIndex((el) => el.id === testCaseId)
+    if (index === -1) {
+      throw new Error('no test-case found')
     }
 
     const updated = {
       ...mockTestCases[index],
-      ...updates
+      ...updates,
     }
 
     mockTestCases[index] = updated
 
     return structuredClone(updated)
-
   }
 }
 

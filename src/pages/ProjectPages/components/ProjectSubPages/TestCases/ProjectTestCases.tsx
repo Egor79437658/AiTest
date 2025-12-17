@@ -1,18 +1,16 @@
+import { MySwiper } from '@components/'
+import { PAGE_ENDPOINTS } from '@constants/'
 import { useProject, useTestCase } from '@contexts/'
+import { testCaseStatusMap } from '@interfaces/'
 import { useHeaderStore } from '@stores/'
 import React, {
-  HtmlHTMLAttributes,
-  ReactNode,
   useEffect,
   useRef,
-  useState,
+  useState
 } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import styles from './ProjectTestCases.module.scss'
-import { MySwiper } from '@components/'
 import { SwiperSlide } from 'swiper/react'
-import { PAGE_ENDPOINTS } from '@constants/'
-import { TestCase, testCaseStatusMap } from '@interfaces/'
+import styles from './ProjectTestCases.module.scss'
 
 export const ProjectTestCases: React.FC = () => {
   const { project } = useProject()
@@ -60,6 +58,7 @@ export const ProjectTestCases: React.FC = () => {
 
   const handleChangeCase = (id: number) => {
     console.log(id)
+    navigator(window.location.href+`/${id}`)
   }
   const handleOpenHistory = (id: number) => {
     console.log(id)

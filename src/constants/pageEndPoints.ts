@@ -4,6 +4,7 @@ export const PAGE_ENDPOINTS = {
   HOME: 'home',
   PROJECT: 'project',
   PROJECT_ID: ':projectId',
+  TEST_CASE_ID: ':testCaseId',
   PROJECT_PARTS: {
     TEST_CASE: 'test-cases',
     TEST_PLAN: 'test-plan',
@@ -19,6 +20,7 @@ export const PAGE_ENDPOINTS = {
     SETTINGS: 'settings',
     PROFILE: 'profile',
     FINANCES: 'finances',
+    VIEW_ACCOUNT: ":userId"
   },
   ADMIN: 'admin',
 } as const
