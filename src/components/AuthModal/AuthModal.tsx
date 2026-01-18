@@ -322,7 +322,7 @@ export const AuthModal: React.FC = () => {
         )}
 
         {authModal === 'changePassword' && (
-          <div onKeyDown={handleKeyDown}>
+          <div onKeyDown={handleKeyDown} style={{marginBottom: "auto"}}>
             <ChangePasswordForm
               formData={changePasswordData}
               error={error}

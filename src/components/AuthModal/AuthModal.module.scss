@@ -87,7 +87,10 @@
 .authFormGroup {
   margin-bottom: 16px;
   font-family: 'Roboto for Learning';
+  display: flex;
+  justify-content: center;
 
+  
   * {
     font-family: inherit;
   }
