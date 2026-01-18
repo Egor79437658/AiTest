@@ -31,6 +31,7 @@ export const ProjectTestCaseTable: React.FC<ProjectTestCaseTableProps> = ({
   projectBaseUrl,
 }) => {
   const navigate = useNavigate()
+  const [displayCase, setDisplayCase] = useState<TestCase>()
   const [expandedRows, setExpandedRows] = useState<number[]>([])
   const [selectedForDelete, setSelectedForDelete] = useState<number[]>([])
   const [selectedForRefactor, setSelectedForRefactor] = useState<number[]>([])
@@ -180,9 +181,14 @@ export const ProjectTestCaseTable: React.FC<ProjectTestCaseTableProps> = ({
                   {/* main row */}
                   <tr
                     className={`${styles.mainRow} ${isExpanded ? styles.expanded : ''}`}
-                    onClick={() =>
-                      hasMultipleVersions && toggleRow(parseInt(id))
-                    }
+                    onClick={(e) => {
+                      setDisplayCase(latestVersion)
+                      // toggleRow(parseInt(id))
+                      Array.from(
+                        e.currentTarget.parentElement?.children || []
+                      ).forEach((el) => el.classList.remove(styles.expanded))
+                      e.currentTarget.classList.add(styles.expanded)
+                    }}
                   >
                     <td className={styles.checkboxCol}>
                       <div
@@ -220,18 +226,17 @@ export const ProjectTestCaseTable: React.FC<ProjectTestCaseTableProps> = ({
                       </div>
                     </td>
                     <td className={styles.expandCol}>
-                      {hasMultipleVersions && (
-                        <button
-                          className={`${styles.expandButton} ${isExpanded ? styles.expanded : ''}`}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            toggleRow(parseInt(id))
-                          }}
-                          title={isExpanded ? 'Свернуть' : 'Развернуть'}
-                        >
-                          <ChevronRightIcon />
-                        </button>
-                      )}
+                      <button
+                        className={`${styles.expandButton} ${isExpanded ? styles.expanded : ''}`}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          toggleRow(parseInt(id))
+                          setDisplayCase(latestVersion)
+                        }}
+                        title={isExpanded ? 'Свернуть' : 'Развернуть'}
+                      >
+                        <ChevronRightIcon />
+                      </button>
                     </td>
                     <td className={styles.idCell}>{id}</td>
                     <td className={styles.nameCell}>
@@ -258,7 +263,11 @@ export const ProjectTestCaseTable: React.FC<ProjectTestCaseTableProps> = ({
                       {latestVersion.creationDate.toLocaleDateString()}
                     </td>
                     <td className={styles.ownerCell}>
-                      {latestVersion.owner.username}
+                      <a
+                        href={`${window.location.origin}${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${latestVersion.owner.id}`}
+                      >
+                        {latestVersion.owner.username}
+                      </a>
                     </td>
                     <td className={styles.actionsCell}>
                       <button
@@ -290,13 +299,22 @@ export const ProjectTestCaseTable: React.FC<ProjectTestCaseTableProps> = ({
                       <tr
                         key={`${id}-${version.version}`}
                         className={styles.versionRow}
+                        onClick={(e) => {
+                          setDisplayCase(versions[index + 1])
+                          Array.from(
+                            e.currentTarget.parentElement?.children || []
+                          ).forEach((el) =>
+                            el.classList.remove(styles.expanded)
+                          )
+                          e.currentTarget.classList.add(styles.expanded)
+                        }}
                       >
                         <td colSpan={2}></td>
                         <td></td>
                         <td>
-                          <span className={styles.oldVersionLabel}>
-                            v{versions.length - index - 1}
-                          </span>
+                          {/* <span className={styles.oldVersionLabel}>
+                           -
+                          </span> */}
                         </td>
                         <td className={styles.nameCell}>
                           <div className={styles.nameContent}>
@@ -322,7 +340,11 @@ export const ProjectTestCaseTable: React.FC<ProjectTestCaseTableProps> = ({
                           {version.creationDate.toLocaleDateString()}
                         </td>
                         <td className={styles.ownerCell}>
-                          {version.owner.username}
+                          <a
+                            href={`${window.location.origin}${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${version.owner.id}`}
+                          >
+                            {version.owner.username}
+                          </a>
                         </td>
                         <td className={styles.actionsCell}>
                           <button
@@ -352,7 +374,7 @@ export const ProjectTestCaseTable: React.FC<ProjectTestCaseTableProps> = ({
                                   Позитивный:
                                 </span>
                                 <span>
-                                  {latestVersion.positive ? 'Да' : 'Нет'}
+                                  {displayCase?.positive ? 'Да' : 'Нет'}
                                 </span>
                               </div>
                               <div className={styles.detailItem}>
@@ -360,7 +382,7 @@ export const ProjectTestCaseTable: React.FC<ProjectTestCaseTableProps> = ({
                                   Скрипты:
                                 </span>
                                 <span>
-                                  {latestVersion.scriptIds
+                                  {displayCase?.scriptIds
                                     .map((s) => s.name)
                                     .join(', ') || 'Нет'}
                                 </span>
@@ -370,7 +392,7 @@ export const ProjectTestCaseTable: React.FC<ProjectTestCaseTableProps> = ({
                                   Предусловие:
                                 </span>
                                 <span>
-                                  {latestVersion.precondition || 'Нет'}
+                                  {displayCase?.precondition || 'Нет'}
                                 </span>
                               </div>
                               <div className={styles.detailItem}>
@@ -378,7 +400,7 @@ export const ProjectTestCaseTable: React.FC<ProjectTestCaseTableProps> = ({
                                   Используется в тест-кейсах:
                                 </span>
                                 <span>
-                                  {latestVersion.testCases
+                                  {displayCase?.testCases
                                     .map((tc) => tc.name)
                                     .join(', ') || 'Нет'}
                                 </span>
@@ -388,17 +410,17 @@ export const ProjectTestCaseTable: React.FC<ProjectTestCaseTableProps> = ({
                                   Входит в тест-планы:
                                 </span>
                                 <span>
-                                  {latestVersion.usedInTestPlans ? 'Да' : 'Нет'}
+                                  {displayCase?.usedInTestPlans ? 'Да' : 'Нет'}
                                 </span>
                               </div>
                             </div>
                           </div>
 
-                          {latestVersion.testPlans.length > 0 && (
+                          {(displayCase?.testPlans.length || 0) > 0 && (
                             <div className={styles.detailsSection}>
                               <h4>Тест-планы</h4>
                               <div className={styles.testPlansList}>
-                                {latestVersion.testPlans.map((plan) => (
+                                {displayCase?.testPlans.map((plan) => (
                                   <div
                                     key={plan.id}
                                     className={styles.testPlanItem}

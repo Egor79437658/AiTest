@@ -334,7 +334,7 @@ export const mockTestCases: TestCase[] = [
     positive: true,
     version: '000.000.001',
     scriptIds: [{ id: 5, name: 'тест-скрипт 5' }],
-    precondition: '{x == 0}',
+    precondition: '{x == 1}',
     testCases: [{ id: 6, name: 'тест-кейс 6' }],
     owner: {
       id: 2,
@@ -354,7 +354,7 @@ export const mockTestCases: TestCase[] = [
     name: 'тест-кейс 6',
     positive: true,
     version: '000.000.000',
-    scriptIds: [{ id: 5, name: 'тест-скрипт 5' }],
+    scriptIds: [{ id: 6, name: 'тест-скрипт 6' }],
     precondition: '{x == 0}',
     testCases: [{ id: 5, name: 'тест-кейс 5' }],
     owner: {
