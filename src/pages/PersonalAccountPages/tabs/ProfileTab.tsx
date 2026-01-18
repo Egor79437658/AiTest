@@ -451,6 +451,19 @@ export const ProfileTab: React.FC = () => {
             </div>
             <div className={stylesProfile.actions}>
               <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  openAuthModal('changePassword')
+                }}
+                className={stylesGeneral.submitButton}
+                style={{ marginRight: '10px' }}
+              >
+                Сменить пароль
+              </button>
+              
+              <button
                 type="submit"
                 disabled={isSubmitting}
                 className={stylesGeneral.submitButton}

@@ -11,6 +11,7 @@ export interface AuthContextType {
     password: string
   ) => Promise<boolean>
   confirmPending: (code: string, type: 'phone' | 'email') => Promise<boolean>
+  changePassword: (oldPassword: string, newPassword: string) => Promise<boolean> 
   logout: () => void
   openAuthModal: (type: AuthModalType, value?: string) => void
   closeAuthModal: (type: AuthModalType) => void
@@ -32,6 +33,12 @@ export interface ConfirmFormData {
   code: string
 }
 
+export interface ChangePasswordFormData {
+  oldPassword: string
+  newPassword: string
+  confirmPassword: string
+}
+
 export type FormDataToRecord<T> = {
   [K in keyof T]: string
 }
@@ -43,4 +50,5 @@ export type AuthModalType =
   | 'register'
   | 'confirmEmail'
   | 'confirmPhone'
+  | 'changePassword'
   | null

@@ -406,6 +406,23 @@ class MockApiService {
 
     return structuredClone(updated)
   }
+
+  async changePassword(data: { oldPassword: string; newPassword: string }) {
+    await delay(800)
+
+    const userId = parseInt(localStorage.getItem('mock_user_id') || '', 10)
+    
+    if (!userId) {
+      throw new Error('User not found')
+    }
+
+    if (data.oldPassword !== MOCK_PASSWORD) {
+      throw new Error('Старый пароль неверен')
+    }
+
+    return { success: true }
+  }
+
 }
 
 export const mockApiService = new MockApiService()

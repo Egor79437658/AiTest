@@ -7,6 +7,8 @@ import {
   AuthResponse,
   ConfirmResponse,
   TokensResponse,
+  ChangePasswordData,        
+  ChangePasswordResponse,    
 } from './types'
 import { useAuthStore } from '@stores/'
 import { API_URL } from '@constants/'
@@ -44,6 +46,14 @@ class AuthApi {
   async confirmPhone(data: PhoneConfirmData): Promise<ConfirmResponse> {
     const response = await apiClient.post<ConfirmResponse>(
       `${API_URL.AUTH}/confirm-phone`,
+      data
+    )
+    return response
+  }
+
+  async changePassword(data: ChangePasswordData): Promise<ChangePasswordResponse> {
+    const response = await apiClient.post<ChangePasswordResponse>(
+      `${API_URL.AUTH}/change-password`,
       data
     )
     return response
