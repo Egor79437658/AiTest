@@ -1,6 +1,8 @@
 @use '@styles/_variables.scss' as vars;
 @use '@styles/fonts.scss';
 
+$backgroundPhoto: url('/images/mountain.png');
+
 .indexPage {
   color: vars.$lightColor;
 }
@@ -19,7 +21,7 @@
       rgba(255, 255, 255, 0.3),
       rgba(0, 0, 0)
     ),
-    url('/images/mountain.png');
+    $backgroundPhoto;
   background-position:
     0px top,
     80px top;
@@ -139,7 +141,7 @@
     background: linear-gradient(45deg, #000, #393939);
     min-height: calc(45vh - 200px);
   }
-  
+
   .pageMiddle {
     display: flex;
     flex-direction: column;

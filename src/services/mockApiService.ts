@@ -156,7 +156,7 @@ class MockApiService {
     return { success: true }
   }
 
-  async getUserProfile(userId: number) {
+  async getUserProfile(userId: number): Promise<Partial<ProfileData>> {
     await delay(600)
 
     const user = mockUsers.find((u) => u.id === userId)
@@ -168,33 +168,58 @@ class MockApiService {
     const profileData: Partial<ProfileData> = {
       status: user.profileData.status,
       username: user.profileData.username,
-      teams: []
+      teams: [],
     }
 
-    for(const [key, value] of Object.entries(user.settingsData)) {
-      if (["theme", "language", "teams", "name"].includes(key)) continue
-
-      if(value) {
-        profileData[key] = user.profileData[key]
-      }
+    if (user.settingsData.email && user.settingsData.email !== null) {
+      profileData.email = user.profileData.email
     }
 
-    if(user.settingsData.name) {
+    if (user.settingsData.phone && user.settingsData.phone !== null) {
+      profileData.phone = user.profileData.phone
+    }
+
+    if (user.settingsData.country && user.settingsData.country !== null) {
+      profileData.country = user.profileData.country
+    }
+
+    if (user.settingsData.city && user.settingsData.city !== null) {
+      profileData.city = user.profileData.city
+    }
+
+    if (user.settingsData.company && user.settingsData.company !== null) {
+      profileData.company = user.profileData.company
+    }
+
+    if (
+      user.settingsData.jobPosition &&
+      user.settingsData.jobPosition !== null
+    ) {
+      profileData.jobPosition = user.profileData.jobPosition
+    }
+
+    if (user.settingsData.name) {
       profileData.firstName = user.profileData.firstName
       profileData.lastName = user.profileData.lastName
       profileData.fatherName = user.profileData.fatherName
     }
 
-    for (let i = 0; i < user.profileData.teams.length; ++i) {
-      const {id, flag} = user.settingsData.teams[i]
-      if(flag) {
-        profileData.teams?.push(user.profileData.teams.find(el => el.id === id))
+    const teams: { id: number; name: string; role: 0 | 1 | 2 | 3 | 4 | 5 }[] =
+      []
+
+    for (let i = 0; i < user.settingsData.teams.length; ++i) {
+      const { id, flag } = user.settingsData.teams[i]
+      if (flag) {
+        const foundTeam = user.profileData.teams.find((el) => el.id === id)
+        if (foundTeam) {
+          teams.push(foundTeam)
+        }
       }
     }
 
+    profileData.teams = teams
+
     return profileData
-
-
   }
 
   async updateUserProfile(userId: number, profileData: UpdateProfileData) {
@@ -354,7 +379,11 @@ class MockApiService {
 
   async getTestCase(projectId: number, testCaseId: number): Promise<TestCase> {
     await delay(500)
-    return { ...mockTestCases.find((el) => el.id === testCaseId) }
+    const foundTestCase = mockTestCases.find((el) => el.id === testCaseId)
+    if (!foundTestCase) {
+      throw new Error('Test case not found')
+    }
+    return { ...foundTestCase }
   }
 
   async updateTestCase(

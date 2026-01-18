@@ -244,17 +244,17 @@ export const mockProjects: Project[] = [
 
 export const mockTestCases: TestCase[] = [
   {
-    id: 1,
+    id: 2,
     flag: true,
     name: 'тест-кейс 1',
     positive: true,
-    version: '000.000.000',
+    version: '001.000.000',
     scriptIds: [{ id: 1, name: 'тест-скрипт 1' }],
     precondition: '{x == 0}',
     testCases: [{ id: 1, name: 'тест-кейс 1' }],
     owner: {
-      id: 2,
-      username: 'demo',
+      id: 1,
+      username: 'testuser',
     },
     creationDate: new Date('2023-12-26T10:00:00'),
     status: 1,
@@ -262,14 +262,14 @@ export const mockTestCases: TestCase[] = [
     testPlans: [
       { id: 1, name: 'тест-план 1', date: new Date('2023-12-26T10:00:00') },
     ],
-    steps: [{precondition: "pre  1", action: "act 1", result: "res1"}]
+    steps: [{ precondition: 'pre  1', action: 'act 1', result: 'res1' }],
   },
   {
     id: 2,
     flag: true,
     name: 'тест-кейс 2',
     positive: true,
-    version: '000.000.000',
+    version: '001.000.100',
     scriptIds: [{ id: 2, name: 'тест-скрипт 2' }],
     precondition: '{x == 0}',
     testCases: [{ id: 2, name: 'тест-кейс 2' }],
@@ -283,14 +283,14 @@ export const mockTestCases: TestCase[] = [
     testPlans: [
       { id: 3, name: 'тест-план 3', date: new Date('2023-12-26T10:00:00') },
     ],
-    steps: [{precondition: "pre  1", action: "act 1", result: "res1"}]
+    steps: [{ precondition: 'pre  1', action: 'act 1', result: 'res1' }],
   },
   {
-    id: 3,
+    id: 2,
     flag: true,
     name: 'тест-кейс 3',
     positive: true,
-    version: '000.000.000',
+    version: '001.000.000',
     scriptIds: [{ id: 3, name: 'тест-скрипт 3' }],
     precondition: '{x == 0}',
     testCases: [{ id: 3, name: 'тест-кейс 3' }],
@@ -304,7 +304,7 @@ export const mockTestCases: TestCase[] = [
     testPlans: [
       { id: 4, name: 'тест-план 4', date: new Date('2023-12-26T10:00:00') },
     ],
-    steps: [{precondition: "pre  1", action: "act 1", result: "res1"}]
+    steps: [{ precondition: 'pre  1', action: 'act 1', result: 'res1' }],
   },
   {
     id: 5,
@@ -325,7 +325,7 @@ export const mockTestCases: TestCase[] = [
     testPlans: [
       { id: 5, name: 'тест-план 5', date: new Date('2023-12-26T10:00:00') },
     ],
-    steps: [{precondition: "pre  1", action: "act 1", result: "res1"}]
+    steps: [{ precondition: 'pre  1', action: 'act 1', result: 'res1' }],
   },
   {
     id: 5,
@@ -346,7 +346,7 @@ export const mockTestCases: TestCase[] = [
     testPlans: [
       { id: 5, name: 'тест-план 5', date: new Date('2023-12-26T10:00:00') },
     ],
-    steps: [{precondition: "pre  1", action: "act 1", result: "res1"}]
+    steps: [{ precondition: 'pre  1', action: 'act 1', result: 'res1' }],
   },
   {
     id: 6,
@@ -367,7 +367,190 @@ export const mockTestCases: TestCase[] = [
     testPlans: [
       { id: 5, name: 'тест-план 5', date: new Date('2023-12-26T10:00:00') },
     ],
-    steps: [{precondition: "pre  1", action: "act 1", result: "res1"}]
+    steps: [{ precondition: 'pre  1', action: 'act 1', result: 'res1' }],
+  },
+  {
+    id: 7,
+    flag: true,
+    name: 'Авторизация пользователя',
+    positive: true,
+    version: '001.002.001',
+    scriptIds: [{ id: 7, name: 'auth_script' }],
+    precondition: 'Пользователь зарегистрирован',
+    testCases: [],
+    owner: {
+      id: 1,
+      username: 'testuser',
+    },
+    creationDate: new Date('2024-01-15T10:00:00'),
+    status: 0,
+    usedInTestPlans: true,
+    testPlans: [
+      {
+        id: 6,
+        name: 'Регрессионное тестирование авторизации',
+        date: new Date('2024-01-20T10:00:00'),
+      },
+    ],
+    steps: [
+      {
+        precondition: 'Открыть страницу авторизации',
+        action: 'Ввести корректные данные',
+        result: 'Успешный вход',
+      },
+    ],
+  },
+  {
+    id: 7,
+    flag: true,
+    name: 'Авторизация пользователя',
+    positive: true,
+    version: '001.002.000',
+    scriptIds: [{ id: 7, name: 'auth_script' }],
+    precondition: 'Пользователь зарегистрирован',
+    testCases: [],
+    owner: {
+      id: 1,
+      username: 'testuser',
+    },
+    creationDate: new Date('2024-01-10T10:00:00'),
+    status: 1,
+    usedInTestPlans: false,
+    testPlans: [],
+    steps: [
+      {
+        precondition: 'Открыть страницу авторизации',
+        action: 'Ввести корректные данные',
+        result: 'Успешный вход',
+      },
+    ],
+  },
+  {
+    id: 8,
+    flag: false,
+    name: 'Проверка корзины покупок',
+    positive: true,
+    version: '002.001.000',
+    scriptIds: [
+      { id: 8, name: 'cart_add' },
+      { id: 9, name: 'cart_remove' },
+    ],
+    precondition: 'Пользователь авторизован',
+    testCases: [{ id: 7, name: 'Авторизация пользователя' }],
+    owner: {
+      id: 2,
+      username: 'demo',
+    },
+    creationDate: new Date('2024-01-18T14:30:00'),
+    status: 0,
+    usedInTestPlans: true,
+    testPlans: [
+      {
+        id: 7,
+        name: 'Тестирование e-commerce',
+        date: new Date('2024-01-19T10:00:00'),
+      },
+      { id: 8, name: 'Smoke тесты', date: new Date('2024-01-20T09:00:00') },
+    ],
+    steps: [
+      {
+        precondition: 'Добавить товар в корзину',
+        action: 'Перейти к оформлению',
+        result: 'Корректное отображение заказа',
+      },
+    ],
+  },
+  {
+    id: 9,
+    flag: true,
+    name: 'Проверка поиска товаров',
+    positive: true,
+    version: '001.000.000',
+    scriptIds: [{ id: 10, name: 'search_script' }],
+    precondition: 'Доступ к каталогу',
+    testCases: [],
+    owner: {
+      id: 1,
+      username: 'testuser',
+    },
+    creationDate: new Date('2024-01-05T11:00:00'),
+    status: 2,
+    usedInTestPlans: false,
+    testPlans: [],
+    steps: [
+      {
+        precondition: 'Открыть каталог',
+        action: 'Ввести поисковый запрос',
+        result: 'Отображение релевантных товаров',
+      },
+    ],
+  },
+  {
+    id: 9,
+    flag: true,
+    name: 'Проверка поиска товаров',
+    positive: true,
+    version: '001.001.000',
+    scriptIds: [{ id: 10, name: 'search_script' }],
+    precondition: 'Доступ к каталогу',
+    testCases: [],
+    owner: {
+      id: 1,
+      username: 'testuser',
+    },
+    creationDate: new Date('2024-01-12T11:00:00'),
+    status: 1,
+    usedInTestPlans: true,
+    testPlans: [
+      {
+        id: 9,
+        name: 'Функциональное тестирование поиска',
+        date: new Date('2024-01-15T10:00:00'),
+      },
+    ],
+    steps: [
+      {
+        precondition: 'Открыть каталог',
+        action: 'Ввести поисковый запрос',
+        result: 'Отображение релевантных товаров',
+      },
+    ],
+  },
+  {
+    id: 9,
+    flag: true,
+    name: 'Проверка поиска товаров',
+    positive: true,
+    version: '001.001.001',
+    scriptIds: [{ id: 10, name: 'search_script' }],
+    precondition: 'Доступ к каталогу',
+    testCases: [],
+    owner: {
+      id: 1,
+      username: 'testuser',
+    },
+    creationDate: new Date('2024-01-20T11:00:00'),
+    status: 0,
+    usedInTestPlans: true,
+    testPlans: [
+      {
+        id: 9,
+        name: 'Функциональное тестирование поиска',
+        date: new Date('2024-01-15T10:00:00'),
+      },
+      {
+        id: 10,
+        name: 'Интеграционное тестирование',
+        date: new Date('2024-01-22T10:00:00'),
+      },
+    ],
+    steps: [
+      {
+        precondition: 'Открыть каталог',
+        action: 'Ввести поисковый запрос',
+        result: 'Отображение релевантных товаров',
+      },
+    ],
   },
 ]
 

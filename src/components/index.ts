@@ -7,5 +7,6 @@ export * from './AuthModal'
 export * from './ProtectedRoute'
 export * from './Tabs'
 export * from './MockInfo'
-export * from "./TextArea"
-export * from "./MySwiper"
+export * from './TextArea'
+export * from './MySwiper'
+export * from './Icons'
