@@ -6,7 +6,7 @@ import { API_URL } from '@constants/'
 class ProjectsApi {
   async getShortProjects(): Promise<ProjectMinimal[]> {
     const response = await apiClient.get<ProjectMinimal[]>(
-      `${API_URL.PROJECTS}/myProjects/`
+      `${API_URL.PROJECTS}/my-projects/`
     )
     return response
   }
@@ -19,6 +19,7 @@ class ProjectsApi {
   }
 
   async getProjectUsers(projectId: number): Promise<Project> {
+    //переписать получаемый тип
     const response = await apiClient.get<Project>(
       `${API_URL.PROJECTS}/${projectId}/users`
     )
@@ -26,14 +27,23 @@ class ProjectsApi {
   }
 
   async getRecentTestPlanRuns(projectId: number): Promise<Project> {
+    // перписать получаемый тип
     const response = await apiClient.get<Project>(
-      `${API_URL.PROJECTS}/${projectId}/palnRuns`
+      `${API_URL.PROJECTS}/${projectId}/plan-runs`
     )
     return response
   }
 
-  async createProject(data: { url: string; description: string, name: string }): Promise<Project> {
-    const response = await apiClient.post<Project>(`${API_URL.PROJECTS}/new/`, data)
+  async createProject(data: {
+    url: string
+    description: string
+    name: string
+  }): Promise<Project> {
+    // переписать получаемый тип
+    const response = await apiClient.post<Project>(
+      `${API_URL.PROJECTS}/new/`,
+      data
+    )
     return response
   }
 

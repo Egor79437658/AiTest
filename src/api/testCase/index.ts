@@ -3,9 +3,9 @@ import { API_URL } from '@constants/'
 import { TestCase } from '@interfaces/'
 
 class TestCaseApi {
-  async getTestCases(id: number): Promise<TestCase[]> {
+  async getTestCases(projectId: number): Promise<TestCase[]> {
     const response = await apiClient.get<TestCase[]>(
-      `${API_URL.PROJECTS}/${id}/${API_URL.TEST_CASES}`
+      `${API_URL.PROJECTS}/${projectId}/${API_URL.TEST_CASES}`
     )
     return response
   }
