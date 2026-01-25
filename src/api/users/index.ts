@@ -19,11 +19,6 @@ class UsersApi {
     return response
   }
 
-  async getMyProjects(): Promise<ProjectMinimal[]> {
-    const response = await apiClient.get<ProjectMinimal[]>('/projects/me/')
-    return response
-  }
-
   async getMyProfile(): Promise<ProfileData> {
     const response = await apiClient.get<ProfileData>('/profile/me/')
     return response
@@ -67,8 +62,8 @@ class UsersApi {
     return response
   }
 
-  async deleteMyAccount(): Promise<void> {
-    await apiClient.delete(`${API_URL.USER}/me/`)
+  async deleteMyAccount(): Promise<{status: number, message?: string}> {
+    return await apiClient.delete<{status: number, message?: string}>(`${API_URL.USER}/me/`)
   }
 
   async getUserProfile(userId: number): Promise<Partial<ProfileData>> {
@@ -78,9 +73,6 @@ class UsersApi {
     return response
   }
 
-  async deleteUser(userId: number): Promise<void> {
-    await apiClient.delete(`/${API_URL.USER}/${userId}/`)
-  }
 }
 
 export const usersApi = new UsersApi()

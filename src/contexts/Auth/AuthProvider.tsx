@@ -1,14 +1,11 @@
-import React, { useEffect } from 'react'
-import { useAuthStore } from '@stores/'
-import { useUserStore } from '@stores/'
 import { authApi } from '@api'
-import { AuthContext } from './AuthContext'
-import { AuthModalType, AuthContextType } from '@interfaces/'
 import { MOCK_MODE } from '@constants/'
+import { AuthContextType, AuthModalType } from '@interfaces/'
+import { useAuthStore, useUserStore } from '@stores/'
+import React, { useEffect } from 'react'
 import { mockApiService } from '../../services/mockApiService'
-import { useNavigate } from 'react-router-dom'
-import { useProject } from '../Project'
-import { useProjectStore } from '../../stores/projectStore'
+import { useProjectStore } from '../../stores/'
+import { AuthContext } from './AuthContext'
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,

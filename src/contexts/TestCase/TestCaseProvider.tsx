@@ -3,7 +3,7 @@ import { TestCase, TestCaseContextType } from '@interfaces/'
 import React, { useCallback, useEffect } from 'react'
 import { testCaseApi } from '../../api/'
 import { mockApiService } from '../../services/mockApiService'
-import { useTestCaseStore } from '../../stores/testCaseStore'
+import { useTestCaseStore } from '../../stores/'
 import { TestCaseContext } from './TestCaseContext'
 
 export const TestCaseProvider: React.FC<{ children: React.ReactNode }> = ({

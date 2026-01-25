@@ -40,7 +40,3 @@ export interface ChangePasswordData {
   oldPassword: string
   newPassword: string
 }
-
-export interface ChangePasswordResponse {
-  success: boolean
-}

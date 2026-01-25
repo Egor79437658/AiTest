@@ -1,0 +1,74 @@
+@use '@styles/_variables.scss' as vars;
+
+.questionDiag form {
+  top: 20px;
+}
+
+.questionDiagDiv {
+  min-height: 80px;
+  width: 400px;
+  padding: 10px;
+  padding-top: 15px;
+  background-color: white;
+  border-radius: 15px;
+  align-self: flex-start;
+  text-align: center;
+  font-size: 13px;
+  opacity: 1;
+  animation: diagAppear 0.5s;
+}
+
+@keyframes diagAppear{
+    0% {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+    100%{
+      opacity: 1;
+    }
+}
+
+.questionDiagDiv > div {
+  /* display: flex; */
+  margin-top: 20px;
+}
+
+.questionDiagDiv button {
+  padding: 5px 15px;
+  width: 80px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  gap: 6px;
+  text-align: center;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.questionDiagDiv button:first-child {
+  margin-left: 220px;
+  margin-right: 10px;
+  background-color: vars.$mainBlueColor;
+  color: white;
+}
+
+.questionDiagDiv button:last-child {
+  background-color: #d0e7ff;
+  color: black;
+}
+
+.questionDiagDiv button:first-child:hover,
+.questionDiagDiv button:first-child:focus {
+  background-color: vars.$darkBlueColor;
+}
+.questionDiagDiv button:last-child:hover,
+.questionDiagDiv button:last-child:focus {
+  background-color: #cbdbf0;
+}
+
+.questionDiagDiv button:first-child:active {
+  box-shadow: inset 3px 3px 5px rgb(0, 0, 0);
+}
+
+.questionDiagDiv button:last-child:active {
+  box-shadow: inset 3px 3px 5px rgba(0, 0, 0, 0.6);
+}
