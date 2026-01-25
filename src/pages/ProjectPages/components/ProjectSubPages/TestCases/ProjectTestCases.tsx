@@ -109,7 +109,7 @@ export const ProjectTestCases: React.FC = () => {
         <h1>Тест-кейсы проекта</h1>
         <p className={styles.projectInfo}>
           Проект: <strong>{project?.name}</strong> | Всего тест-кейсов:{' '}
-          <strong>{testCases.length}</strong>
+          <strong>{project?.testCases.length}</strong>
         </p>
       </div>
 
