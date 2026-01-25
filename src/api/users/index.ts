@@ -79,7 +79,7 @@ class UsersApi {
   }
 
   async deleteUser(userId: number): Promise<void> {
-    await apiClient.delete(`/user/${userId}/`)
+    await apiClient.delete(`/${API_URL.USER}/${userId}/`)
   }
 }
 
