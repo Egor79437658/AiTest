@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { PAGE_ENDPOINTS } from '@constants/'
 import { useProject, useTestCase } from '@contexts/'
 import { useHeaderStore } from '@stores/'
 import { Link, useNavigate } from 'react-router-dom'
 import { ProjectTestCaseTable } from './ProjectTestCaseTable'
 import styles from './ProjectTestCases.module.scss'
+import { QuestionDialog } from '@components/'
+import { TestCase } from '@interfaces/'
 
 export const ProjectTestCases: React.FC = () => {
   const { project } = useProject()
@@ -16,6 +18,8 @@ export const ProjectTestCases: React.FC = () => {
   } = useTestCase()
   const { setHeaderContent } = useHeaderStore()
   const navigate = useNavigate()
+  const [showDiag, setShowDiag] = useState(false)
+  const [deleteIds, setDeleteIds] = useState<number[]>([])
 
   const handleRefactor = (ids: number[]) => {
     console.log('Тест-кейсы для рефакторинга:', ids)
@@ -23,16 +27,14 @@ export const ProjectTestCases: React.FC = () => {
     navigate(`${window.location.pathname}/refactor?ids=${ids.join(',')}`)
   }
 
-  const handleDelete = (ids: number[]) => {
-    console.log('Тест-кейсы для удаления:', ids)
-    // delete logic
-    if (
-      window.confirm(
-        `Вы уверены, что хотите удалить ${ids.length} тест-кейсов?`
-      )
-    ) {
-      // call api for delete
-    }
+  const askAboutDelete = (ids: number[]) => {
+    setDeleteIds(ids)
+    setShowDiag(true)
+  }
+
+  const handleDelete = () => {
+    console.log('Тест-кейсы для удаления:', deleteIds)
+    // с ними обратиться на api для удаления
   }
 
   const handleOpenHistory = (id: number) => {
@@ -116,11 +118,39 @@ export const ProjectTestCases: React.FC = () => {
       <ProjectTestCaseTable
         testCases={testCases}
         onRefactor={handleRefactor}
-        onDelete={handleDelete}
+        onDelete={askAboutDelete}
         onOpenHistory={handleOpenHistory}
         onEditCase={handleEditCase}
         projectBaseUrl={getProjectBaseUrl()}
       />
+
+      <QuestionDialog
+        showQuestion={showDiag}
+        changeShowQuestion={setShowDiag}
+        onYesClick={handleDelete}
+        onNoClick={() => setDeleteIds([])}
+        className={styles.dialog}
+      >
+        Вы уверены, что хотите удалить cледующие тест-кейсы? <br />
+        {Object.values(
+          testCases.reduce( //оставляет только последние версии тест-кейсов из списка удаляемых
+            (set, val) => {
+              if (
+                deleteIds.some((id) => val.id === id) && // есть в списке на удаление и
+                (!set[val.id] ||                         // еще не видели или
+                  new Date(val.creationDate) >           // более новая версия
+                    new Date(set[val.id].creationDate))
+              ) {
+                set[val.id] = val
+              }
+              return set
+            },
+            {} as Record<number, TestCase>
+          )
+        ).map((el) => (
+          <div key={el.id}>{el.name}</div>
+        ))}
+      </QuestionDialog>
     </div>
   )
 }

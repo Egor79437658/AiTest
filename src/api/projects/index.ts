@@ -1,4 +1,4 @@
-import { Project, ProjectMinimal, User } from '@interfaces/'
+import { Project, ProjectMinimal, TestPlanRun, User } from '@interfaces/'
 import { apiClient } from '@api'
 
 import { API_URL } from '@constants/'
@@ -18,17 +18,8 @@ class ProjectsApi {
     return response
   }
 
-  async getProjectUsers(projectId: number): Promise<Project> {
-    //переписать получаемый тип
-    const response = await apiClient.get<Project>(
-      `${API_URL.PROJECTS}/${projectId}/users`
-    )
-    return response
-  }
-
-  async getRecentTestPlanRuns(projectId: number): Promise<Project> {
-    // перписать получаемый тип
-    const response = await apiClient.get<Project>(
+  async getRecentTestPlanRuns(projectId: number): Promise<TestPlanRun[]> {
+    const response = await apiClient.get<TestPlanRun[]>(
       `${API_URL.PROJECTS}/${projectId}/plan-runs`
     )
     return response
