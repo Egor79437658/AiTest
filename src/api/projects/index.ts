@@ -6,7 +6,7 @@ import { API_URL } from '@constants/'
 class ProjectsApi {
   async getShortProjects(): Promise<ProjectMinimal[]> {
     const response = await apiClient.get<ProjectMinimal[]>(
-      `${API_URL.PROJECTS}/my-projects/`
+      `${API_URL.PROJECTS}/me/`
     )
     return response
   }

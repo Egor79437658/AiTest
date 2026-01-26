@@ -400,7 +400,7 @@ export const ProjectTestCaseTable: React.FC<ProjectTestCaseTableProps> = ({
                                   Используется в тест-кейсах:
                                 </span>
                                 <span>
-                                  {displayCase?.testCases
+                                  {displayCase?.relatedTestCases
                                     .map((tc) => tc.name)
                                     .join(', ') || 'Нет'}
                                 </span>
