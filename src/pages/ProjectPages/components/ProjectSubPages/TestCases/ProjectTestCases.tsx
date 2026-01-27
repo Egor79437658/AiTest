@@ -39,7 +39,7 @@ export const ProjectTestCases: React.FC = () => {
 
   const handleOpenHistory = (id: number) => {
     console.log('История изменений для:', id)
-    navigate(`${window.location.pathname}/${id}/history`)
+    navigate(`${window.location.pathname}/${id}/${PAGE_ENDPOINTS.HISTORY}`)
   }
 
   const handleEditCase = (id: number) => {

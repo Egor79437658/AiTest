@@ -1,3 +1,5 @@
+import { TestCaseHistoryRecord } from "./project"
+
 export const testCaseStatusMap = {
   1: 'Активный',
   2: 'Черновик',
@@ -154,6 +156,8 @@ export interface TestCaseContextType {
   allTestCases: TestCase[]
   isLoading: boolean
   error: string | null
+  history: TestCaseHistoryRecord[]
+  loadHistory: (projectId: number, testCaseId: number) => Promise<void>
   setTestCase: (data: TestCase) => void
   loadAllTestCases: (projectId: number) => void
   updateTestCase: (

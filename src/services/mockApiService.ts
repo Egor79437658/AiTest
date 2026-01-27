@@ -1,6 +1,7 @@
 import {
   ProfileData,
   Project,
+  TestCaseHistoryRecord,
   ProjectMinimal,
   ProjectUser,
   TestCase,
@@ -13,6 +14,7 @@ import { MOCK_CODE } from '@constants/'
 import {
   MOCK_PASSWORD,
   mockProjects,
+  mockProjectsHistory,
   mockTestCases,
   mockTokens,
   mockUsers,
@@ -378,6 +380,12 @@ class MockApiService {
     mockProjects[projectIndex] = updatedProject
 
     return structuredClone(updatedProject)
+  }
+
+  async getHistoryChange(testCaseId: number): Promise<TestCaseHistoryRecord[]> {
+    await delay(800)
+    return mockProjectsHistory.filter(el => el.id === testCaseId)
+
   }
 
   async getTestCases(id: number): Promise<TestCase[]> {

@@ -1,5 +1,6 @@
 import {
   Project,
+  TestCaseHistoryRecord,
   TestCase,
   TestCasePriority,
   TestCaseStatus,
@@ -500,6 +501,52 @@ export const mockTestCases: TestCase[] = [
     lastModified: new Date('2023-12-27T10:00:00'),
   },
   {
+    id: 6,
+    idt: 'TC-006',
+    flag: true,
+    name: 'тест-кейс 6',
+    description: 'Проверка функционала архивации - версия 2',
+    positive: true,
+    version: '000.000.001',
+    status: 1 as TestCaseStatus,
+    priority: 1 as TestCasePriority,
+    isAutoTest: false,
+    isLoadTest: false,
+    owner: {
+      id: 2,
+      username: 'demo',
+      fullName: 'Петров Петр Петрович',
+    },
+    project: 'Тестовый стенд',
+    scriptIds: [{ id: 6, name: 'тест-скрипт 6' }],
+    precondition: '{x == 1}',
+    relatedTestCases: [{ id: 5, name: 'тест-кейс 6' }],
+    tags: ['архивация', 'данные', 'обновление'],
+    steps: [
+      {
+        precondition: 'pre 1',
+        action: 'act 1',
+        result: 'res1',
+        testData: 'Обновленные тестовые данные',
+      },
+    ],
+    testData: [
+      {
+        name: 'Путь к архиву',
+        value: '/data/archive.zip',
+        type: 'parameter' as const,
+      },
+    ],
+    attachments: [],
+    comments: [],
+    usedInTestPlans: true,
+    testPlans: [
+      { id: 5, name: 'тест-план 5', date: new Date('2023-12-26T10:00:00') },
+    ],
+    creationDate: new Date('2023-12-27T10:00:00'),
+    lastModified: new Date('2023-12-27T10:00:00'),
+  },
+  {
     id: 100,
     idt: 'TC-100',
     flag: true,
@@ -667,6 +714,57 @@ export const mockTestCases: TestCase[] = [
     ],
     creationDate: new Date('2024-01-20T14:00:00'),
     lastModified: new Date('2024-01-24T16:45:00'),
+  },
+]
+
+export const mockProjectsHistory = [
+  {
+    id: 5,
+    date: new Date("2024-1-1"),
+    field: "Предусловие",
+    oldVal: "старое предусловие",
+    newVal: "новое предусловие"
+
+  },
+  {
+    id: 5,
+    date: new Date("2024-1-2"),
+    field: "описание",
+    oldVal: "старое описание",
+    newVal: "новое описание"
+    
+  },
+  {
+    id: 5,
+    date: new Date("2024-1-3"),
+    field: "Позитивный",
+    oldVal: "True",
+    newVal: "False"
+
+  },
+  {
+    id: 6,
+    date: new Date("2024-1-1"),
+    field: "Предусловие",
+    oldVal: "старое предусловие",
+    newVal: "новое предусловие"
+
+  },
+  {
+    id: 6,
+    date: new Date("2024-1-2"),
+    field: "описание",
+    oldVal: "старое описание",
+    newVal: "новое описание"
+    
+  },
+  {
+    id: 6,
+    date: new Date("2024-1-3"),
+    field: "Позитивный",
+    oldVal: "True",
+    newVal: "False"
+
   },
 ]
 
