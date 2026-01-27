@@ -67,7 +67,6 @@ export const useTestCaseStore = create<TestCaseState>((set, get) => ({
   setTestHistory: (history) => set({ history }),
   setLoading: (isLoading) => set({ isLoading }),
   setAllTestCases: (allTestCases) => set({ allTestCases }),
-  setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
 
   // === Действия с выделением ===
