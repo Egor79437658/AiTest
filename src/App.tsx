@@ -32,6 +32,7 @@ import {
   ProjectTestPlanRuns,
   RedactTestCase,
   ViewTestCase,
+  TestCasesHistory,
 } from './pages/ProjectPages/components/ProjectSubPages'
 
 const router = createBrowserRouter([
@@ -77,6 +78,10 @@ const router = createBrowserRouter([
           {
             path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}/${PAGE_ENDPOINTS.TEST_CASE_ID}/view`,
             element: <ViewTestCase />,
+          },
+          {
+            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}/${PAGE_ENDPOINTS.TEST_CASE_ID}/${PAGE_ENDPOINTS.HISTORY}`,
+            element: <TestCasesHistory />,
           },
           {
             path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}`,

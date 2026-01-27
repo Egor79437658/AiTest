@@ -1,5 +1,5 @@
 // src/stores/testCaseStore.ts
-import { TestCase, TestCaseUpdateData } from '@interfaces/'
+import { TestCase, TestCaseHistoryRecord, TestCaseUpdateData } from '@interfaces/'
 import { create } from 'zustand'
 
 export type SelectionType = 'delete' | 'refactor' | 'edit' | 'default'
@@ -9,6 +9,7 @@ interface TestCaseState {
   testCase: TestCase | null
   allTestCases: TestCase[]
   isLoading: boolean
+  history: TestCaseHistoryRecord[]
   error: string | null
 
   // Состояние выделения
@@ -18,6 +19,7 @@ interface TestCaseState {
 
   // Setters (базовые установщики)
   setTestCase: (data: TestCase) => void
+  setTestHistory: (data: TestCaseHistoryRecord[]) => void
   setAllTestCases: (data: TestCase[]) => void
   setLoading: (data: boolean) => void
   setError: (data: string | null) => void
@@ -58,9 +60,12 @@ export const useTestCaseStore = create<TestCaseState>((set, get) => ({
   selectedTestCaseIds: [],
   selectionType: 'default',
   expandedTestCaseIds: [],
+  history: [],
 
   // === Setters ===
   setTestCase: (testCase) => set({ testCase }),
+  setTestHistory: (history) => set({ history }),
+  setLoading: (isLoading) => set({ isLoading }),
   setAllTestCases: (allTestCases) => set({ allTestCases }),
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),

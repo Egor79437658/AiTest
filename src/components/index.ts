@@ -12,3 +12,4 @@ export * from './MySwiper'
 export * from './Icons'
 export * from "./Dialog"
 export * from "./QuestionDialog"
+export * from "./Table"
