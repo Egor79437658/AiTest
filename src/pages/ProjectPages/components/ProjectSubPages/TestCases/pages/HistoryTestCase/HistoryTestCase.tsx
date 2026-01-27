@@ -4,9 +4,9 @@ import { TestCaseHistoryRecord } from '@interfaces/'
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
-import styles from './HistoryTestCases.module.scss'
+import styles from './HistoryTestCase.module.scss'
 
-export const TestCasesHistory: React.FC = () => {
+export const HistoryTestCase: React.FC = () => {
   const { project } = useProject()
   const { history, loadHistory, isLoading, error } = useTestCase()
   const { testCaseId } = useParams<{ testCaseId: string }>()

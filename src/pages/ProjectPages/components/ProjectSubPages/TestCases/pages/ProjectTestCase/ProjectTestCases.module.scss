@@ -1,4 +1,4 @@
-@use '@styles/_variables.scss' as vars;
+@use "@styles/_variables.scss" as vars;
 
 .pageContainer {
   padding: 20px;
@@ -14,7 +14,7 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 
   h1 {
-    font-family: 'Bounded';
+    font-family: "Bounded";
     margin-bottom: 8px;
     color: vars.$darkColor;
     font-size: 28px;
@@ -191,6 +191,20 @@
   }
 }
 
+.archiveSuggestionDiv {
+  text-align: center;
+  margin-top: 10px;
+  
+  .archiveBtn {
+    margin-left: 5px;
+    border: none;
+    background-color: transparent;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
+
 .selectedList {
   max-height: 220px;
   overflow-y: auto;
@@ -271,7 +285,7 @@
   flex-shrink: 0;
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 2px;
     left: 5px;

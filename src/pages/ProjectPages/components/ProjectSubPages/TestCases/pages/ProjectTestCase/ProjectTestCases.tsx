@@ -6,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ProjectTestCaseTable } from '../../components/ProjectTestCaseTable/ProjectTestCaseTable'
 import styles from './ProjectTestCases.module.scss'
 import { QuestionDialog } from '@components/'
-import { TestCase } from '@interfaces/'
+import { TestCase, TestCaseStatus } from '@interfaces/'
 import { MassOperationsTab } from '../../components'
 
 export const ProjectTestCases: React.FC = () => {
@@ -16,6 +16,7 @@ export const ProjectTestCases: React.FC = () => {
     loadAllTestCases,
     isLoading,
     error,
+    setAllTestCases,
   } = useTestCase()
   const { setHeaderContent } = useHeaderStore()
   const navigate = useNavigate()
@@ -74,9 +75,24 @@ export const ProjectTestCases: React.FC = () => {
     setShowRefactorDialog(false)
   }
 
+  const handleArchive = (ids: number[]) => {
+    console.log('перевод в архив:', ids)
+    // API вызов: POST /api/projects/{projectId}/test-cases/archive-selected
+    // body: { testCaseIds: ids }
+
+    const updated = testCases.map((testCase) => {
+      if (ids.includes(testCase.id)) {
+        return { ...testCase, status: 0 as TestCaseStatus}
+      } else return testCase
+    })
+    console.log(updated)
+    setAllTestCases(updated)
+    setShowDiag(false)
+  }
+
   const handleOpenHistory = (id: number) => {
     console.log('История изменений для:', id)
-    navigate(`${window.location.pathname}/${id}/history`)
+    navigate(`${window.location.pathname}/${id}/${PAGE_ENDPOINTS.HISTORY}`)
   }
 
   const handleEditCase = (id: number) => {
@@ -223,6 +239,15 @@ export const ProjectTestCases: React.FC = () => {
         ).map((el) => (
           <div key={el.id}>{el.name}</div>
         ))}
+        <div className={styles.archiveSuggestionDiv}>
+          Вместо этого вы можете
+          <button
+            className={styles.archiveBtn}
+            onClick={() => handleArchive(deleteIds)}
+          >
+            заархивировать иx
+          </button>
+        </div>
       </QuestionDialog>
 
       <QuestionDialog

@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import { TestCase } from '@interfaces/'
+import { TestCase, TestCaseHistoryRecord } from '@interfaces/'
 
 export type SelectionType = 'delete' | 'refactor' | 'edit' | 'default'
 
@@ -9,6 +9,7 @@ export interface TestCaseContextType {
   allTestCases: TestCase[]
   isLoading: boolean
   error: string | null
+  history: TestCaseHistoryRecord[]
 
   // Выделение
   selectedTestCaseIds: number[]
@@ -19,6 +20,7 @@ export interface TestCaseContextType {
   setSelectionType: (type: SelectionType) => void
 
   // Действия с данными
+  loadHistory: (projectId: number, testCaseId: number) => Promise<void>
   loadAllTestCases: (projectId: number) => Promise<TestCase[]>
   updateTestCase: (
     projectId: number,
@@ -28,9 +30,8 @@ export interface TestCaseContextType {
   deleteTestCases: (projectId: number) => Promise<void>
   createTestCase: (
     projectId: number,
-    data: Partial<TestCase>
+    data: TestCase
   ) => Promise<TestCase>
-  getTestCaseHistory: (projectId: number, caseId: number) => Promise<TestCase[]>
   bulkUpdateTestCases: (
     projectId: number,
     caseIds: number[],

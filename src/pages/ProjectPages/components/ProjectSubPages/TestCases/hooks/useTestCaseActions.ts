@@ -1,6 +1,6 @@
 // src/components/ProjectTestCases/hooks/useTestCaseActions.ts
 import { useCallback } from 'react'
-import { TestCase, TestCaseUpdateData, TestCaseFormData } from '@interfaces/'
+import { TestCase, TestCaseUpdateData, TestCaseFormData, TestCaseHistoryRecord } from '@interfaces/'
 import { MOCK_MODE } from '@constants/'
 import { mockApiService } from '../../../../../../services/mockApiService'
 import { testCaseApi } from '@api'
@@ -95,17 +95,17 @@ export const useTestCaseActions = () => {
   )
 
   const getTestCaseHistory = useCallback(
-    async (projectId: number, caseId: number): Promise<TestCase[]> => {
+    async (projectId: number, caseId: number): Promise<TestCaseHistoryRecord[]> => {
       try {
-        let history: TestCase[]
+        let records: TestCaseHistoryRecord[]
 
         if (MOCK_MODE) {
-          history = await mockApiService.getTestCaseHistory(projectId, caseId)
+          records = await mockApiService.getHistoryChange(caseId)
         } else {
-          history = await testCaseApi.getTestCaseHistory(projectId, caseId)
+          records = await testCaseApi.getHistoryChange(projectId, caseId)
         }
 
-        return history
+        return records
       } catch (error) {
         console.error('Failed to load test case history:', error)
         throw new Error('Не удалось загрузить историю изменений')

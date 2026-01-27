@@ -33,7 +33,7 @@
   margin-top: 20px;
 }
 
-.questionDiagDiv button {
+.buttonsDiv button {
   padding: 5px 15px;
   width: 80px;
   border: none;
@@ -44,31 +44,31 @@
   transition: background-color 0.2s ease-in-out;
 }
 
-.questionDiagDiv button:first-child {
+.buttonsDiv button:first-child {
   margin-left: 220px;
   margin-right: 10px;
   background-color: vars.$mainBlueColor;
   color: white;
 }
 
-.questionDiagDiv button:last-child {
+.buttonsDiv button:last-child {
   background-color: #d0e7ff;
   color: black;
 }
 
-.questionDiagDiv button:first-child:hover,
-.questionDiagDiv button:first-child:focus {
+.buttonsDiv button:first-child:hover,
+.buttonsDiv button:first-child:focus {
   background-color: vars.$darkBlueColor;
 }
-.questionDiagDiv button:last-child:hover,
-.questionDiagDiv button:last-child:focus {
+.buttonsDiv button:last-child:hover,
+.buttonsDiv button:last-child:focus {
   background-color: #cbdbf0;
 }
 
-.questionDiagDiv button:first-child:active {
+.buttonsDiv button:first-child:active {
   box-shadow: inset 3px 3px 5px rgb(0, 0, 0);
 }
 
-.questionDiagDiv button:last-child:active {
+.buttonsDiv button:last-child:active {
   box-shadow: inset 3px 3px 5px rgba(0, 0, 0, 0.6);
 }
