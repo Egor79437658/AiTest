@@ -50,7 +50,7 @@ export const ProjectContainer: React.FC = () => {
       hasLoadedRef.current = true
       try {
         loadProject(targetProjectId)
-      } catch(e:any) {
+      } catch (e: any) {
         setErrorMsg(e.message)
       }
     }
@@ -63,7 +63,7 @@ export const ProjectContainer: React.FC = () => {
   if (errorMsg) {
     return (
       <div>
-        Прозошла ошибка: {errorMsg} <br/>
+        Прозошла ошибка: {errorMsg} <br />
         <Link to="/">Вернуться к списку проектов</Link>
       </div>
     )

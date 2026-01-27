@@ -174,7 +174,6 @@ export const ProjectTestCaseTable: React.FC<ProjectTestCaseTableProps> = ({
             {Object.entries(groupedCases).map(([id, versions]) => {
               const latestVersion = versions[0]
               const isExpanded = expandedRows.includes(parseInt(id))
-              const hasMultipleVersions = versions.length > 1
 
               return (
                 <React.Fragment key={id}>
@@ -351,7 +350,10 @@ export const ProjectTestCaseTable: React.FC<ProjectTestCaseTableProps> = ({
                             className={`${styles.iconButton} ${styles.viewButton}`}
                             onClick={(e) => {
                               e.stopPropagation()
-                              onEditCase(version.id)
+                              // Передаем id и версию для просмотра
+                              navigate(
+                                `${projectBaseUrl}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}/${version.id}/view?version=${version.version}`
+                              )
                             }}
                             title="Просмотреть версию"
                           >

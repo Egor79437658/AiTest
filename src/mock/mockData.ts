@@ -455,7 +455,7 @@ export const mockTestCases: TestCase[] = [
     lastModified: new Date('2023-12-26T10:00:00'),
   },
   {
-    id: 5,
+    id: 2,
     idt: 'TC-005',
     flag: true,
     name: 'тест-кейс 5',
@@ -553,7 +553,7 @@ export const mockTestCases: TestCase[] = [
     name: 'Проверка оплаты через карту',
     description: 'Проверка успешной оплаты заказа банковской картой',
     positive: true,
-    version: '001.000.000',
+    version: '002.000.000',
     status: 1 as TestCaseStatus,
     priority: 2 as TestCasePriority,
     isAutoTest: true,

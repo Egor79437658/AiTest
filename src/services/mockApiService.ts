@@ -265,9 +265,11 @@ class MockApiService {
   async deleteMyAccount() {
     await delay(800)
     const userId = parseInt(localStorage.getItem('mock_user_id') || '', 10)
-    mockUsers.splice(mockUsers.findIndex(el => el.id===userId), 1)
-    return {status: 200, message: ""}
-
+    mockUsers.splice(
+      mockUsers.findIndex((el) => el.id === userId),
+      1
+    )
+    return { status: 200, message: '' }
   }
 
   async logout() {

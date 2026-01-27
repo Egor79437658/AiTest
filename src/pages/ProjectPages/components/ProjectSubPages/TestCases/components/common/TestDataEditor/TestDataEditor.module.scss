@@ -1,4 +1,5 @@
 @use '@styles/_variables.scss' as vars;
+@use '@styles/_common-styles.scss' as common;
 
 .container {
   margin: 20px 0;
@@ -103,23 +104,7 @@
 }
 
 .input {
-  width: 100%;
-  padding: 8px 10px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  font-size: 14px;
-  transition: border-color 0.2s;
-
-  &:focus {
-    outline: none;
-    border-color: vars.$lightBlueColor;
-    box-shadow: 0 0 0 2px rgba(vars.$lightBlueColor, 0.2);
-  }
-
-  &:disabled {
-    background-color: #e9ecef;
-    cursor: not-allowed;
-  }
+  @extend %base-input;
 }
 
 .select {

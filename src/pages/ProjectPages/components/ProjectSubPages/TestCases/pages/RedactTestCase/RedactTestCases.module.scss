@@ -1,4 +1,5 @@
 @use '@styles/_variables.scss' as vars;
+@use '@styles/_common-styles.scss' as common;
 
 .pageContainer {
   padding: 20px;
@@ -117,23 +118,7 @@
 .input,
 .select,
 .textarea {
-  padding: 12px 15px;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  font-size: 14px;
-  transition: all 0.2s ease;
-  background: white;
-  font-family: inherit;
-
-  &:focus {
-    outline: none;
-    border-color: vars.$darkColor;
-    box-shadow: 0 0 0 2px rgba(vars.$darkColor, 0.1);
-  }
-
-  &:hover {
-    border-color: #adb5bd;
-  }
+  @extend %base-input;
 }
 
 .textarea {
@@ -265,44 +250,6 @@
 
   &:hover {
     background-color: #343a40;
-  }
-}
-
-.noSteps {
-  text-align: center;
-  padding: 50px 20px;
-  background: #f8f9fa;
-  border: 1px dashed #dee2e6;
-  border-radius: 6px;
-
-  p {
-    color: #6c757d;
-    font-size: 16px;
-    margin: 0;
-    font-weight: 500;
-  }
-}
-
-.stepsTabs {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 10px;
-  margin-bottom: 25px;
-  border-bottom: 1px solid #dee2e6;
-
-  &::-webkit-scrollbar {
-    height: 4px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: vars.$darkColor;
-    border-radius: 4px;
   }
 }
 
@@ -485,10 +432,6 @@
 
   .formActionsTop {
     flex-direction: column;
-  }
-
-  .stepsTabs {
-    flex-wrap: wrap;
   }
 
   .stepTab {

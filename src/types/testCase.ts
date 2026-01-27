@@ -135,20 +135,51 @@ export interface TestCaseUpdateData {
 }
 
 export interface TestCaseFormData {
+  // identifiers
+  id: number
+  idt?: string // уникальный идентификатор ТК (IDT)
+  flag: boolean
+
+  // info
   name: string
   description: string
   positive: boolean
   version: string
+
+  // status and prior
   status: TestCaseStatus
   priority: TestCasePriority
+
+  // flags
   isAutoTest: boolean
-  isLoadTest: boolean
-  project?: string
-  precondition: string
+  isLoadTest: boolean // НТ (Нагрузочное Тестирование)
+
+  // connection
+  owner: { id: number; username: string; fullName?: string }
+  project?: string // name
+  scriptIds: { id: number; name: string }[]
+  precondition: string // for whole tc
+
+  // tags
   tags: string[]
+
+  // struct
   steps: TestCaseStep[]
-  testData: TestData[]
+  testData: TestData[] // СПД (Специально Подготовленные Данные)
+
+  //additional
   attachments: Attachment[]
+  comments: Comment[]
+
+  // connection with others
+  relatedTestCases: { id: number; name: string }[]
+  usedInTestPlans: boolean
+  testPlans: { id: number; name: string; date: Date }[]
+
+  // metadata
+  creationDate: Date
+  lastModified: Date
+  versionHistory?: TestCaseVersion[]
 }
 
 export interface TestCaseContextType {
@@ -164,7 +195,7 @@ export interface TestCaseContextType {
     projectId: number,
     caseId: number,
     updates: TestCaseUpdateData
-  ) => Promise<void>
+  ) => Promise<TestCase>
   createTestCase: (
     projectId: number,
     data: TestCaseFormData

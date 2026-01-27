@@ -1,4 +1,4 @@
-@use "@styles/_variables.scss" as vars;
+@use '@styles/_variables.scss' as vars;
 
 .tableContainer {
   width: 95%;
@@ -120,7 +120,7 @@
   border-bottom: none;
 
   &::after {
-    content: "";
+    content: '';
     position: absolute;
     left: 0;
     right: 0;
@@ -200,7 +200,7 @@
     opacity: 1;
   }
 
-  input[type="checkbox"] {
+  input[type='checkbox'] {
     position: absolute;
     opacity: 0;
     width: 100%;
@@ -250,7 +250,7 @@
       }
     }
 
-    input[type="checkbox"]:checked + .customCheckbox {
+    input[type='checkbox']:checked + .customCheckbox {
       background-color: #e46976;
       border-color: #e46976;
     }
@@ -265,7 +265,7 @@
       }
     }
 
-    input[type="checkbox"]:checked + .customCheckbox {
+    input[type='checkbox']:checked + .customCheckbox {
       background-color: #eeca60;
       border-color: #eeca60;
     }

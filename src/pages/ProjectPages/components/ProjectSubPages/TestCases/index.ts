@@ -1,3 +1,3 @@
-export * from "./ProjectTestCases"
-export * from "./RedactTestCase"
+export * from './components'
+export * from './pages'
 export * from "./HistoryTestCases"
