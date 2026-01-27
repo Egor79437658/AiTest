@@ -55,11 +55,25 @@
     color: #6c757d;
     margin-bottom: 20px;
   }
+
+  .backButton {
+    padding: 10px 20px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+
+    &:hover {
+      background-color: #5a6268;
+    }
+  }
 }
 
 .form {
   width: 95%;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 30px;
   background: white;
@@ -146,6 +160,52 @@ h2 {
   &:first-of-type {
     margin-top: 0;
   }
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 15px;
+
+  h3 {
+    margin: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.stepsActions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.expandAllButton {
+  padding: 8px 16px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  color: #495057;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+  }
+}
+
+.stepsCounter {
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 500;
+  padding: 6px 12px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
 }
 
 .formGrid {
@@ -236,131 +296,329 @@ h2 {
   font-weight: 500;
 }
 
-.stepsContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.stepCard {
+// Таблица шагов
+.stepsTableContainer {
+  overflow-x: auto;
   border: 1px solid #dee2e6;
   border-radius: 6px;
-  overflow: hidden;
+  background: white;
 }
 
-.stepHeader {
-  padding: 12px 20px;
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #dee2e6;
+.stepsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  thead {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+
+    th {
+      padding: 14px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: #495057;
+      border-bottom: 2px solid #dee2e6;
+      white-space: nowrap;
+    }
+  }
+}
+
+.expandCol {
+  width: 50px;
+  text-align: center;
+}
+
+.stepNumberCol {
+  width: 70px;
+}
+
+.actionCol {
+  min-width: 300px;
+}
+
+.resultCol {
+  min-width: 300px;
+}
+
+.dataCol {
+  min-width: 200px;
+}
+
+.stepRow {
+  border-bottom: 1px solid #eaeaea;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f8f9fa;
+  }
+
+  &.expanded {
+    background-color: #f0f8ff;
+    border-bottom: none;
+  }
+
+  td {
+    padding: 16px;
+    vertical-align: top;
+  }
+}
+
+.expandButton {
+  background: none;
+  border: none;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+  transition: transform 0.2s;
+
+  &.expanded {
+    transform: rotate(90deg);
+  }
+
+  .expandIcon {
+    font-size: 12px;
+  }
 }
 
 .stepNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background-color: vars.$darkColor;
+  color: white;
+  border-radius: 50%;
+  font-size: 12px;
   font-weight: 600;
-  color: vars.$darkColor;
-  font-size: 14px;
 }
 
-.stepContent {
+.stepAction,
+.stepResult,
+.stepData {
+  max-height: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-clamp: 3;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  line-height: 1.4;
+}
+
+.stepDetailsRow {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #eaeaea;
+
+  td {
+    padding: 0;
+  }
+}
+
+.stepDetails {
   padding: 20px;
+  border-left: 4px solid vars.$lightBlueColor;
 }
 
-.stepField {
-  margin-bottom: 15px;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-
-  label {
-    display: block;
-    font-weight: 600;
-    color: #495057;
-    font-size: 13px;
-    margin-bottom: 6px;
-  }
-}
-
-.stepValue {
-  padding: 10px 15px;
-  background: #f8f9fa;
-  border-radius: 4px;
-  font-size: 14px;
-  color: #495057;
-  line-height: 1.5;
-}
-
-.testDataContainer {
+.stepDetailsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 15px;
 }
 
-.testDataItem {
+.detailItem {
   display: flex;
   flex-direction: column;
-  padding: 15px;
-  background: #f8f9fa;
-  border-radius: 6px;
+  gap: 6px;
+
+  label {
+    font-size: 12px;
+    color: #6c757d;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.detailValue {
+  font-size: 14px;
+  color: #495057;
+  padding: 10px 12px;
+  background: white;
+  border-radius: 4px;
   border: 1px solid #eaeaea;
+  line-height: 1.4;
+}
+
+.screenshotLink {
+  color: vars.$lightBlueColor;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: vars.$lightBlueColor;
+  }
+}
+
+// Таблица тестовых данных
+.testDataContainer {
+  overflow-x: auto;
+}
+
+.testDataTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+
+  thead {
+    background-color: #f8f9fa;
+
+    th {
+      padding: 14px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: #495057;
+      border-bottom: 2px solid #dee2e6;
+      white-space: nowrap;
+    }
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #eaeaea;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+.testDataRow {
+  &:hover {
+    background-color: #f8f9fa;
+  }
+
+  td {
+    padding: 12px 16px;
+    vertical-align: middle;
+  }
 }
 
 .dataName {
   font-weight: 600;
   color: vars.$darkColor;
-  font-size: 14px;
-  margin-bottom: 5px;
+  min-width: 150px;
 }
 
 .dataValue {
-  font-size: 14px;
   color: #495057;
-  margin-bottom: 5px;
+  max-width: 300px;
   word-break: break-word;
 }
 
 .dataType {
-  font-size: 12px;
+  color: #6c757d;
+  font-style: italic;
+  min-width: 100px;
+}
+
+.dataFile {
+  min-width: 100px;
+}
+
+.fileLink {
+  color: vars.$lightBlueColor;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.noFile {
   color: #6c757d;
   font-style: italic;
 }
 
-.attachmentsContainer {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 15px;
-}
-
-.attachmentItem {
-  display: flex;
-  flex-direction: column;
-  padding: 15px;
-  background: #f8f9fa;
+// Таблица вложений
+.attachmentsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: white;
+  border: 1px solid #dee2e6;
   border-radius: 6px;
-  border: 1px solid #eaeaea;
-  cursor: pointer;
-  transition: all 0.2s;
 
-  &:hover {
-    background: #e9ecef;
+  thead {
+    background-color: #f8f9fa;
+
+    th {
+      padding: 14px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: #495057;
+      border-bottom: 2px solid #dee2e6;
+    }
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #eaeaea;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: #f8f9fa;
+    }
   }
 }
 
-.attachmentName {
-  font-weight: 600;
-  color: vars.$darkColor;
-  font-size: 14px;
-  margin-bottom: 5px;
+.attachmentRow {
+  td {
+    padding: 12px 16px;
+    vertical-align: middle;
+  }
 }
 
-.attachmentType {
-  font-size: 12px;
-  color: #6c757d;
-  margin-bottom: 5px;
+.attachmentLink {
+  color: vars.$lightBlueColor;
+  text-decoration: none;
+  font-weight: 500;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
-.attachmentSize {
+.typeBadge {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #e9ecef;
+  color: #495057;
+  border-radius: 4px;
   font-size: 12px;
+  font-weight: 500;
+}
+
+.attachmentSize,
+.attachmentDate {
   color: #6c757d;
+  white-space: nowrap;
+}
+
+.unknownSize,
+.unknownDate {
+  color: #adb5bd;
+  font-style: italic;
 }
 
 .systemInfo {
@@ -374,6 +632,10 @@ h2 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .infoItem {
@@ -408,6 +670,9 @@ h2 {
   padding: 40px 20px;
   color: #6c757d;
   font-style: italic;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px dashed #dee2e6;
 }
 
 .formActionsBottom {
@@ -440,6 +705,11 @@ h2 {
     opacity: 0.6;
     cursor: not-allowed;
   }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
 }
 
 .editButton {
@@ -448,8 +718,6 @@ h2 {
 
   &:hover:not(:disabled) {
     background-color: #343a40;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(vars.$darkColor, 0.2);
   }
 }
 
@@ -459,7 +727,6 @@ h2 {
 
   &:hover:not(:disabled) {
     background-color: #5a6268;
-    transform: translateY(-1px);
   }
 }
 
@@ -488,10 +755,43 @@ h2 {
     padding: 20px;
   }
 
-  .testDataContainer,
-  .attachmentsContainer,
-  .infoGrid {
+  .sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .stepsActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .stepsTableContainer {
+    font-size: 13px;
+  }
+
+  .stepNumberCol,
+  .expandCol {
+    width: 40px;
+  }
+
+  .actionCol,
+  .resultCol,
+  .dataCol {
+    min-width: 150px;
+  }
+
+  .stepDetailsGrid {
     grid-template-columns: 1fr;
+  }
+
+  .testDataTable,
+  .attachmentsTable {
+    font-size: 13px;
+
+    th,
+    td {
+      padding: 10px 12px;
+    }
   }
 
   .actionButton {

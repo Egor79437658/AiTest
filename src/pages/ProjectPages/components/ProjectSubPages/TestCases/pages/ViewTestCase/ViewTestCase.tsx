@@ -3,12 +3,21 @@ import { Link, useNavigate, useParams, useLocation } from 'react-router-dom'
 import { useProject, useTestCase } from '@contexts/'
 import { useHeaderStore } from '@stores/'
 import { PAGE_ENDPOINTS } from '@constants/'
-import { TestCase } from '@interfaces/'
+import { TestCase, TestCaseStep } from '@interfaces/'
 import styles from './ViewTestCase.module.scss'
+
+interface StepGroup {
+  steps: TestCaseStep[]
+  isExpanded: boolean
+}
 
 export const ViewTestCase: React.FC = () => {
   const { project } = useProject()
-  const { allTestCases: testCases } = useTestCase()
+  const {
+    allTestCases: testCases,
+    loadAllTestCases,
+    isLoading: isLoadingTestCases,
+  } = useTestCase()
   const { setHeaderContent } = useHeaderStore()
   const navigate = useNavigate()
   const location = useLocation()
@@ -17,22 +26,38 @@ export const ViewTestCase: React.FC = () => {
   const [testCase, setTestCase] = useState<TestCase | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [versionParam, setVersionParam] = useState<string>('')
+  const [expandedSteps, setExpandedSteps] = useState<number[]>([])
+
+  // Загружаем тест-кейсы при монтировании
+  useEffect(() => {
+    const loadTestCases = async () => {
+      if (project && testCases.length === 0) {
+        try {
+          await loadAllTestCases(project.id)
+        } catch (error) {
+          console.error('Ошибка при загрузке тест-кейсов:', error)
+        }
+      }
+    }
+
+    loadTestCases()
+  }, [project, testCases.length, loadAllTestCases])
 
   useEffect(() => {
-    // Извлекаем версию из query параметров
     const searchParams = new URLSearchParams(location.search)
     const version = searchParams.get('version') || ''
     setVersionParam(version)
   }, [location])
 
   useEffect(() => {
-    const loadTestCase = () => {
+    const findTestCase = () => {
       try {
         setIsLoading(true)
         const parsedTestCaseId = parseInt(testCaseId || '-1')
 
         if (isNaN(parsedTestCaseId) || parsedTestCaseId <= 0) {
           setTestCase(null)
+          setIsLoading(false)
           return
         }
 
@@ -44,20 +69,36 @@ export const ViewTestCase: React.FC = () => {
             (el) => el.id === parsedTestCaseId && el.version === versionParam
           )
         } else {
-          // Ищем последнюю версию
-          data = testCases.find((el) => el.id === parsedTestCaseId)
+          // Ищем любую версию (последнюю)
+          const versions = testCases.filter((el) => el.id === parsedTestCaseId)
+          if (versions.length > 0) {
+            data = versions.sort(
+              (a, b) =>
+                new Date(b.creationDate).getTime() -
+                new Date(a.creationDate).getTime()
+            )[0]
+          }
         }
 
         setTestCase(data || null)
+        // Автоматически разворачиваем все шаги
+        if (data?.steps) {
+          setExpandedSteps(data.steps.map((_, index) => index))
+        }
       } catch (error) {
-        console.error('Ошибка при загрузке тест-кейса:', error)
+        console.error('Ошибка при поиске тест-кейса:', error)
       } finally {
         setIsLoading(false)
       }
     }
 
-    loadTestCase()
-  }, [testCaseId, testCases, versionParam])
+    if (isLoadingTestCases) {
+      const timer = setTimeout(findTestCase, 100)
+      return () => clearTimeout(timer)
+    } else {
+      findTestCase()
+    }
+  }, [testCaseId, testCases, versionParam, isLoadingTestCases])
 
   useEffect(() => {
     const pageTitle = 'Просмотр тест-кейса'
@@ -94,6 +135,22 @@ export const ViewTestCase: React.FC = () => {
     )
   }, [testCase, project, setHeaderContent, versionParam])
 
+  const toggleStep = (index: number) => {
+    setExpandedSteps((prev) =>
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+    )
+  }
+
+  const toggleAllSteps = () => {
+    if (testCase?.steps) {
+      if (expandedSteps.length === testCase.steps.length) {
+        setExpandedSteps([])
+      } else {
+        setExpandedSteps(testCase.steps.map((_, index) => index))
+      }
+    }
+  }
+
   if (isLoading) {
     return (
       <div className={styles.pageContainer}>
@@ -121,8 +178,7 @@ export const ViewTestCase: React.FC = () => {
 
   const getProjectBaseUrl = () => {
     const path = window.location.pathname
-    const testCasePart = '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE
-    const parts = path.split(testCasePart)
+    const parts = path.split(`/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}/`)
     return parts[0] || path
   }
 
@@ -290,46 +346,143 @@ export const ViewTestCase: React.FC = () => {
           </div>
         </div>
 
-        {/* Шаги тест-кейса */}
+        {/* Шаги тест-кейса в таблице */}
         <div className={styles.section}>
-          <h3>Шаги тест-кейса</h3>
+          <div className={styles.sectionHeader}>
+            <h3>Шаги тест-кейса</h3>
+            <div className={styles.stepsActions}>
+              <button
+                type="button"
+                className={styles.expandAllButton}
+                onClick={toggleAllSteps}
+              >
+                {testCase.steps &&
+                expandedSteps.length === testCase.steps.length
+                  ? 'Свернуть все'
+                  : 'Развернуть все'}
+              </button>
+              <div className={styles.stepsCounter}>
+                Шагов: {testCase.steps?.length || 0}
+              </div>
+            </div>
+          </div>
+
           {testCase.steps && testCase.steps.length > 0 ? (
-            <div className={styles.stepsContainer}>
-              {testCase.steps.map((step, index) => (
-                <div key={index} className={styles.stepCard}>
-                  <div className={styles.stepHeader}>
-                    <span className={styles.stepNumber}>Шаг {index + 1}</span>
-                  </div>
-                  <div className={styles.stepContent}>
-                    <div className={styles.stepField}>
-                      <label>Действие:</label>
-                      <div className={styles.stepValue}>
-                        {step.action || <em>Не указано</em>}
-                      </div>
-                    </div>
-                    <div className={styles.stepField}>
-                      <label>Ожидаемый результат:</label>
-                      <div className={styles.stepValue}>
-                        {step.result || <em>Не указано</em>}
-                      </div>
-                    </div>
-                    {step.precondition && (
-                      <div className={styles.stepField}>
-                        <label>Предусловие шага:</label>
-                        <div className={styles.stepValue}>
-                          {step.precondition}
-                        </div>
-                      </div>
-                    )}
-                    {step.testData && (
-                      <div className={styles.stepField}>
-                        <label>Тестовые данные:</label>
-                        <div className={styles.stepValue}>{step.testData}</div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
+            <div className={styles.stepsTableContainer}>
+              <table className={styles.stepsTable}>
+                <thead>
+                  <tr>
+                    <th className={styles.expandCol}></th>
+                    <th className={styles.stepNumberCol}>№</th>
+                    <th className={styles.actionCol}>Действие</th>
+                    <th className={styles.resultCol}>Ожидаемый результат</th>
+                    <th className={styles.dataCol}>Тестовые данные</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {testCase.steps.map((step, index) => {
+                    const isExpanded = expandedSteps.includes(index)
+                    return (
+                      <React.Fragment key={index}>
+                        {/* Основная строка шага */}
+                        <tr
+                          className={`${styles.stepRow} ${isExpanded ? styles.expanded : ''}`}
+                          onClick={() => toggleStep(index)}
+                        >
+                          <td className={styles.expandCol}>
+                            <button
+                              type="button"
+                              className={`${styles.expandButton} ${isExpanded ? styles.expanded : ''}`}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                toggleStep(index)
+                              }}
+                            >
+                              <span className={styles.expandIcon}>
+                                {isExpanded ? '▼' : '▶'}
+                              </span>
+                            </button>
+                          </td>
+                          <td className={styles.stepNumberCol}>
+                            <span className={styles.stepNumber}>
+                              {index + 1}
+                            </span>
+                          </td>
+                          <td className={styles.actionCol}>
+                            <div className={styles.stepAction}>
+                              {step.action || <em>Не указано</em>}
+                            </div>
+                          </td>
+                          <td className={styles.resultCol}>
+                            <div className={styles.stepResult}>
+                              {step.result || <em>Не указано</em>}
+                            </div>
+                          </td>
+                          <td className={styles.dataCol}>
+                            <div className={styles.stepData}>
+                              {step.testData || <em>Нет</em>}
+                            </div>
+                          </td>
+                        </tr>
+
+                        {/* Детали шага (раскрываемая строка) */}
+                        {isExpanded && (
+                          <tr className={styles.stepDetailsRow}>
+                            <td colSpan={5}>
+                              <div className={styles.stepDetails}>
+                                <div className={styles.stepDetailsGrid}>
+                                  {step.precondition && (
+                                    <div className={styles.detailItem}>
+                                      <label>Предусловие шага:</label>
+                                      <div className={styles.detailValue}>
+                                        {step.precondition}
+                                      </div>
+                                    </div>
+                                  )}
+                                  {step.elementName && (
+                                    <div className={styles.detailItem}>
+                                      <label>Элемент:</label>
+                                      <div className={styles.detailValue}>
+                                        {step.elementName}
+                                      </div>
+                                    </div>
+                                  )}
+                                  {step.elementLocation && (
+                                    <div className={styles.detailItem}>
+                                      <label>Локатор элемента:</label>
+                                      <div className={styles.detailValue}>
+                                        {step.elementLocation}
+                                      </div>
+                                    </div>
+                                  )}
+                                  {step.formName && (
+                                    <div className={styles.detailItem}>
+                                      <label>Форма:</label>
+                                      <div className={styles.detailValue}>
+                                        {step.formName}
+                                      </div>
+                                    </div>
+                                  )}
+                                  {step.screenshot && (
+                                    <div className={styles.detailItem}>
+                                      <label>Скриншот:</label>
+                                      <div className={styles.detailValue}>
+                                        <span className={styles.screenshotLink}>
+                                          {step.screenshot}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    )
+                  })}
+                </tbody>
+              </table>
             </div>
           ) : (
             <div className={styles.noData}>
@@ -343,13 +496,43 @@ export const ViewTestCase: React.FC = () => {
           <h3>Тестовые данные (СПД)</h3>
           {testCase.testData && testCase.testData.length > 0 ? (
             <div className={styles.testDataContainer}>
-              {testCase.testData.map((data, index) => (
-                <div key={index} className={styles.testDataItem}>
-                  <div className={styles.dataName}>{data.name}:</div>
-                  <div className={styles.dataValue}>{data.value}</div>
-                  <div className={styles.dataType}>({data.type})</div>
-                </div>
-              ))}
+              <table className={styles.testDataTable}>
+                <thead>
+                  <tr>
+                    <th>Название</th>
+                    <th>Значение</th>
+                    <th>Тип</th>
+                    {testCase.testData.some((data) => data.fileUrl) && (
+                      <th>Файл</th>
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {testCase.testData.map((data, index) => (
+                    <tr key={index} className={styles.testDataRow}>
+                      <td className={styles.dataName}>{data.name}</td>
+                      <td className={styles.dataValue}>{data.value}</td>
+                      <td className={styles.dataType}>{data.type}</td>
+                      {testCase.testData.some((data) => data.fileUrl) && (
+                        <td className={styles.dataFile}>
+                          {data.fileUrl ? (
+                            <a
+                              href={data.fileUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={styles.fileLink}
+                            >
+                              Скачать
+                            </a>
+                          ) : (
+                            <span className={styles.noFile}>—</span>
+                          )}
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           ) : (
             <div className={styles.noData}>
@@ -363,17 +546,53 @@ export const ViewTestCase: React.FC = () => {
           <h3>Вложения</h3>
           {testCase.attachments && testCase.attachments.length > 0 ? (
             <div className={styles.attachmentsContainer}>
-              {testCase.attachments.map((attachment, index) => (
-                <div key={index} className={styles.attachmentItem}>
-                  <div className={styles.attachmentName}>{attachment.name}</div>
-                  <div className={styles.attachmentType}>{attachment.type}</div>
-                  {attachment.size && (
-                    <div className={styles.attachmentSize}>
-                      {(attachment.size / 1024).toFixed(2)} KB
-                    </div>
-                  )}
-                </div>
-              ))}
+              <table className={styles.attachmentsTable}>
+                <thead>
+                  <tr>
+                    <th>Название</th>
+                    <th>Тип</th>
+                    <th>Размер</th>
+                    <th>Дата загрузки</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {testCase.attachments.map((attachment, index) => (
+                    <tr key={index} className={styles.attachmentRow}>
+                      <td className={styles.attachmentName}>
+                        <a
+                          href={attachment.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.attachmentLink}
+                        >
+                          {attachment.name}
+                        </a>
+                      </td>
+                      <td className={styles.attachmentType}>
+                        <span className={styles.typeBadge}>
+                          {attachment.type}
+                        </span>
+                      </td>
+                      <td className={styles.attachmentSize}>
+                        {attachment.size ? (
+                          <span>{(attachment.size / 1024).toFixed(2)} KB</span>
+                        ) : (
+                          <span className={styles.unknownSize}>—</span>
+                        )}
+                      </td>
+                      <td className={styles.attachmentDate}>
+                        {attachment.uploadedAt ? (
+                          new Date(attachment.uploadedAt).toLocaleDateString(
+                            'ru-RU'
+                          )
+                        ) : (
+                          <span className={styles.unknownDate}>—</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           ) : (
             <div className={styles.noData}>
