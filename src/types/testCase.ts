@@ -181,26 +181,3 @@ export interface TestCaseFormData {
   lastModified: Date
   versionHistory?: TestCaseVersion[]
 }
-
-export interface TestCaseContextType {
-  testCase: TestCase | null
-  allTestCases: TestCase[]
-  isLoading: boolean
-  error: string | null
-  history: TestCaseHistoryRecord[]
-  loadHistory: (projectId: number, testCaseId: number) => Promise<void>
-  setTestCase: (data: TestCase) => void
-  loadAllTestCases: (projectId: number) => void
-  updateTestCase: (
-    projectId: number,
-    caseId: number,
-    updates: TestCaseUpdateData
-  ) => Promise<TestCase>
-  createTestCase: (
-    projectId: number,
-    data: TestCaseFormData
-  ) => Promise<TestCase>
-  deleteTestCase: (projectId: number, caseId: number) => Promise<void>
-  clearTestCase: () => void
-  clearAllTestCases: () => void
-}

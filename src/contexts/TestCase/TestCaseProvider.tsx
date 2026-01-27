@@ -2,7 +2,6 @@
 import { MOCK_MODE } from '@constants/'
 import {
   TestCase,
-  TestCaseContextType,
   TestCaseFormData,
   TestCaseHistoryRecord,
   TestCaseUpdateData,
@@ -12,7 +11,7 @@ import React, { useCallback } from 'react'
 import { testCaseApi } from '../../api/'
 import { useTestCaseActions } from '../../pages/ProjectPages/components/ProjectSubPages/TestCases/hooks/useTestCaseActions'
 import { mockApiService } from '../../services/mockApiService'
-import { TestCaseContext } from './TestCaseContext'
+import { TestCaseContext, TestCaseContextType } from './TestCaseContext'
 
 interface TestCaseProviderProps {
   children: React.ReactNode
@@ -276,17 +275,8 @@ export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
 const loadTestCaseHistory = useCallback(
     async (projectId: number, testCaseId: number) => {
       setLoading(true)
-      try {
-        let records: TestCaseHistoryRecord[]
-
-        if (MOCK_MODE) {
-          records = await mockApiService.getHistoryChange(testCaseId)
-        } else {
-          records = await testCaseApi.getHistoryChange(projectId, testCaseId)
-        }
-
-        
-        setTestHistory(records)
+      try {        
+        setTestHistory(await getTestCaseHistory(projectId, testCaseId))
       } catch (error) {
         console.error('Failed to load history:', error)
         setError('Не удалось загрзить историю изменения тест-кейса')
@@ -320,7 +310,6 @@ const loadTestCaseHistory = useCallback(
     updateTestCase: updateTestCaseHandler,
     deleteTestCases: deleteSelectedTestCases,
     createTestCase: createNewTestCase,
-    getTestCaseHistory: loadTestCaseHistory,
     bulkUpdateTestCases,
 
     // Вспомогательные функции

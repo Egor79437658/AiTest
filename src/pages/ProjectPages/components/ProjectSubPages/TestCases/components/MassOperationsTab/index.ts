@@ -1,1 +1,1 @@
-export * from './MassOperationsTAb'
+export * from './MassOperationsTab'

@@ -21,7 +21,7 @@ export const QuestionDialog:FC<{
         >
         <div className={styles.questionDiagDiv}>
             {children}
-          <div>
+          <div className={styles.buttonsDiv}>
             <button onClick={() => onYesClick(true)}>Да</button>
             <button onClick={() => onNoClick(false)}>Нет</button>
           </div>

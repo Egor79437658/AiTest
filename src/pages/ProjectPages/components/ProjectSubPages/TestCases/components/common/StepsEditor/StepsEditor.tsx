@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { TestCaseStep } from '@interfaces/'
 import { StepsTableView } from './StepsTableView/StepsTableView'
 import styles from './StepsEditor.module.scss'
+import { QuestionDialog } from '@components/'
 
 interface EnhancedStepsEditorProps {
   steps: TestCaseStep[]
@@ -23,6 +24,8 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
   const [tableViewVisible, setTableViewVisible] = useState(true)
   const tabsContainerRef = useRef<HTMLDivElement>(null)
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
+  const [showDiag, setShowDiag] = useState(false)
+  const [stepToDelete, setStepToDelete] = useState(-1)
 
   useEffect(() => {
     if (isAddingStep && steps.length > 0) {
@@ -61,16 +64,14 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
       return
     }
 
-    if (window.confirm('Вы уверены, что хотите удалить этот шаг?')) {
-      const newSteps = steps.filter((_, i) => i !== index)
-      onChange(newSteps)
+    const newSteps = steps.filter((_, i) => i !== index)
+    onChange(newSteps)
 
-      if (index === activeStep) {
-        const newActiveStep = index > 0 ? index - 1 : 0
-        setActiveStep(newActiveStep)
-      } else if (index < activeStep) {
-        setActiveStep(activeStep - 1)
-      }
+    if (index === activeStep) {
+      const newActiveStep = index > 0 ? index - 1 : 0
+      setActiveStep(newActiveStep)
+    } else if (index < activeStep) {
+      setActiveStep(activeStep - 1)
     }
   }
 
@@ -317,7 +318,7 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
               <button
                 type="button"
                 className={`${styles.iconButton} ${styles.deleteButton}`}
-                onClick={() => handleRemoveStep(activeStep)}
+                onClick={() => {setStepToDelete(activeStep); setShowDiag(true)}}
                 disabled={disabled || steps.length <= 1}
                 title="Удалить шаг"
               >
@@ -658,6 +659,13 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
           )}
         </>
       )}
+      <QuestionDialog
+        showQuestion={showDiag}
+        changeShowQuestion={setShowDiag}
+        onYesClick={() => handleRemoveStep(stepToDelete)}
+      >
+        Вы уверены, что хотите удалить этот шаг?
+      </QuestionDialog>
     </div>
   )
 }

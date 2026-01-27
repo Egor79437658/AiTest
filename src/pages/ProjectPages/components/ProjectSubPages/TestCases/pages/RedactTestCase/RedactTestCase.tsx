@@ -17,6 +17,7 @@ import {
   TagsInput,
   TestDataEditor,
 } from '../../components'
+import { QuestionDialog } from '@components/'
 
 interface TestCaseFormData {
   name: string
@@ -71,6 +72,7 @@ export const RedactTestCase: React.FC = () => {
   const { testCaseId } = useParams<{ testCaseId: string }>()
   const [testCase, setTestCase] = useState<TestCase | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [showDiag, setShowDiag] = useState(false)
 
   const {
     control,
@@ -244,12 +246,6 @@ export const RedactTestCase: React.FC = () => {
 
   const saveAsNewVersion = async () => {
     if (!testCase || !project) return
-
-    const confirm = window.confirm(
-      'Сохранить как новую версию тест-кейса? Старая версия будет переведена в архив.'
-    )
-    if (!confirm) return
-
     try {
       const formData = getValues()
       const newVersionData: TestCaseUpdateData = {
@@ -316,7 +312,7 @@ export const RedactTestCase: React.FC = () => {
               <button
                 type="button"
                 className={`${styles.actionButton} ${styles.secondaryButton}`}
-                onClick={saveAsNewVersion}
+                onClick={() => setShowDiag(true)}
               >
                 Сохранить как новую версию
               </button>
@@ -717,7 +713,7 @@ export const RedactTestCase: React.FC = () => {
             <button
               type="button"
               className={`${styles.actionButton} ${styles.secondaryButton}`}
-              onClick={saveAsNewVersion}
+              onClick={() => setShowDiag(true)}
             >
               Сохранить как новую версию
             </button>
@@ -731,6 +727,14 @@ export const RedactTestCase: React.FC = () => {
           </button>
         </div>
       </form>
+      <QuestionDialog
+        showQuestion={showDiag}
+        changeShowQuestion={setShowDiag}
+        onYesClick={saveAsNewVersion}
+      >
+        Сохранить как новую версию тест-кейса? <br/>
+        Старая версия будет переведена в архив.
+      </QuestionDialog>
     </div>
   )
 }

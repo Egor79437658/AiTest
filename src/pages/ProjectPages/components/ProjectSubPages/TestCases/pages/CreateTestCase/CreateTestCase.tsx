@@ -17,6 +17,7 @@ import {
   TagsInput,
   TestDataEditor,
 } from '../../components'
+import { QuestionDialog } from '@components/'
 
 export const CreateTestCase: React.FC = () => {
   const { project } = useProject()
@@ -27,6 +28,7 @@ export const CreateTestCase: React.FC = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
+  const [showDiag, setShowDiag] = useState(false)
 
   const {
     control,
@@ -156,20 +158,6 @@ export const CreateTestCase: React.FC = () => {
     }
   }
 
-  // Обработчик отмены
-  const handleCancel = () => {
-    if (
-      window.confirm(
-        'Отменить создание тест-кейса? Все несохраненные данные будут потеряны.'
-      )
-    ) {
-      const projectBaseUrl = window.location.href.split(
-        '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE
-      )[0]
-      navigate(`${projectBaseUrl}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}`)
-    }
-  }
-
   // Проверка, что есть хотя бы один шаг с действием и результатом
   const validateSteps = (steps: any[]) => {
     if (steps.length === 0) {
@@ -212,7 +200,7 @@ export const CreateTestCase: React.FC = () => {
             <button
               type="button"
               className={`${styles.actionButton} ${styles.cancelButton}`}
-              onClick={handleCancel}
+              onClick={() => setShowDiag(true)}
               disabled={isSubmitting}
             >
               Отмена
@@ -632,7 +620,7 @@ export const CreateTestCase: React.FC = () => {
             <button
               type="button"
               className={`${styles.actionButton} ${styles.cancelButton}`}
-              onClick={handleCancel}
+              onClick={() => setShowDiag(true)}
               disabled={isSubmitting}
             >
               Отмена
@@ -661,6 +649,21 @@ export const CreateTestCase: React.FC = () => {
           </div>
         </div>
       </form>
+      <QuestionDialog
+        showQuestion={showDiag}
+        changeShowQuestion={setShowDiag}
+        onYesClick={() => {
+          const projectBaseUrl = window.location.href.split(
+            '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE
+          )[0]
+          navigate(
+            `${projectBaseUrl}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}`
+          )
+        }}
+      >
+        Отменить создание тест-кейса? <br />
+        Все несохраненные данные будут потеряны.
+      </QuestionDialog>
     </div>
   )
 }
