@@ -1,13 +1,25 @@
-import { MOCK_MODE } from '@constants/'
-import { TestCase, TestCaseContextType } from '@interfaces/'
-import React, { useCallback, useEffect } from 'react'
-import { testCaseApi } from '../../api/'
-import { mockApiService } from '../../services/mockApiService'
-import { useTestCaseStore } from '../../stores/'
+// src/contexts/TestCaseProvider.tsx
+import React, { useCallback } from 'react'
+import {
+  TestCase,
+  TestCaseContextType,
+  TestCaseUpdateData,
+  TestCaseFormData,
+} from '@interfaces/'
+import { useTestCaseStore } from '@stores/'
+import { useTestCaseActions } from '../../pages/ProjectPages/components/ProjectSubPages/TestCases/hooks/useTestCaseActions'
 import { TestCaseContext } from './TestCaseContext'
 
-export const TestCaseProvider: React.FC<{ children: React.ReactNode }> = ({
+interface TestCaseProviderProps {
+  children: React.ReactNode
+  onSuccess?: (action: string, data?: unknown) => void
+  onError?: (action: string, error: Error) => void
+}
+
+export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
   children,
+  onSuccess,
+  onError,
 }) => {
   const {
     testCase,
@@ -19,67 +31,305 @@ export const TestCaseProvider: React.FC<{ children: React.ReactNode }> = ({
     clearTestCase,
     clearAllTestCases,
     setTestCase,
-    setAllTestCases
+    setAllTestCases,
+    updateTestCaseInList,
+    removeTestCasesFromList,
+    addTestCasesToList,
+    updateMultipleTestCases,
+    clearTestCaseSelection,
+    selectedTestCaseIds,
+    selectionType,
+    toggleTestCaseSelection,
+    selectAllTestCases,
+    setSelectionType,
   } = useTestCaseStore()
 
-  const updateCase = useCallback(async (projectId: number, caseId: number,  updates: Partial<TestCase>) => {
-    if (!testCase) {
-      throw new Error('No project loaded')
-    }
-    setLoading(true)
-    try {
+  const {
+    updateTestCase,
+    loadTestCases,
+    deleteTestCases,
+    createTestCase,
+    getTestCaseHistory,
+  } = useTestCaseActions()
 
-      let updatedTestCase: TestCase
+  const loadAllTestCases = useCallback(
+    async (projectId: number): Promise<TestCase[]> => {
+      setLoading(true)
+      setError(null)
 
-      if (MOCK_MODE) {
-        updatedTestCase = await mockApiService.updateTestCase(projectId, caseId, updates)
-      } else {
-        updatedTestCase = await testCaseApi.updateTestCase(projectId, caseId, updates)
+      try {
+        const cases = await loadTestCases(projectId)
+        setAllTestCases(cases)
+        onSuccess?.('loadAllTestCases', { projectId, count: cases.length })
+        return cases
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : 'Не удалось загрузить тест-кейсы'
+        setError(message)
+        onError?.('loadAllTestCases', error as Error)
+        throw error
+      } finally {
+        setLoading(false)
+      }
+    },
+    [setLoading, setError, setAllTestCases, loadTestCases, onSuccess, onError]
+  )
+
+  const updateTestCaseHandler = useCallback(
+    async (
+      projectId: number,
+      caseId: number,
+      updates: TestCaseUpdateData
+    ): Promise<TestCase> => {
+      setLoading(true)
+      setError(null)
+
+      try {
+        const updatedCase = await updateTestCase(projectId, caseId, updates)
+
+        updateTestCaseInList(caseId, updates)
+
+        if (testCase?.id === caseId) {
+          setTestCase(updatedCase)
+        }
+
+        onSuccess?.('updateTestCase', { caseId, updates })
+        return updatedCase
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : 'Не удалось обновить тест-кейс'
+        setError(message)
+        onError?.('updateTestCase', error as Error)
+        throw error
+      } finally {
+        setLoading(false)
+      }
+    },
+    [
+      setLoading,
+      setError,
+      updateTestCase,
+      updateTestCaseInList,
+      testCase,
+      setTestCase,
+      onSuccess,
+      onError,
+    ]
+  )
+
+  const deleteSelectedTestCases = useCallback(
+    async (projectId: number): Promise<void> => {
+      if (selectedTestCaseIds.length === 0) {
+        throw new Error('Нет выбранных тест-кейсов для удаления')
       }
 
-      setTestCase(updatedTestCase)
-    } catch (error) {
-      console.error('Failed to update project:', error)
-      setError('Не удалось обновить данные тест-кейса')
-      throw error
-    } finally {
-      setLoading(false)
-    }
-  }, [testCase, setTestCase, setError, setLoading])
+      setLoading(true)
+      setError(null)
 
-  const loadAllTestCases = useCallback(async (projectId: number) => {
-    setLoading(true)
-    try {
+      try {
+        await deleteTestCases(projectId, selectedTestCaseIds)
 
-      let cases: TestCase[]
+        removeTestCasesFromList(selectedTestCaseIds)
 
-      if (MOCK_MODE) {
-        cases = await mockApiService.getTestCases(projectId)
-      } else {
-        cases = await testCaseApi.getTestCases(projectId)
+        clearTestCaseSelection()
+
+        onSuccess?.('deleteTestCases', {
+          count: selectedTestCaseIds.length,
+          caseIds: selectedTestCaseIds,
+        })
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : 'Не удалось удалить тест-кейсы'
+        setError(message)
+        onError?.('deleteTestCases', error as Error)
+        throw error
+      } finally {
+        setLoading(false)
       }
+    },
+    [
+      selectedTestCaseIds,
+      setLoading,
+      setError,
+      deleteTestCases,
+      removeTestCasesFromList,
+      clearTestCaseSelection,
+      onSuccess,
+      onError,
+    ]
+  )
 
-      setAllTestCases(cases)
-    } catch (error) {
-      console.error('Failed to update project:', error)
-      setError('Не удалось загрзить данные тест-кейсов')
-      throw error
-    } finally {
-      setLoading(false)
-    }
-  }, [testCase, setAllTestCases, setError, setLoading])
+  const createNewTestCase = useCallback(
+    async (projectId: number, data: TestCaseFormData): Promise<TestCase> => {
+      setLoading(true)
+      setError(null)
 
+      try {
+        const newCase = await createTestCase(projectId, data)
+
+        addTestCasesToList([newCase])
+
+        onSuccess?.('createTestCase', { caseId: newCase.id, data })
+        return newCase
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : 'Не удалось создать тест-кейс'
+        setError(message)
+        onError?.('createTestCase', error as Error)
+        throw error
+      } finally {
+        setLoading(false)
+      }
+    },
+    [
+      setLoading,
+      setError,
+      createTestCase,
+      addTestCasesToList,
+      onSuccess,
+      onError,
+    ]
+  )
+
+  const loadTestCaseHistory = useCallback(
+    async (projectId: number, caseId: number): Promise<TestCase[]> => {
+      setLoading(true)
+      setError(null)
+
+      try {
+        const history = await getTestCaseHistory(projectId, caseId)
+        onSuccess?.('getTestCaseHistory', { caseId, count: history.length })
+        return history
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : 'Не удалось загрузить историю изменений'
+        setError(message)
+        onError?.('getTestCaseHistory', error as Error)
+        throw error
+      } finally {
+        setLoading(false)
+      }
+    },
+    [setLoading, setError, getTestCaseHistory, onSuccess, onError]
+  )
+
+  const bulkUpdateTestCases = useCallback(
+    async (
+      projectId: number,
+      caseIds: number[],
+      updates: TestCaseUpdateData
+    ): Promise<void> => {
+      setLoading(true)
+      setError(null)
+
+      try {
+        const updatePromises = caseIds.map((caseId) =>
+          updateTestCase(projectId, caseId, updates)
+        )
+
+        await Promise.all(updatePromises)
+
+        updateMultipleTestCases(caseIds, updates)
+
+        onSuccess?.('bulkUpdateTestCases', { count: caseIds.length, updates })
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : 'Не удалось обновить тест-кейсы'
+        setError(message)
+        onError?.('bulkUpdateTestCases', error as Error)
+        throw error
+      } finally {
+        setLoading(false)
+      }
+    },
+    [
+      setLoading,
+      setError,
+      updateTestCase,
+      updateMultipleTestCases,
+      onSuccess,
+      onError,
+    ]
+  )
+
+  const getGroupedTestCases = useCallback(() => {
+    const grouped = allTestCases.reduce(
+      (acc, testCase) => {
+        if (!acc[testCase.id]) {
+          acc[testCase.id] = []
+        }
+        acc[testCase.id].push(testCase)
+        acc[testCase.id].sort(
+          (a, b) =>
+            new Date(b.creationDate).getTime() -
+            new Date(a.creationDate).getTime()
+        )
+        return acc
+      },
+      {} as Record<number, TestCase[]>
+    )
+    return grouped
+  }, [allTestCases])
+
+  const getLatestVersions = useCallback(() => {
+    const grouped = getGroupedTestCases()
+    return Object.values(grouped).map((versions) => versions[0])
+  }, [getGroupedTestCases])
 
   const value: TestCaseContextType = {
-    testCase: testCase,
-    allTestCases: allTestCases,
-    isLoading: isLoading,
-    error: error,
-    updateTestCase: updateCase,
-    clearTestCase: clearTestCase,
-    setTestCase: setTestCase,
-    clearAllTestCases: clearAllTestCases,
-    loadAllTestCases: loadAllTestCases
+    // Состояние
+    testCase,
+    allTestCases,
+    isLoading,
+    error,
+
+    // Выделение
+    selectedTestCaseIds,
+    selectionType,
+    toggleTestCaseSelection,
+    selectAllTestCases: () =>
+      selectAllTestCases(allTestCases.map((tc) => tc.id)),
+    clearTestCaseSelection,
+    setSelectionType,
+
+    // Действия с данными
+    loadAllTestCases,
+    updateTestCase: updateTestCaseHandler,
+    deleteTestCases: deleteSelectedTestCases,
+    createTestCase: createNewTestCase,
+    getTestCaseHistory: loadTestCaseHistory,
+    bulkUpdateTestCases,
+
+    // Вспомогательные функции
+    getGroupedTestCases,
+    getLatestVersions,
+    getTestCaseById: (id: number) => allTestCases.find((tc) => tc.id === id),
+
+    // Setters
+    clearTestCase,
+    setTestCase,
+    clearAllTestCases,
+    setAllTestCases,
+
+    // Статистика
+    stats: {
+      total: allTestCases.length,
+      selected: selectedTestCaseIds.length,
+      grouped: Object.keys(getGroupedTestCases()).length,
+      latestVersions: getLatestVersions().length,
+    },
   }
 
   return (

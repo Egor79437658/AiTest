@@ -1,4 +1,5 @@
 @use '@styles/_variables.scss' as vars;
+@use '@styles/_common-styles.scss' as common;
 
 .container {
   display: flex;
@@ -71,22 +72,7 @@
 }
 
 .input {
-  flex: 1;
-  padding: 8px 12px;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  font-size: 14px;
-  transition: border-color 0.2s;
-
-  &:focus {
-    outline: none;
-    border-color: vars.$lightBlueColor;
-  }
-
-  &:disabled {
-    background-color: #e9ecef;
-    cursor: not-allowed;
-  }
+  @extend %base-input;
 }
 
 .addButton {

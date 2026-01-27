@@ -1,82 +1,39 @@
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Controller, useForm } from 'react-hook-form'
+import { useProject, useTestCase, useUser } from '@contexts/'
+import { useHeaderStore } from '@stores/'
+import { Link } from 'react-router-dom'
 import { PAGE_ENDPOINTS } from '@constants/'
-import { useProject, useTestCase } from '@contexts/'
 import {
-  TestCase,
-  TestCaseUpdateData,
+  TestCaseFormData,
   testCaseStatusMap,
   testCasePriorityMap,
 } from '@interfaces/'
-import { useHeaderStore } from '@stores/'
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import styles from './RedactTestCases.module.scss'
-import { Controller, useForm } from 'react-hook-form'
-import { TagsInput } from './TagsInput'
-import { TestDataEditor } from './TestDataEditor'
-import { AttachmentsManager } from './AttachmentsManager'
-import { EnhancedStepsEditor } from './StepsEditor'
+import styles from './CreateTestCase.module.scss'
+import {
+  AttachmentsManager,
+  EnhancedStepsEditor,
+  TagsInput,
+  TestDataEditor,
+} from '../../components'
 
-interface TestCaseFormData {
-  name: string
-  description: string
-  positive: boolean
-  version: string
-  status: 0 | 1 | 2
-  priority: 0 | 1 | 2
-  isAutoTest: boolean
-  isLoadTest: boolean
-  precondition: string
-  project?: string
-
-  tags: string[]
-
-  steps: Array<{
-    precondition: string
-    action: string
-    result: string
-    testData?: string
-    elementName?: string
-    elementLocation?: string
-    formName?: string
-    screenshot?: string
-  }>
-
-  testData: Array<{
-    name: string
-    value: string
-    type: 'parameter' | 'file' | 'link' | 'not_set' | 'any'
-    fileUrl?: string
-  }>
-
-  attachments: Array<{
-    name: string
-    url: string
-    type: string
-    size?: number
-    uploadedAt?: Date
-  }>
-
-  scriptIds: { id: number; name: string }[]
-  relatedTestCases: { id: number; name: string }[]
-  owner: { id: number; username: string; fullName?: string }
-}
-
-export const RedactTestCase: React.FC = () => {
+export const CreateTestCase: React.FC = () => {
   const { project } = useProject()
-  const { allTestCases: testCases, updateTestCase } = useTestCase()
+  const { createTestCase, isLoading: isCreating } = useTestCase()
+  const { user: currentUser } = useUser()
   const { setHeaderContent } = useHeaderStore()
-  const { testCaseId } = useParams<{ testCaseId: string }>()
-  const [testCase, setTestCase] = useState<TestCase | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const navigate = useNavigate()
+
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [formError, setFormError] = useState<string | null>(null)
 
   const {
     control,
     handleSubmit,
-    watch,
-    formState: { errors, isSubmitting },
-    reset,
-    getValues,
+    formState: { errors },
     setValue,
+    watch,
   } = useForm<TestCaseFormData>({
     defaultValues: {
       name: '',
@@ -88,89 +45,18 @@ export const RedactTestCase: React.FC = () => {
       isAutoTest: false,
       isLoadTest: false,
       precondition: '',
-      project: '',
       tags: [],
       steps: [],
       testData: [],
       attachments: [],
-      scriptIds: [],
-      relatedTestCases: [],
-      owner: { id: 0, username: '', fullName: '' },
     },
   })
 
-  const navigate = useNavigate()
+  // Получаем значения формы для валидации
+  const watchedValues = watch()
 
+  // Устанавливаем заголовок страницы
   useEffect(() => {
-    const loadTestCase = async () => {
-      try {
-        setIsLoading(true)
-        const parsedTestCaseId = parseInt(testCaseId || '-1')
-
-        if (isNaN(parsedTestCaseId) || parsedTestCaseId <= 0) {
-          if (project) {
-            const user = await getUser() // Нужно получить текущего пользователя
-            reset({
-              name: '',
-              description: '',
-              positive: true,
-              version: '001.000.000',
-              status: 2,
-              priority: 1,
-              isAutoTest: false,
-              isLoadTest: false,
-              precondition: '',
-              project: project.name,
-              tags: [],
-              steps: [],
-              testData: [],
-              attachments: [],
-              scriptIds: [],
-              relatedTestCases: [],
-              owner: user,
-            })
-          }
-          setTestCase(null)
-        } else {
-          const data = testCases.find((el) => el.id === parsedTestCaseId)
-          if (data) {
-            setTestCase(data)
-            reset({
-              name: data.name,
-              description: data.description || '',
-              positive: data.positive,
-              version: data.version,
-              status: data.status,
-              priority: data.priority,
-              isAutoTest: data.isAutoTest,
-              isLoadTest: data.isLoadTest,
-              precondition: data.precondition || '',
-              project: data.project || project?.name || '',
-              tags: data.tags || [],
-              steps: data.steps || [],
-              testData: data.testData || [],
-              attachments: data.attachments || [],
-              scriptIds: data.scriptIds || [],
-              relatedTestCases: data.relatedTestCases || [],
-              owner: data.owner,
-            })
-          }
-        }
-      } catch (error) {
-        console.error('Ошибка при загрузке тест-кейса:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    loadTestCase()
-  }, [testCaseId, testCases, project, reset])
-
-  useEffect(() => {
-    const pageTitle = testCaseId
-      ? `Редактирование тест-кейса`
-      : 'Создание тест-кейса'
-
     setHeaderContent(
       <div>
         <Link to="/">ЯМП&nbsp;</Link>
@@ -196,89 +82,28 @@ export const RedactTestCase: React.FC = () => {
         >
           Тест-кейсы&nbsp;
         </Link>{' '}
-        &mdash;&nbsp; {pageTitle}
+        &mdash;&nbsp; Создание тест-кейса
       </div>
     )
-  }, [testCase, project, setHeaderContent, testCaseId])
+  }, [project, setHeaderContent])
 
-  const getUser = async () => {
-    // api in prod
-    return {
-      id: 1,
-      username: 'current_user',
-      fullName: 'Текущий Пользователь',
+  // Автоматически увеличиваем версию
+  const generateNextVersion = () => {
+    const versionPattern = /^(\d{3})\.(\d{3})\.(\d{3})$/
+    const match = watchedValues.version.match(versionPattern)
+
+    if (match) {
+      const major = parseInt(match[1])
+      const minor = parseInt(match[2])
+      const patch = parseInt(match[3])
+
+      // Увеличиваем патч версию на 1
+      const nextVersion = `${major.toString().padStart(3, '0')}.${minor.toString().padStart(3, '0')}.${(patch + 1).toString().padStart(3, '0')}`
+      setValue('version', nextVersion)
     }
   }
 
-  const handleSave = async (data: TestCaseFormData) => {
-    if (!project) {
-      alert('Проект не выбран')
-      return
-    }
-
-    try {
-      const updateData: TestCaseUpdateData = {
-        name: data.name,
-        description: data.description,
-        positive: data.positive,
-        version: data.version,
-        status: data.status,
-        priority: data.priority,
-        isAutoTest: data.isAutoTest,
-        isLoadTest: data.isLoadTest,
-        precondition: data.precondition,
-        project: data.project,
-        tags: data.tags,
-        steps: data.steps,
-        testData: data.testData,
-        attachments: data.attachments,
-        scriptIds: data.scriptIds,
-        relatedTestCases: data.relatedTestCases,
-      }
-
-      if (testCase) {
-        await updateTestCase(project.id, testCase.id, updateData)
-        alert('Тест-кейс успешно обновлен!')
-      } else {
-        // Здесь должен быть вызов API для создания
-        console.log('Создание нового тест-кейса:', updateData)
-        alert('Тест-кейс успешно создан!')
-      }
-
-      navigate(-1) // Возврат на предыдущую страницу
-    } catch (error) {
-      console.error('Ошибка при сохранении тест-кейса:', error)
-      alert('Произошла ошибка при сохранении тест-кейса')
-    }
-  }
-
-  const saveAsNewVersion = async () => {
-    if (!testCase || !project) return
-
-    const confirm = window.confirm(
-      'Сохранить как новую версию тест-кейса? Старая версия будет переведена в архив.'
-    )
-    if (!confirm) return
-
-    try {
-      const formData = getValues()
-      const newVersionData: TestCaseUpdateData = {
-        ...formData,
-        version: `${testCase.version} (новая версия)`,
-        status: 1, // Активный
-        creationDate: new Date(),
-      }
-
-      // Здесь должен быть вызов API
-      console.log('Создание новой версии:', newVersionData)
-      alert('Новая версия создана успешно!')
-      navigate(-1)
-    } catch (error) {
-      console.error('Ошибка при создании новой версии:', error)
-      alert('Произошла ошибка при создании новой версии')
-    }
-  }
-
+  // Валидация версии
   const validateVersion = (value: string) => {
     const pattern = /^\d{3}\.\d{3}\.\d{3}$/
     if (!pattern.test(value)) {
@@ -287,59 +112,121 @@ export const RedactTestCase: React.FC = () => {
     return true
   }
 
-  if (isLoading) {
-    return (
-      <div className={styles.pageContainer}>
-        <div className={styles.loading}>
-          <div className={styles.loadingSpinner}></div>
-          <p>Загрузка тест-кейса...</p>
-        </div>
-      </div>
-    )
+  // Обработчик сохранения
+  const handleSave = async (data: TestCaseFormData) => {
+    if (!project || !currentUser) {
+      setFormError('Проект или пользователь не определены')
+      return
+    }
+
+    setIsSubmitting(true)
+    setFormError(null)
+
+    try {
+      // Добавляем недостающие поля
+      const formData: TestCaseFormData = {
+        ...data,
+        project: project.name,
+        scriptIds: [],
+        relatedTestCases: [],
+        owner: {
+          id: currentUser.id,
+          username: currentUser.profileData.firstName,
+          fullName: currentUser.profileData.lastName,
+        },
+      }
+
+      // Создаем тест-кейс
+      await createTestCase(project.id, formData)
+
+      // Возвращаемся к списку тест-кейсов
+      const projectBaseUrl = window.location.href.split(
+        '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE
+      )[0]
+      navigate(`${projectBaseUrl}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}`)
+    } catch (error) {
+      console.error('Ошибка при создании тест-кейса:', error)
+      setFormError(
+        error instanceof Error
+          ? error.message
+          : 'Произошла ошибка при создании тест-кейса'
+      )
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
-  const isEditMode = !!testCaseId
+  // Обработчик отмены
+  const handleCancel = () => {
+    if (
+      window.confirm(
+        'Отменить создание тест-кейса? Все несохраненные данные будут потеряны.'
+      )
+    ) {
+      const projectBaseUrl = window.location.href.split(
+        '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE
+      )[0]
+      navigate(`${projectBaseUrl}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}`)
+    }
+  }
+
+  // Проверка, что есть хотя бы один шаг с действием и результатом
+  const validateSteps = (steps: any[]) => {
+    if (steps.length === 0) {
+      return 'Добавьте хотя бы один шаг'
+    }
+
+    const invalidSteps = steps.filter(
+      (step) => !step.action?.trim() || !step.result?.trim()
+    )
+
+    if (invalidSteps.length > 0) {
+      return 'Все шаги должны иметь действие и ожидаемый результат'
+    }
+
+    return true
+  }
 
   return (
     <div className={styles.pageContainer}>
       <form className={styles.form} onSubmit={handleSubmit(handleSave)}>
         <div className={styles.formHeader}>
-          <h2>
-            {isEditMode ? `Редактирование тест-кейса` : 'Создание тест-кейса'}
-            {testCase?.idt && (
-              <span className={styles.idt}>IDT: {testCase.idt}</span>
-            )}
-          </h2>
+          <h2>Создание тест-кейса</h2>
+
           <div className={styles.formActionsTop}>
             <button
               type="submit"
               className={`${styles.actionButton} ${styles.primaryButton}`}
+              disabled={isSubmitting || isCreating}
+            >
+              {isSubmitting ? 'Создание...' : 'Создать тест-кейс'}
+            </button>
+            <button
+              type="button"
+              className={`${styles.actionButton} ${styles.secondaryButton}`}
+              onClick={generateNextVersion}
               disabled={isSubmitting}
             >
-              {isSubmitting
-                ? 'Сохранение...'
-                : isEditMode
-                  ? 'Сохранить изменения'
-                  : 'Создать тест-кейс'}
+              Сгенерировать версию
             </button>
-            {isEditMode && (
-              <button
-                type="button"
-                className={`${styles.actionButton} ${styles.secondaryButton}`}
-                onClick={saveAsNewVersion}
-              >
-                Сохранить как новую версию
-              </button>
-            )}
             <button
               type="button"
               className={`${styles.actionButton} ${styles.cancelButton}`}
-              onClick={() => navigate(-1)}
+              onClick={handleCancel}
+              disabled={isSubmitting}
             >
               Отмена
             </button>
           </div>
         </div>
+
+        {/* Сообщение об ошибке формы */}
+        {formError && (
+          <div className={styles.formError}>
+            <span>⚠️</span>
+            <p>{formError}</p>
+          </div>
+        )}
 
         {/* Основная информация */}
         <div className={styles.section}>
@@ -372,6 +259,7 @@ export const RedactTestCase: React.FC = () => {
                     className={styles.input}
                     type="text"
                     placeholder="Введите название тест-кейса"
+                    autoFocus
                   />
                 )}
               />
@@ -393,13 +281,23 @@ export const RedactTestCase: React.FC = () => {
                   validate: validateVersion,
                 }}
                 render={({ field }) => (
-                  <input
-                    {...field}
-                    className={styles.input}
-                    type="text"
-                    placeholder="000.000.000"
-                    pattern="\d{3}\.\d{3}\.\d{3}"
-                  />
+                  <div className={styles.versionInputWrapper}>
+                    <input
+                      {...field}
+                      className={styles.input}
+                      type="text"
+                      placeholder="000.000.000"
+                      pattern="\d{3}\.\d{3}\.\d{3}"
+                    />
+                    <button
+                      type="button"
+                      className={styles.versionGenerateButton}
+                      onClick={generateNextVersion}
+                      title="Сгенерировать следующую версию"
+                    >
+                      🔄
+                    </button>
+                  </div>
                 )}
               />
               {errors.version && (
@@ -448,18 +346,12 @@ export const RedactTestCase: React.FC = () => {
                   Автоматически заполняется
                 </span>
               </label>
-              <Controller
-                name="project"
-                control={control}
-                render={({ field }) => (
-                  <input
-                    {...field}
-                    className={styles.input}
-                    type="text"
-                    readOnly
-                    disabled
-                  />
-                )}
+              <input
+                type="text"
+                value={project?.name || ''}
+                className={styles.input}
+                readOnly
+                disabled
               />
             </div>
 
@@ -579,6 +471,7 @@ export const RedactTestCase: React.FC = () => {
                   tags={field.value}
                   onChange={field.onChange}
                   placeholder="Введите тег (например: авторизация, UI, API)"
+                  disabled={isSubmitting}
                 />
               )}
             />
@@ -612,21 +505,47 @@ export const RedactTestCase: React.FC = () => {
 
         {/* Шаги тест-кейса */}
         <div className={styles.section}>
+          <h3>Шаги тест-кейса *</h3>
+          <div className={styles.stepsHint}>
+            <p>
+              Добавьте последовательность шагов для выполнения тест-кейса.
+              Каждый шаг должен содержать:
+            </p>
+            <ul>
+              <li>Конкретное действие</li>
+              <li>Ожидаемый результат</li>
+              <li>Дополнительные параметры (если необходимо)</li>
+            </ul>
+          </div>
+
           <Controller
             name="steps"
             control={control}
-            render={({ field }) => (
-              <EnhancedStepsEditor
-                steps={field.value}
-                onChange={field.onChange}
-                disabled={isSubmitting}
-              />
+            rules={{
+              validate: validateSteps,
+            }}
+            render={({ field, fieldState }) => (
+              <div>
+                <EnhancedStepsEditor
+                  steps={field.value}
+                  onChange={field.onChange}
+                  disabled={isSubmitting}
+                  defaultExpanded={true}
+                  showTableView={false}
+                />
+                {fieldState.error && (
+                  <div className={styles.errorMessage}>
+                    ⚠️ {fieldState.error.message}
+                  </div>
+                )}
+              </div>
             )}
           />
         </div>
 
         {/* Тестовые данные */}
         <div className={styles.section}>
+          <h3>Тестовые данные (СПД)</h3>
           <Controller
             name="testData"
             control={control}
@@ -642,6 +561,7 @@ export const RedactTestCase: React.FC = () => {
 
         {/* Вложения */}
         <div className={styles.section}>
+          <h3>Вложения</h3>
           <Controller
             name="attachments"
             control={control}
@@ -655,90 +575,90 @@ export const RedactTestCase: React.FC = () => {
           />
         </div>
 
-        {/* Информация только для чтения */}
-        {isEditMode && testCase && (
-          <div className={styles.section}>
-            <h3>Системная информация</h3>
-            <div className={styles.readonlyInfo}>
-              <div className={styles.infoGrid}>
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>Владелец:</span>
-                  <span className={styles.infoValue}>
-                    {testCase.owner.username}
-                  </span>
-                </div>
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>Дата создания:</span>
-                  <span className={styles.infoValue}>
-                    {testCase.creationDate.toLocaleDateString('ru-RU')}
-                  </span>
-                </div>
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>Последнее изменение:</span>
-                  <span className={styles.infoValue}>
-                    {testCase.lastModified.toLocaleDateString('ru-RU')}
-                  </span>
-                </div>
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>IDT:</span>
-                  <span className={styles.infoValue}>
-                    {testCase.idt || 'Не задан'}
-                  </span>
-                </div>
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>Скрипты:</span>
-                  <span className={styles.infoValue}>
-                    {testCase.scriptIds.length > 0
-                      ? testCase.scriptIds.map((s) => s.name).join(', ')
-                      : 'Нет'}
-                  </span>
-                </div>
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>
-                    Используется в тест-кейсах:
-                  </span>
-                  <span className={styles.infoValue}>
-                    {testCase.relatedTestCases.length > 0
-                      ? testCase.relatedTestCases
-                          .map((tc) => tc.name)
-                          .join(', ')
-                      : 'Нет'}
-                  </span>
-                </div>
+        {/* Подсказки для заполнения */}
+        <div className={styles.section}>
+          <h3>Рекомендации по заполнению</h3>
+          <div className={styles.guidelines}>
+            <div className={styles.guidelineItem}>
+              <span className={styles.guidelineIcon}>📝</span>
+              <div className={styles.guidelineContent}>
+                <strong>Название:</strong> Должно четко отражать суть проверки
+                (например: "Проверка авторизации с корректными данными")
+              </div>
+            </div>
+            <div className={styles.guidelineItem}>
+              <span className={styles.guidelineIcon}>🎯</span>
+              <div className={styles.guidelineContent}>
+                <strong>Шаги:</strong> Каждый шаг - одно конкретное действие.
+                Избегайте общих фраз.
+              </div>
+            </div>
+            <div className={styles.guidelineItem}>
+              <span className={styles.guidelineIcon}>📊</span>
+              <div className={styles.guidelineContent}>
+                <strong>Результаты:</strong> Должны быть конкретными и
+                измеримыми (например: "Появляется сообщение 'Успешная
+                авторизация'")
+              </div>
+            </div>
+            <div className={styles.guidelineItem}>
+              <span className={styles.guidelineIcon}>🏷️</span>
+              <div className={styles.guidelineContent}>
+                <strong>Теги:</strong> Используйте для быстрого поиска и
+                категоризации
               </div>
             </div>
           </div>
-        )}
+        </div>
 
         {/* Кнопки внизу формы */}
         <div className={styles.formActionsBottom}>
-          <button
-            type="submit"
-            className={`${styles.actionButton} ${styles.primaryButton}`}
-            disabled={isSubmitting}
-          >
-            {isSubmitting
-              ? 'Сохранение...'
-              : isEditMode
-                ? 'Сохранить изменения'
-                : 'Создать тест-кейс'}
-          </button>
-          {isEditMode && (
+          <div className={styles.actionButtons}>
+            <button
+              type="submit"
+              className={`${styles.actionButton} ${styles.primaryButton}`}
+              disabled={isSubmitting || isCreating}
+            >
+              {isSubmitting ? 'Создание...' : 'Создать тест-кейс'}
+            </button>
             <button
               type="button"
               className={`${styles.actionButton} ${styles.secondaryButton}`}
-              onClick={saveAsNewVersion}
+              onClick={generateNextVersion}
+              disabled={isSubmitting}
             >
-              Сохранить как новую версию
+              Сгенерировать версию
             </button>
-          )}
-          <button
-            type="button"
-            className={`${styles.actionButton} ${styles.cancelButton}`}
-            onClick={() => navigate(-1)}
-          >
-            Отмена
-          </button>
+            <button
+              type="button"
+              className={`${styles.actionButton} ${styles.cancelButton}`}
+              onClick={handleCancel}
+              disabled={isSubmitting}
+            >
+              Отмена
+            </button>
+          </div>
+
+          <div className={styles.formStats}>
+            <div className={styles.statItem}>
+              <span className={styles.statLabel}>Шагов:</span>
+              <span className={styles.statValue}>
+                {watchedValues.steps.length}
+              </span>
+            </div>
+            <div className={styles.statItem}>
+              <span className={styles.statLabel}>Тегов:</span>
+              <span className={styles.statValue}>
+                {watchedValues.tags.length}
+              </span>
+            </div>
+            <div className={styles.statItem}>
+              <span className={styles.statLabel}>СПД:</span>
+              <span className={styles.statValue}>
+                {watchedValues.testData.length}
+              </span>
+            </div>
+          </div>
         </div>
       </form>
     </div>
