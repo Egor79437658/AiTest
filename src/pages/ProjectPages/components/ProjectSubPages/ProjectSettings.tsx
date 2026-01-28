@@ -1006,7 +1006,7 @@ export const ProjectSettings: React.FC = () => {
                 placeholder="Введите название проекта"
               />
             </div>
-                
+              
             <div className={styles.modalButtons}>
               <button
                 type="button"
@@ -1032,4 +1032,7 @@ export const ProjectSettings: React.FC = () => {
       )}
     </div>
   );
+
+
+  
 };
