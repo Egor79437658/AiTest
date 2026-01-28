@@ -70,7 +70,7 @@ export const useSidebarNavigation = () => {
           ...( project.users.find(el => el.id === user?.id)?.role === 2 ? [
             {
               title: 'Настройки',
-              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}`,
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.SETTINGS}`,
               requireAuth: true,
             },
           ] : [])

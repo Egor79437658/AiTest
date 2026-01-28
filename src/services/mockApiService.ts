@@ -1,3 +1,4 @@
+// mockApiService.ts - обновленная версия с методом deleteProject
 import {
   ProfileData,
   Project,
@@ -193,8 +194,6 @@ class MockApiService {
     }
 
     return profileData
-
-
   }
 
   async updateUserProfile(userId: number, profileData: UpdateProfileData) {
@@ -343,6 +342,32 @@ class MockApiService {
     mockProjects[projectIndex] = updatedProject
 
     return structuredClone(updatedProject)
+  }
+
+  // НОВЫЙ МЕТОД: Удаление проекта
+  async deleteProject(projectId: number): Promise<void> {
+    await delay(500)
+
+    const projectIndex = mockProjects.findIndex((p) => p.id === projectId)
+
+    if (projectIndex === -1) {
+      throw new Error('Project not found')
+    }
+
+    // Удаляем проект из mockProjects
+    mockProjects.splice(projectIndex, 1)
+
+    // Удаляем проект из projectData всех пользователей
+    mockUsers.forEach(user => {
+      user.projectData = user.projectData.filter(
+        project => project.id !== projectId
+      )
+    })
+
+    // Удаляем datapool из localStorage
+    localStorage.removeItem(`project_${projectId}_datapool`)
+
+    console.log(`Project ${projectId} deleted successfully from mock data`)
   }
 
   async getTestCases(id: number): Promise<TestCase[]> {
