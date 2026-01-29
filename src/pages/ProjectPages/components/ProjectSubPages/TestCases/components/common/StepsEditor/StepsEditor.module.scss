@@ -1,5 +1,5 @@
-@use '@styles/_variables.scss' as vars;
-@use '@styles/_common-styles.scss' as common;
+@use "@styles/_variables.scss" as vars;
+@use "@styles/_common-styles.scss" as common;
 
 .container {
   margin: 20px 0;
@@ -247,15 +247,11 @@
 
   &.active {
     border-color: vars.$lightBlueColor;
-    background: linear-gradient(
-      135deg,
-      rgba(vars.$lightBlueColor, 0.1),
-      rgba(vars.$lightBlueColor, 0.05)
-    );
+    background: linear-gradient(135deg, rgba(vars.$lightBlueColor, 0.1), rgba(vars.$lightBlueColor, 0.05));
     box-shadow: 0 4px 12px rgba(vars.$lightBlueColor, 0.15);
 
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       top: -2px;
       left: 50%;
@@ -606,11 +602,11 @@
 }
 
 .prevButton::before {
-  content: '←';
+  content: "←";
 }
 
 .nextButton::after {
-  content: '→';
+  content: "→";
 }
 
 .stepPosition {
@@ -688,53 +684,95 @@
     font-size: 15px;
     font-weight: 600;
   }
-}
 
-.guidelinesGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 15px;
+  ul {
+    margin-left: 20px;
 
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
+    li {
+      margin: 15px 0;
+      color: #6c757d
+    }
   }
 }
 
-.guidelineItem {
+.testCaseSelect {
+  position: relative;
+  cursor: pointer;
+
+  .openDropdownBtn {
+    border-radius: 6px;
+  }
+
+  span {
+    transition: transform 0.3s ease-in-out;
+    &.rotated {
+      transform: rotate(90deg);
+    }
+  }
+
+  .openDropdownBtn {
+    min-width: 170px;
+  }
+
+  .dropdownDiv {
+    background-color: vars.$darkColor;
+    position: absolute;
+    top: 40px;
+    right: 0px;
+    width: 100%;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+    transition: opacity 0.3s ease-in-out;
+    border-radius: 5px;
+    overflow: hidden;
+    // height: calc(34px * 4);
+    transition: height 0.3s ease-in-out;
+  }
+  button {
+    padding: 10px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 0;
+    border: none;
+    white-space: nowrap;
+    height: 32px;
+    text-align: center;
+    background: #f8f9fa;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #495057;
+
+    &.selected {
+      background-color: #d3d3d3;
+    }
+    &:hover {
+      filter: brightness(90%);
+    }
+  }
+
+  .hidden {
+    height: 0px;
+    button {
+      opacity: 0;
+    }
+    pointer-events: none;
+    box-shadow: none;
+  }
+}
+
+.forUsability {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px;
-  background: white;
-  border: 1px solid #eaeaea;
-  border-radius: 6px;
-  transition: transform 0.2s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-  }
-}
-
-.guidelineIcon {
-  font-size: 20px;
-  flex-shrink: 0;
-}
-
-.guidelineContent {
-  font-size: 13px;
-  color: #495057;
-  line-height: 1.4;
-
-  strong {
-    color: vars.$darkColor;
-    display: block;
-    margin-bottom: 4px;
-  }
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
 }
 
 // Адаптивность
-@media (max-width: 992px) {
+@media (max-width: 1024px) {
+
   .headerActions {
     gap: 15px;
   }
@@ -752,9 +790,6 @@
     flex: 1;
     min-width: 100%;
   }
-}
-
-@media (max-width: 768px) {
   .container {
     padding: 20px 15px;
   }
@@ -783,6 +818,9 @@
   .stepActions {
     flex-direction: column;
     align-items: stretch;
+    a {
+      text-align: center;
+    }
   }
 
   .moveActions,

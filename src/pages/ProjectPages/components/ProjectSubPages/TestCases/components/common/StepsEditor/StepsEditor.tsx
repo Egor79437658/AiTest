@@ -1,8 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { TestCaseStep } from '@interfaces/'
+import React, { useState, useRef, useEffect, ReactEventHandler } from 'react'
+import { TestCaseStep, TestData } from '@interfaces/'
 import { StepsTableView } from './StepsTableView/StepsTableView'
 import styles from './StepsEditor.module.scss'
 import { QuestionDialog } from '@components/'
+import { TestDataEditor } from '../TestDataEditor'
+import { useTestCase } from '@contexts/'
+import { Link, useParams } from 'react-router-dom'
+import { PAGE_ENDPOINTS } from '@constants/'
 
 interface EnhancedStepsEditorProps {
   steps: TestCaseStep[]
@@ -19,6 +23,7 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
   defaultExpanded = true,
   showTableView = true,
 }) => {
+  const { allTestCases } = useTestCase()
   const [activeStep, setActiveStep] = useState<number>(0)
   const [isAddingStep, setIsAddingStep] = useState(false)
   const [tableViewVisible, setTableViewVisible] = useState(true)
@@ -26,6 +31,9 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
   const [showDiag, setShowDiag] = useState(false)
   const [stepToDelete, setStepToDelete] = useState(-1)
+  const { testCaseId } = useParams<{ testCaseId: string }>()
+  const [openDropdown, setOpenDropdown] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (isAddingStep && steps.length > 0) {
@@ -47,11 +55,26 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
     }
   }, [steps, isAddingStep])
 
+  useEffect(() => {
+    const closeDropDown = (e: PointerEvent) => {
+      if (!(dropdownRef.current && dropdownRef.current.contains(e.target))) {
+        setOpenDropdown(false)
+      }
+    }
+    document.addEventListener('click', closeDropDown)
+    return () => document.removeEventListener('click', closeDropDown)
+  }, [])
+
   const handleAddStep = () => {
     const newStep: TestCaseStep = {
+      testCaseId: -1,
       precondition: '',
       action: '',
       result: '',
+      testData: [],
+      formName: '',
+      elementLocation: '',
+      elementName: '',
     }
     const newSteps = [...steps, newStep]
     onChange(newSteps)
@@ -78,11 +101,49 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
   const handleStepChange = (
     index: number,
     field: keyof TestCaseStep,
-    value: string
+    value: string | TestData[] | number
   ) => {
     const newSteps = [...steps]
     newSteps[index] = { ...newSteps[index], [field]: value }
     onChange(newSteps)
+  }
+
+  const handleTestIdChange = (index: number, value: number) => {
+    if (value !== -1) {
+      const testCase = allTestCases.find((el) => el.id === value)
+      if (!testCase) {
+        // по идее никогда не должно выстрелить
+        // тк выбор кейсов идет из выпадающих списков,
+        // что формируются на основе allTestCases
+        alert('что-то пошло не так!!')
+        throw new Error(`не найден тест-кейс c id - ${value}`)
+      }
+      const updatedStep = {
+        ...steps[index],
+        testCaseId: value,
+        precondition: testCase.precondition,
+        action: `выполнить тест-кейс '${testCase.name}'`,
+        result: `успешно пройден тест-кейс '${testCase.name}'`,
+        testData: testCase.testData,
+      }
+
+      const newSteps = [...steps]
+      newSteps[index] = updatedStep
+      onChange(newSteps)
+    } else {
+      const updatedStep = {
+        ...steps[index],
+        testCaseId: value,
+        precondition: '',
+        action: '',
+        result: '',
+        testData: [],
+      }
+
+      const newSteps = [...steps]
+      newSteps[index] = updatedStep
+      onChange(newSteps)
+    }
   }
 
   const handleMoveStep = (fromIndex: number, toIndex: number) => {
@@ -104,9 +165,14 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
 
   const handleInsertAfter = (index: number) => {
     const newStep: TestCaseStep = {
+      testCaseId: -1,
       precondition: '',
       action: '',
       result: '',
+      testData: [],
+      formName: '',
+      elementLocation: '',
+      elementName: '',
     }
     const newSteps = [...steps]
     newSteps.splice(index + 1, 0, newStep)
@@ -262,6 +328,7 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
 
     const step = steps[activeStep]
     const stepNumber = activeStep + 1
+    const testCaseId = step.testCaseId
 
     return (
       <div className={styles.stepContent}>
@@ -276,6 +343,86 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
           </h4>
 
           <div className={styles.stepActions}>
+            {testCaseId !== -1 && (
+              <Link
+                to={
+                  window.location.pathname.split(
+                    PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE
+                  )[0] +
+                  `${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}/${testCaseId}`
+                }
+              >
+                Открыть{' '}
+                {allTestCases.find((el) => el.id === testCaseId)?.name ||
+                  'ERROR'}
+              </Link>
+            )}
+            <div className={styles.testCaseSelect} ref={dropdownRef}>
+              <button
+                type="button"
+                className={`${styles.headerAction} ${styles.openDropdownBtn}`}
+                onClick={() => setOpenDropdown(!openDropdown)}
+                // onMouseEnter={() => {
+                //   clearTimeout(timeoutID)
+                // }}
+                // onMouseLeave={() => {
+                //   setTimeOutId(
+                //     setTimeout(() => {
+                //       setOpenDropdown(false)
+                //     }, 250)
+                //   )
+                // }}
+              >
+                {testCaseId === -1
+                  ? 'Классический шаг'
+                  : `Выполнить '${allTestCases.find((el) => el.id === testCaseId)?.name || 'ERROR'}'`}
+                &nbsp;&nbsp;&nbsp;{' '}
+                <span className={openDropdown ? styles.rotated : ''}>▶</span>
+              </button>
+
+              <div
+                className={`${styles.dropdownDiv} ${openDropdown ? '' : styles.hidden}`}
+                // onMouseEnter={() => {
+                //   clearTimeout(timeoutID)
+                // }}
+                // onMouseLeave={() => {
+                //   setTimeOutId(
+                //     setTimeout(() => {
+                //       setOpenDropdown(false)
+                //     }, 250)
+                //   )
+                // }}
+              >
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpenDropdown(!openDropdown)
+                    handleTestIdChange(activeStep, -1)
+                  }}
+                  className={`${styles.dropdownOption} ${testCaseId === -1 ? styles.selected : ''}`}
+                >
+                  Классический шаг
+                </button>
+                {allTestCases.map((el) =>
+                  el.id === parseInt(testCaseId || '') ? (
+                    <></>
+                  ) : (
+                    <button
+                      type="button"
+                      key={el.id}
+                      className={`${styles.dropdownOption} ${testCaseId === el.id ? styles.selected : ''}`}
+                      onClick={() => {
+                        setOpenDropdown(!openDropdown)
+                        handleTestIdChange(activeStep, el.id)
+                      }}
+                    >
+                      Выполнить '{el.name}'
+                    </button>
+                  )
+                )}
+              </div>
+            </div>
+            <div className={styles.forUsability}> 
             <div className={styles.moveActions}>
               <button
                 type="button"
@@ -318,12 +465,16 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
               <button
                 type="button"
                 className={`${styles.iconButton} ${styles.deleteButton}`}
-                onClick={() => {setStepToDelete(activeStep); setShowDiag(true)}}
+                onClick={() => {
+                  setStepToDelete(activeStep)
+                  setShowDiag(true)
+                }}
                 disabled={disabled || steps.length <= 1}
                 title="Удалить шаг"
               >
                 ×
               </button>
+            </div>
             </div>
           </div>
         </div>
@@ -342,7 +493,7 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
               placeholder="Опишите условия, которые должны быть выполнены перед этим шагом"
               className={styles.textarea}
               rows={2}
-              disabled={disabled}
+              disabled={testCaseId !== -1 || disabled}
             />
           </div>
 
@@ -476,7 +627,7 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
                 (если отличаются от общих СПД)
               </span>
             </label>
-            <textarea
+            {/* <textarea
               value={step.testData || ''}
               onChange={(e) =>
                 handleStepChange(activeStep, 'testData', e.target.value)
@@ -484,6 +635,13 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
               placeholder="Введите специфичные данные для этого шага"
               className={styles.textarea}
               rows={2}
+              disabled={disabled}
+            /> */}
+            <TestDataEditor
+              testData={step.testData}
+              onChange={(data: TestData[]) =>
+                handleStepChange(activeStep, 'testData', data)
+              }
               disabled={disabled}
             />
           </div>
@@ -570,7 +728,7 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
                     const hasPrecondition =
                       step.precondition && step.precondition.trim().length > 0
                     const hasTestData =
-                      step.testData && step.testData.trim().length > 0
+                      step.testData && step.testData.length > 0
 
                     return (
                       <button
@@ -623,36 +781,19 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
               <div className={styles.footer}>
                 <div className={styles.guidelines}>
                   <h5>Рекомендации по заполнению шагов:</h5>
-                  <div className={styles.guidelinesGrid}>
-                    <div className={styles.guidelineItem}>
-                      <div className={styles.guidelineIcon}>⚡</div>
-                      <div className={styles.guidelineContent}>
-                        <strong>Атомарность:</strong> Каждый шаг должен
-                        содержать одно неделимое действие
-                      </div>
-                    </div>
-                    <div className={styles.guidelineItem}>
-                      <div className={styles.guidelineIcon}>🚫</div>
-                      <div className={styles.guidelineContent}>
-                        <strong>Без ветвлений:</strong> Избегайте логических
-                        ветвлений в одном шаге
-                      </div>
-                    </div>
-                    <div className={styles.guidelineItem}>
-                      <div className={styles.guidelineIcon}>📏</div>
-                      <div className={styles.guidelineContent}>
-                        <strong>Объем:</strong> Оптимально 10-20 шагов на
-                        тест-кейс
-                      </div>
-                    </div>
-                    <div className={styles.guidelineItem}>
-                      <div className={styles.guidelineIcon}>🎯</div>
-                      <div className={styles.guidelineContent}>
-                        <strong>Конкретность:</strong> Ожидаемый результат
-                        должен быть измеримым
-                      </div>
-                    </div>
-                  </div>
+                  <ul>
+                    <li>
+                      Атомарность: Каждый шаг должен содержать одно неделимое
+                      действие
+                    </li>
+                    <li>
+                      Без ветвлений: Избегайте логических ветвлений в одном шаге
+                    </li>
+                    <li>Объем: Оптимально 10-20 шагов на тест-кейс</li>
+                    <li>
+                      Конкретность: Ожидаемый результат должен быть измеримым
+                    </li>
+                  </ul>
                 </div>
               </div>
             </>

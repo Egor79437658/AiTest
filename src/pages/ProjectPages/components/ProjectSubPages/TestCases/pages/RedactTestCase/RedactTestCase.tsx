@@ -5,6 +5,8 @@ import {
   TestCaseUpdateData,
   testCaseStatusMap,
   testCasePriorityMap,
+  TestData,
+  TestCaseStep,
 } from '@interfaces/'
 import { useHeaderStore } from '@stores/'
 import React, { useEffect, useState } from 'react'
@@ -33,16 +35,7 @@ interface TestCaseFormData {
 
   tags: string[]
 
-  steps: Array<{
-    precondition: string
-    action: string
-    result: string
-    testData?: string
-    elementName?: string
-    elementLocation?: string
-    formName?: string
-    screenshot?: string
-  }>
+  steps: TestCaseStep[]
 
   testData: Array<{
     name: string
