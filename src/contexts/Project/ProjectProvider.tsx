@@ -11,19 +11,21 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const {
     project,
-    projects,
     setProject,
-    setProjects,
     updateProject,
     setLoading,
     setError,
     clearProject,
   } = useProjectStore()
 
-  const [initialLoadComplete, setInitialLoadComplete] = useState(true)
 
   const loadProject = useCallback(
     async (projectId: number): Promise<void> => {
+      if(isNaN(projectId) || !isFinite(projectId)) {
+        setError("некорректное значение id проекта")
+        console.error(`некорректное значение id проекта ${projectId}`)
+        throw new Error(`некорректное значение id проекта ${projectId}`)
+      }
       try {
         setLoading(true)
         setError(null)
@@ -51,46 +53,6 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [setLoading, setError, setProject]
   )
-
-  const loadShortProjects = useCallback(async (): Promise<void> => {
-    try {
-      setLoading(true)
-      setError(null)
-
-      let projectsData
-
-      if (MOCK_MODE) {
-        projectsData = await mockApiService.getShortProjects()
-      } else {
-        projectsData = await projectsApi.getShortProjects()
-      }
-
-      setProjects(projectsData)
-    } catch (error) {
-      console.error('Failed to load projects:', error)
-      setError('Не удалось загрузить список проектов')
-      throw error
-    } finally {
-      setLoading(false)
-    }
-  }, [setLoading, setError, setProjects])
-
-  useEffect(() => {
-    const loadInitialData = async () => {
-      try {
-        setLoading(true)
-        await loadShortProjects()
-      } catch (error) {
-        console.error('Failed to load initial project data:', error)
-        setError('Не удалось загрузить данные проектов')
-      } finally {
-        setLoading(false)
-        setInitialLoadComplete(true)
-      }
-    }
-
-    loadInitialData()
-  }, [loadShortProjects, setError, setLoading])
 
   const updateProjectData = useCallback(
     async (updates: Partial<Project>): Promise<void> => {
@@ -137,29 +99,12 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const value = {
     project: project,
-    projects: projects,
     isLoading: useProjectStore.getState().isLoading,
     error: useProjectStore.getState().error,
     loadProject,
-    loadShortProjects,
     updateProject: updateProjectData,
     clearProject: clearCurrentProject,
     clearError: clearErrorState,
-  }
-
-  if (!initialLoadComplete) {
-    return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
-        }}
-      >
-        <div>Загрузка проектов...</div>
-      </div>
-    )
   }
 
   return (

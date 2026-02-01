@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams, useLocation } from 'react-router-dom'
 import { useProject, useTestCase } from '@contexts/'
 import { useHeaderStore } from '@stores/'
@@ -13,11 +13,8 @@ interface StepGroup {
 
 export const ViewTestCase: React.FC = () => {
   const { project } = useProject()
-  const {
-    allTestCases: testCases,
-    loadAllTestCases,
-    isLoading: isLoadingTestCases,
-  } = useTestCase()
+  const { allTestCases: testCases, isLoading: isLoadingTestCases } =
+    useTestCase()
   const { setHeaderContent } = useHeaderStore()
   const navigate = useNavigate()
   const location = useLocation()
@@ -27,21 +24,6 @@ export const ViewTestCase: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [versionParam, setVersionParam] = useState<string>('')
   const [expandedSteps, setExpandedSteps] = useState<number[]>([])
-
-  // Загружаем тест-кейсы при монтировании
-  useEffect(() => {
-    const loadTestCases = async () => {
-      if (project && testCases.length === 0) {
-        try {
-          await loadAllTestCases(project.id)
-        } catch (error) {
-          console.error('Ошибка при загрузке тест-кейсов:', error)
-        }
-      }
-    }
-
-    loadTestCases()
-  }, [project, testCases.length, loadAllTestCases])
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search)
@@ -420,7 +402,17 @@ export const ViewTestCase: React.FC = () => {
                           </td>
                           <td className={styles.dataCol}>
                             <div className={styles.stepData}>
-                              {step.testData || <em>Нет</em>}
+                              {step.testData.length ? (
+                                step.testData.map((el, index) => (
+                                  <Fragment key={el.id || index}>
+                                    <div>{el.name} </div>
+                                    <div>{el.fileUrl} </div>
+                                    <div>{el.value} </div>
+                                  </Fragment>
+                                ))
+                              ) : (
+                                <em>Нет</em>
+                              )}
                             </div>
                           </td>
                         </tr>
@@ -460,16 +452,6 @@ export const ViewTestCase: React.FC = () => {
                                       <label>Форма:</label>
                                       <div className={styles.detailValue}>
                                         {step.formName}
-                                      </div>
-                                    </div>
-                                  )}
-                                  {step.screenshot && (
-                                    <div className={styles.detailItem}>
-                                      <label>Скриншот:</label>
-                                      <div className={styles.detailValue}>
-                                        <span className={styles.screenshotLink}>
-                                          {step.screenshot}
-                                        </span>
                                       </div>
                                     </div>
                                   )}

@@ -726,6 +726,7 @@
     overflow: hidden;
     // height: calc(34px * 4);
     transition: height 0.3s ease-in-out;
+    z-index: 2;
   }
   button {
     padding: 10px;

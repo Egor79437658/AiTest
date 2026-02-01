@@ -46,11 +46,9 @@ export interface Project {
 
 export interface ProjectContextType {
   project: Project | null
-  projects: ProjectMinimal[]
   isLoading: boolean
   error: string | null
   loadProject: (projectId: number) => Promise<void>
-  loadShortProjects: () => Promise<void>
   updateProject: (updates: Partial<Project>) => Promise<void>
   clearProject: () => void
   clearError: () => void

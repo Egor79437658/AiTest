@@ -68,6 +68,7 @@ export interface UserContextType {
   clearUser: () => void
   getUserProfile: (id: number) => Promise<Partial<ProfileData>>
   deleteMyAccount: () => Promise<{status: number, message?: string}> //подумать что тут должно быть
+  initializeUser: () => Promise<void>
 }
 
 export const statusMap = {

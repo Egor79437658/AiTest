@@ -13,7 +13,6 @@ export const ProjectTestCases: React.FC = () => {
   const { project } = useProject()
   const {
     allTestCases: testCases,
-    loadAllTestCases,
     isLoading,
     error,
     setAllTestCases,
@@ -122,15 +121,6 @@ export const ProjectTestCases: React.FC = () => {
     )
   }, [project, setHeaderContent])
 
-  useEffect(() => {
-    if (project) {
-      try {
-        loadAllTestCases(project.id)
-      } catch (e: any) {
-        console.log('failed to load test-cases:', e)
-      }
-    }
-  }, [project, loadAllTestCases])
 
   useEffect(() => {
     setTotalTCPositive(testCases.filter((el) => el.positive).length)

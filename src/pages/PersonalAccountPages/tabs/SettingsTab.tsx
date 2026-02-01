@@ -50,7 +50,6 @@ export const SettingsTab: React.FC = () => {
       data.company = !!data.company
       data.jobPosition = !!data.jobPosition
       user.settingsData = data
-      console.log(user)
       try {
         const res = await updateUserSettings(user)
         if (res.status !== 200) {
@@ -331,7 +330,7 @@ export const SettingsTab: React.FC = () => {
                             <label className={stylesSettings.checkboxLabel}>
                               <input
                                 type="checkbox"
-                                checked={field.value}
+                                checked={field.value.flag}
                                 onChange={field.onChange}
                                 className={stylesSettings.checkbox}
                               />

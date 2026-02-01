@@ -13,7 +13,7 @@ import {
 import styles from './CreateTestCase.module.scss'
 import {
   AttachmentsManager,
-  EnhancedStepsEditor,
+  StepsEditor,
   TagsInput,
   TestDataEditor,
 } from '../../components'
@@ -28,8 +28,9 @@ export const CreateTestCase: React.FC = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
-  const [showDiag, setShowDiag] = useState(false)
-
+  const [showStopCreatingDiag, setShowStopCreatingDiag] = useState(false)
+  const [showDeleteStepDiag, setShowDeleteStepDiag] = useState(false)
+  const [deleteStepFunc, setDeleteStepFunc] = useState<() => void>(() => {})
   const {
     control,
     handleSubmit,
@@ -200,7 +201,7 @@ export const CreateTestCase: React.FC = () => {
             <button
               type="button"
               className={`${styles.actionButton} ${styles.cancelButton}`}
-              onClick={() => setShowDiag(true)}
+              onClick={() => setShowStopCreatingDiag(true)}
               disabled={isSubmitting}
             >
               Отмена
@@ -514,12 +515,14 @@ export const CreateTestCase: React.FC = () => {
             }}
             render={({ field, fieldState }) => (
               <div>
-                <EnhancedStepsEditor
+                <StepsEditor
                   steps={field.value}
                   onChange={field.onChange}
                   disabled={isSubmitting}
                   defaultExpanded={true}
                   showTableView={false}
+                  setDeleteStepFunc={setDeleteStepFunc}
+                  setOpenDiag={setShowDeleteStepDiag}
                 />
                 {fieldState.error && (
                   <div className={styles.errorMessage}>
@@ -620,7 +623,7 @@ export const CreateTestCase: React.FC = () => {
             <button
               type="button"
               className={`${styles.actionButton} ${styles.cancelButton}`}
-              onClick={() => setShowDiag(true)}
+              onClick={() => setShowStopCreatingDiag(true)}
               disabled={isSubmitting}
             >
               Отмена
@@ -650,8 +653,8 @@ export const CreateTestCase: React.FC = () => {
         </div>
       </form>
       <QuestionDialog
-        showQuestion={showDiag}
-        changeShowQuestion={setShowDiag}
+        showQuestion={showStopCreatingDiag}
+        changeShowQuestion={setShowStopCreatingDiag}
         onYesClick={() => {
           const projectBaseUrl = window.location.href.split(
             '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE
@@ -663,6 +666,13 @@ export const CreateTestCase: React.FC = () => {
       >
         Отменить создание тест-кейса? <br />
         Все несохраненные данные будут потеряны.
+      </QuestionDialog>
+      <QuestionDialog
+        showQuestion={showDeleteStepDiag}
+        changeShowQuestion={setShowDeleteStepDiag}
+        onYesClick={() => deleteStepFunc()}
+      >
+        Вы уверены, что хотите удалить этот шаг?
       </QuestionDialog>
     </div>
   )

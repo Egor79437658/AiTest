@@ -1,24 +1,27 @@
-import React, { useState, useRef, useEffect, ReactEventHandler } from 'react'
-import { TestCaseStep, TestData } from '@interfaces/'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
+import { TestCase, TestCaseStep, TestData } from '@interfaces/'
 import { StepsTableView } from './StepsTableView/StepsTableView'
 import styles from './StepsEditor.module.scss'
-import { QuestionDialog } from '@components/'
 import { TestDataEditor } from '../TestDataEditor'
 import { useTestCase } from '@contexts/'
-import { Link, useParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { PAGE_ENDPOINTS } from '@constants/'
 
-interface EnhancedStepsEditorProps {
+interface StepsEditorProps {
   steps: TestCaseStep[]
   onChange: (steps: TestCaseStep[]) => void
+  setDeleteStepFunc: (func: () => void) => void
+  setOpenDiag: (flag: boolean) => void
   disabled?: boolean
   defaultExpanded?: boolean
   showTableView?: boolean
 }
 
-export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
+export const StepsEditor: React.FC<StepsEditorProps> = ({
   steps = [],
   onChange,
+  setDeleteStepFunc,
+  setOpenDiag,
   disabled = false,
   defaultExpanded = true,
   showTableView = true,
@@ -29,9 +32,6 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
   const [tableViewVisible, setTableViewVisible] = useState(true)
   const tabsContainerRef = useRef<HTMLDivElement>(null)
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
-  const [showDiag, setShowDiag] = useState(false)
-  const [stepToDelete, setStepToDelete] = useState(-1)
-  const { testCaseId } = useParams<{ testCaseId: string }>()
   const [openDropdown, setOpenDropdown] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
@@ -81,22 +81,21 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
     setIsAddingStep(true)
   }
 
-  const handleRemoveStep = (index: number) => {
-    if (steps.length <= 1) {
-      alert('Тест-кейс должен содержать хотя бы один шаг')
-      return
-    }
+  const handleRemoveStep = useCallback(
+    (index: number) => {
+      console.log('a')
+      const newSteps = steps.filter((_, i) => i !== index)
+      onChange(newSteps)
 
-    const newSteps = steps.filter((_, i) => i !== index)
-    onChange(newSteps)
-
-    if (index === activeStep) {
-      const newActiveStep = index > 0 ? index - 1 : 0
-      setActiveStep(newActiveStep)
-    } else if (index < activeStep) {
-      setActiveStep(activeStep - 1)
-    }
-  }
+      if (index === activeStep) {
+        const newActiveStep = index > 0 ? index - 1 : 0
+        setActiveStep(newActiveStep)
+      } else if (index < activeStep) {
+        setActiveStep(activeStep - 1)
+      }
+    },
+    [steps, activeStep, onChange, setActiveStep]
+  )
 
   const handleStepChange = (
     index: number,
@@ -403,78 +402,89 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
                 >
                   Классический шаг
                 </button>
-                {allTestCases.map((el) =>
-                  el.id === parseInt(testCaseId || '') ? (
-                    <></>
-                  ) : (
-                    <button
-                      type="button"
-                      key={el.id}
-                      className={`${styles.dropdownOption} ${testCaseId === el.id ? styles.selected : ''}`}
-                      onClick={() => {
-                        setOpenDropdown(!openDropdown)
-                        handleTestIdChange(activeStep, el.id)
-                      }}
-                    >
-                      Выполнить '{el.name}'
-                    </button>
-                  )
-                )}
+                {allTestCases
+                  .reduce((filtered, newVal) => {
+                    if (
+                      !filtered.some((prevCase) => prevCase.id === newVal.id)
+                    ) {
+                      filtered.push(newVal)
+                    }
+                    return filtered
+                  }, [] as TestCase[])
+                  .map((el) =>
+                    el.id === testCaseId ? (
+                      <></>
+                    ) : (
+                      <button
+                        type="button"
+                        key={el.id}
+                        className={`${styles.dropdownOption} ${testCaseId === el.id ? styles.selected : ''}`}
+                        onClick={() => {
+                          setOpenDropdown(!openDropdown)
+                          handleTestIdChange(activeStep, el.id)
+                        }}
+                      >
+                        Выполнить '{el.name}'
+                      </button>
+                    )
+                  )}
               </div>
             </div>
-            <div className={styles.forUsability}> 
-            <div className={styles.moveActions}>
-              <button
-                type="button"
-                className={styles.iconButton}
-                onClick={() => handleMoveStep(activeStep, activeStep - 1)}
-                disabled={disabled || activeStep === 0}
-                title="Переместить вверх"
-              >
-                ↑
-              </button>
-              <button
-                type="button"
-                className={styles.iconButton}
-                onClick={() => handleMoveStep(activeStep, activeStep + 1)}
-                disabled={disabled || activeStep === steps.length - 1}
-                title="Переместить вниз"
-              >
-                ↓
-              </button>
-            </div>
+            <div className={styles.forUsability}>
+              <div className={styles.moveActions}>
+                <button
+                  type="button"
+                  className={styles.iconButton}
+                  onClick={() => handleMoveStep(activeStep, activeStep - 1)}
+                  disabled={disabled || activeStep === 0}
+                  title="Переместить вверх"
+                >
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  className={styles.iconButton}
+                  onClick={() => handleMoveStep(activeStep, activeStep + 1)}
+                  disabled={disabled || activeStep === steps.length - 1}
+                  title="Переместить вниз"
+                >
+                  ↓
+                </button>
+              </div>
 
-            <div className={styles.editActions}>
-              <button
-                type="button"
-                className={`${styles.iconButton} ${styles.duplicateButton}`}
-                onClick={() => handleDuplicateStep(activeStep)}
-                disabled={disabled || steps.length >= 20}
-                title="Дублировать шаг"
-              >
-                ⎘
-              </button>
-              <button
-                type="button"
-                className={styles.textButton}
-                onClick={() => handleInsertAfter(activeStep)}
-                disabled={disabled || steps.length >= 20}
-              >
-                + Вставить после
-              </button>
-              <button
-                type="button"
-                className={`${styles.iconButton} ${styles.deleteButton}`}
-                onClick={() => {
-                  setStepToDelete(activeStep)
-                  setShowDiag(true)
-                }}
-                disabled={disabled || steps.length <= 1}
-                title="Удалить шаг"
-              >
-                ×
-              </button>
-            </div>
+              <div className={styles.editActions}>
+                <button
+                  type="button"
+                  className={`${styles.iconButton} ${styles.duplicateButton}`}
+                  onClick={() => handleDuplicateStep(activeStep)}
+                  disabled={disabled || steps.length >= 20}
+                  title="Дублировать шаг"
+                >
+                  ⎘
+                </button>
+                <button
+                  type="button"
+                  className={styles.textButton}
+                  onClick={() => handleInsertAfter(activeStep)}
+                  disabled={disabled || steps.length >= 20}
+                >
+                  + Вставить после
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.iconButton} ${styles.deleteButton}`}
+                  onClick={() => {
+                    setDeleteStepFunc(() => {
+                      return () => handleRemoveStep(activeStep)
+                    })
+                    setOpenDiag(true)
+                  }}
+                  disabled={disabled || steps.length <= 1}
+                  title="Удалить шаг"
+                >
+                  ×
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -800,13 +810,6 @@ export const EnhancedStepsEditor: React.FC<EnhancedStepsEditorProps> = ({
           )}
         </>
       )}
-      <QuestionDialog
-        showQuestion={showDiag}
-        changeShowQuestion={setShowDiag}
-        onYesClick={() => handleRemoveStep(stepToDelete)}
-      >
-        Вы уверены, что хотите удалить этот шаг?
-      </QuestionDialog>
     </div>
   )
 }

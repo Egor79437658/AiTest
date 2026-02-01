@@ -11,7 +11,7 @@ export interface MenuItem {
 
 export const useSidebarNavigation = () => {
   const { isAuthenticated, openAuthModal } = useAuth()
-  const { projects, project } = useProject()
+  const { project } = useProject()
   const { user } = useUser()
 
   const baseItems: MenuItem[] = []

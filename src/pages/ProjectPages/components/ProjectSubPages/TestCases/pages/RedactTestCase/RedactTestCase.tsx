@@ -15,7 +15,7 @@ import styles from './RedactTestCases.module.scss'
 import { Controller, useForm } from 'react-hook-form'
 import {
   AttachmentsManager,
-  EnhancedStepsEditor,
+  StepsEditor,
   TagsInput,
   TestDataEditor,
 } from '../../components'
@@ -65,7 +65,10 @@ export const RedactTestCase: React.FC = () => {
   const { testCaseId } = useParams<{ testCaseId: string }>()
   const [testCase, setTestCase] = useState<TestCase | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [showDiag, setShowDiag] = useState(false)
+  const [showStopCreatingDiag, setShowStopCreatingDiag] = useState(false)
+  const [showDeleteStepDiag, setShowDeleteStepDiag] = useState(false)
+  const [deleteStepFunc, setDeleteStepFunc] = useState<() => void>(() => {})
+  const [error, setError] = useState('')
 
   const {
     control,
@@ -102,7 +105,6 @@ export const RedactTestCase: React.FC = () => {
       try {
         setIsLoading(true)
         const parsedTestCaseId = parseInt(testCaseId || '-1')
-
         if (isNaN(parsedTestCaseId) || parsedTestCaseId <= 0) {
           if (project && currentUser) {
             reset({
@@ -125,6 +127,7 @@ export const RedactTestCase: React.FC = () => {
             })
           }
           setTestCase(null)
+          setError('')
         } else {
           const data = testCases.find((el) => el.id === parsedTestCaseId)
           if (data) {
@@ -148,6 +151,10 @@ export const RedactTestCase: React.FC = () => {
               relatedTestCases: data.relatedTestCases || [],
               owner: data.owner,
             })
+            setError('')
+          } else {
+            setError('тест кейс не найден')
+            throw new Error('no test case was found')
           }
         }
       } catch (error) {
@@ -277,6 +284,18 @@ export const RedactTestCase: React.FC = () => {
     )
   }
 
+  if (error) {
+    return (
+      <div className={styles.pageContainer}>
+        <div className={styles.loading}>
+          <div className={styles.loadingSpinner}></div>
+          <p>При загрузке проекта произошла ошибка:</p>
+          <p>{error}</p>
+        </div>
+      </div>
+    )
+  }
+
   const isEditMode = !!testCaseId
 
   return (
@@ -305,7 +324,7 @@ export const RedactTestCase: React.FC = () => {
               <button
                 type="button"
                 className={`${styles.actionButton} ${styles.secondaryButton}`}
-                onClick={() => setShowDiag(true)}
+                onClick={() => setShowStopCreatingDiag(true)}
               >
                 Сохранить как новую версию
               </button>
@@ -595,10 +614,12 @@ export const RedactTestCase: React.FC = () => {
             name="steps"
             control={control}
             render={({ field }) => (
-              <EnhancedStepsEditor
+              <StepsEditor
                 steps={field.value}
                 onChange={field.onChange}
                 disabled={isSubmitting}
+                setDeleteStepFunc={setDeleteStepFunc}
+                setOpenDiag={setShowDeleteStepDiag}
               />
             )}
           />
@@ -706,7 +727,7 @@ export const RedactTestCase: React.FC = () => {
             <button
               type="button"
               className={`${styles.actionButton} ${styles.secondaryButton}`}
-              onClick={() => setShowDiag(true)}
+              onClick={() => setShowStopCreatingDiag(true)}
             >
               Сохранить как новую версию
             </button>
@@ -721,12 +742,19 @@ export const RedactTestCase: React.FC = () => {
         </div>
       </form>
       <QuestionDialog
-        showQuestion={showDiag}
-        changeShowQuestion={setShowDiag}
+        showQuestion={showStopCreatingDiag}
+        changeShowQuestion={setShowStopCreatingDiag}
         onYesClick={saveAsNewVersion}
       >
-        Сохранить как новую версию тест-кейса? <br/>
+        Сохранить как новую версию тест-кейса? <br />
         Старая версия будет переведена в архив.
+      </QuestionDialog>
+      <QuestionDialog
+        showQuestion={showDeleteStepDiag}
+        changeShowQuestion={setShowDeleteStepDiag}
+        onYesClick={() => deleteStepFunc()}
+      >
+        Вы уверены, что хотите удалить этот шаг?
       </QuestionDialog>
     </div>
   )

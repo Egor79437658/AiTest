@@ -236,7 +236,7 @@ class MockApiService {
       ...mockUsers[userIndex],
       profileData: {
         ...mockUsers[userIndex].profileData,
-        ...profileData,
+        ...profileData.profileData,
       },
     }
 
@@ -254,7 +254,7 @@ class MockApiService {
       ...mockUsers[userIndex],
       settingsData: {
         ...mockUsers[userIndex].settingsData,
-        ...settingsData,
+        ...settingsData.settingsData,
       },
     }
 
@@ -566,7 +566,7 @@ class MockApiService {
     return structuredClone(testCase)
   }
 
-  async bulkDeleteTestCases(
+  async deleteTestCases(
     projectId: number,
     testCaseIds: number[]
   ): Promise<void> {

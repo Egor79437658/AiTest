@@ -6,14 +6,22 @@
   font-weight: 500;
   background-color: white;
   height: 100vh;
+
+    @media (max-width: 600px) {
+    padding: 10px;
+  }
 }
 
 .flexDiv {
   display: flex;
 
-  & > *:last-child {
+  .nextTosidebarDiv {
     margin: 0 auto;
     width: 100%;
+
+    &.shrinked {
+      width: 70vw;
+    }
   }
 }
 
