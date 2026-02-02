@@ -1,4 +1,4 @@
-// mockApiService.ts - обновленная версия с методом deleteProject
+
 import {
   ProfileData,
   Project,
