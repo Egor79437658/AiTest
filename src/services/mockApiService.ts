@@ -344,7 +344,7 @@ class MockApiService {
     return structuredClone(updatedProject)
   }
 
-  // НОВЫЙ МЕТОД: Удаление проекта
+
   async deleteProject(projectId: number): Promise<void> {
     await delay(500)
 
@@ -354,17 +354,17 @@ class MockApiService {
       throw new Error('Project not found')
     }
 
-    // Удаляем проект из mockProjects
+  
     mockProjects.splice(projectIndex, 1)
 
-    // Удаляем проект из projectData всех пользователей
+ 
     mockUsers.forEach(user => {
       user.projectData = user.projectData.filter(
         project => project.id !== projectId
       )
     })
 
-    // Удаляем datapool из localStorage
+    
     localStorage.removeItem(`project_${projectId}_datapool`)
 
     console.log(`Project ${projectId} deleted successfully from mock data`)
