@@ -3,7 +3,7 @@ import { MOCK_MODE } from '@constants/'
 import { ProjectContext } from './ProjectContext'
 import { mockApiService } from '../../services/mockApiService'
 import { Project } from '@interfaces/'
-import { useProjectStore } from '../../stores/projectStore'
+import { useProjectStore } from '../../stores/'
 import { projectsApi } from '@api'
 
 export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({

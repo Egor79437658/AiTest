@@ -1,4 +1,3 @@
-// useSidebarNavigation.ts
 import { PAGE_ENDPOINTS } from '@constants/'
 import { useAuth, useProject, useUser } from '@contexts/'
 
@@ -13,7 +12,7 @@ export interface MenuItem {
 export const useSidebarNavigation = () => {
   const { isAuthenticated, openAuthModal } = useAuth()
   const { projects, project } = useProject()
-  const {user} = useUser()
+  const { user } = useUser()
 
   const baseItems: MenuItem[] = []
 
@@ -24,13 +23,19 @@ export const useSidebarNavigation = () => {
       icon: '#',
       requireAuth: true,
       children: [
-        ...(!project && user ? user?.projectData : []).sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime()).map((el) => {
-          return {
-            title: el.name,
-            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${el.id}`,
-            requireAuth: true,
-          }
-        }),
+        ...(!project && user ? user?.projectData : [])
+          .sort(
+            (a, b) =>
+              new Date(b.lastUpdated).getTime() -
+              new Date(a.lastUpdated).getTime()
+          )
+          .map((el) => {
+            return {
+              title: el.name,
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${el.id}`,
+              requireAuth: true,
+            }
+          }),
         {
           title: 'Создать новый',
           link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/new`,

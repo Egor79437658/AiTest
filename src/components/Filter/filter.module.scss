@@ -1,0 +1,130 @@
+.filterContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+.actionsContainer {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.conditionsContainer {
+  display: flex;
+  gap: 10px;
+}
+
+.rule {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.rule > select {
+  min-width: 148px;
+}
+
+.select {
+  padding: 5px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--i);
+}
+
+.input {
+  padding: 5px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  flex-grow: 1;
+}
+
+.removeButton {
+  width: 20px;
+  height: 20px;
+  
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  background-color: var(--background-color);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease-in-out;
+    /* filter 0.2s ease-in-out, */
+}
+
+.removeButton:hover,
+.removeButton:focus {
+  /* filter: brightness(80%); */
+  background-color: var(--background-color-accent);
+}
+
+.removeButtonIcon {
+  color: var(--color-typography-primary);
+  font-size: 10px;
+}
+
+.addButton {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--accent-color);
+  color: white;
+  cursor: pointer;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  /* box-shadow: 2px 2px 5px black; */
+}
+
+.addButton:active {
+  box-shadow: inset 3px 3px 5px rgb(0, 0, 0);
+}
+
+.conditionButton {
+  padding: 10px 15px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background-color: var(--background-color-accent);
+  color: var(--accent-color);
+  cursor: pointer;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  gap: 6px;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.conditionButtonSelected {
+  border: 1px solid var(--accent-color);
+}
+
+.addButton:hover,
+.addButton:focus {
+  background-color: var(--accent-color-dark);
+}
+
+.logicContainer {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.applyButton {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  /* background-color: #28a745; */
+  color: white;
+  cursor: pointer;
+}
+
+.aplyFilterButton {
+  /* box-shadow: 2px 2px 5px black; */
+}

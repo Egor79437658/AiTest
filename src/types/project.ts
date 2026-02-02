@@ -55,3 +55,10 @@ export interface ProjectContextType {
   clearProject: () => void
   clearError: () => void
 }
+
+export interface TestCaseHistoryRecord {
+  date: Date
+  field: string
+  oldVal: string
+  newVal: string
+}

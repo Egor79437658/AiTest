@@ -5,6 +5,7 @@
   min-width: 41%;
   margin: 0 auto;
   padding: 20px;
+  text-align: center;
 }
 
 .form {
@@ -163,4 +164,43 @@
   display: flex;
   justify-content: flex-end;
   padding: 0 24px;
+}
+
+.messageDiv {
+  transition: 
+  opacity 0.5s ease-in-out,
+  background-color 0.5s ease-in-out;
+  opacity: 0;
+  width: 80%;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 0 auto;
+  
+  &.showError {
+    color: red;
+    opacity: 1;
+    background-color: #fcd9d9;
+
+  }
+  &.showMessage {
+    opacity: 1;
+  }
+}
+
+.sendSettingsBtn, .deleteBtn {
+  margin: 0 auto;
+  width: 220px;
+}
+
+.deleteBtn {
+  background-color: red;
+  margin-top: 40px;
+  margin-bottom: 15px;
+}
+.deleteBtn:hover {
+  background-color: rgb(198, 0, 0) !important;
+}
+
+.dialog > form {
+  top: 20px;
 }

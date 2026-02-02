@@ -26,7 +26,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
           if (MOCK_MODE) {
             userData = await mockApiService.getCurrentUser()
           } else {
-            userData = await authApi.getCurrentUser()
+            userData = await usersApi.getCurrentUser()
           }
 
           setUser(userData)
@@ -202,6 +202,16 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
 
+  const deleteMyAccount = async () => {
+    let response;
+      if (MOCK_MODE) {
+        response = await mockApiService.deleteMyAccount()
+      } else {
+        response = await usersApi.deleteMyAccount()
+      }
+      return response
+  }
+
   const clearError = (): void => {
     setError(null)
   }
@@ -216,7 +226,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     updateUserConfirmation,
     clearError,
     clearUser,
-    getUserProfile: getUserProfile
+    getUserProfile: getUserProfile,
+    deleteMyAccount
   }
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>

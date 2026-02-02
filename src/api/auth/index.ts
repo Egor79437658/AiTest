@@ -7,6 +7,7 @@ import {
   AuthResponse,
   ConfirmResponse,
   TokensResponse,
+  ChangePasswordData,        
 } from './types'
 import { useAuthStore } from '@stores/'
 import { API_URL } from '@constants/'
@@ -49,17 +50,19 @@ class AuthApi {
     return response
   }
 
+  async changePassword(data: ChangePasswordData): Promise<ConfirmResponse> {
+    const response = await apiClient.put<ConfirmResponse>(
+      `${API_URL.AUTH}/change-password`,
+      data
+    )
+    return response
+  }
+
   async refreshTokens(refreshToken: string): Promise<TokensResponse> {
     const response = await apiClient.post<TokensResponse>(
       `${API_URL.AUTH}/refresh`,
       { refreshToken }
     )
-    return response
-  }
-
-  //нужно ли, если есть getUserProfile(user.id)
-  async getCurrentUser(): Promise<User> {
-    const response = await apiClient.get<User>(`${API_URL.AUTH}/me`)
     return response
   }
 

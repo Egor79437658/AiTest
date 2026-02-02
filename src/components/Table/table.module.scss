@@ -1,0 +1,33 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-sans);
+}
+
+.header {
+  padding: 10px;
+  text-align: left;
+  font-weight: bold;
+}
+
+.row {
+  border-bottom: 1px solid #ddd;
+}
+
+.cell {
+  padding: 10px;
+}
+
+.invalidRow {
+  background-color: #fff3cd;
+}
+
+.tableErrorDiv {
+  margin: 20px 0;
+  padding: 5px;
+  border-radius: 5px;
+  text-align: center;
+  color: red;
+  background-color: #fcd9d9;
+  transition: opacity 0.5s ease-in-out;
+}

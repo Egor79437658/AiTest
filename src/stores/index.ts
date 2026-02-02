@@ -1,3 +1,6 @@
 export * from './authStore'
 export * from './userStore'
 export * from './contentStores'
+export * from './dialogHeightStore'
+export * from './projectStore'
+export * from './testCaseStore'

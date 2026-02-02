@@ -1,0 +1,24 @@
+.dialog {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 600px;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.15);
+  border: none;
+  padding: 0;
+  z-index: 90;
+}
+
+.dialog:open {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+}
+
+.dialog > form {
+  position: sticky;
+  top: calc(50% - 30vh);
+  /* margin-top: calc(50% - 36vh); */
+}

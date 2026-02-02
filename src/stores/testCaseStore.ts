@@ -1,38 +1,177 @@
-import { TestCase } from '@interfaces/'
+// src/stores/testCaseStore.ts
+import { TestCase, TestCaseHistoryRecord, TestCaseUpdateData } from '@interfaces/'
 import { create } from 'zustand'
 
+export type SelectionType = 'delete' | 'refactor' | 'edit' | 'default'
+
 interface TestCaseState {
+  // Основное состояние
   testCase: TestCase | null
-  allTestCases: TestCase[] | []
+  allTestCases: TestCase[]
   isLoading: boolean
+  history: TestCaseHistoryRecord[]
   error: string | null
-  setTestCase: (data: TestCase) =>void
-  setAllTestCases: (data: TestCase[]) =>void
-  updateTestCase: (data: Partial<TestCase>) =>void
-  setLoading:(data: boolean) => void
+
+  // Состояние выделения
+  selectedTestCaseIds: number[]
+  selectionType: SelectionType
+  expandedTestCaseIds: number[]
+
+  // Setters (базовые установщики)
+  setTestCase: (data: TestCase) => void
+  setTestHistory: (data: TestCaseHistoryRecord[]) => void
+  setAllTestCases: (data: TestCase[]) => void
+  setLoading: (data: boolean) => void
   setError: (data: string | null) => void
+
+  // Действия с выделением
+  toggleTestCaseSelection: (id: number) => void
+  selectAllTestCases: (ids: number[]) => void
+  clearTestCaseSelection: () => void
+  setSelectionType: (type: SelectionType) => void
+  toggleTestCaseExpansion: (id: number) => void
+
+  // Действия с данными
+  updateTestCaseInList: (caseId: number, updates: TestCaseUpdateData) => void
+  removeTestCasesFromList: (caseIds: number[]) => void
+  addTestCasesToList: (testCases: TestCase[]) => void
+  updateMultipleTestCases: (
+    caseIds: number[],
+    updates: TestCaseUpdateData
+  ) => void
+
+  // Вспомогательные геттеры
+  getSelectedTestCases: () => TestCase[]
+  getExpandedTestCases: () => TestCase[]
+  getTestCaseById: (id: number) => TestCase | undefined
+
+  // Очистка
   clearTestCase: () => void
   clearAllTestCases: () => void
+  clearAll: () => void
 }
 
-export const useTestCaseStore = create<TestCaseState>((set) => ({
+export const useTestCaseStore = create<TestCaseState>((set, get) => ({
+  // Начальное состояние
   testCase: null,
   allTestCases: [],
   isLoading: false,
   error: null,
+  selectedTestCaseIds: [],
+  selectionType: 'default',
+  expandedTestCaseIds: [],
+  history: [],
 
+  // === Setters ===
   setTestCase: (testCase) => set({ testCase }),
-  setLoading: (isLoading) => set({isLoading}),
+  setTestHistory: (history) => set({ history }),
+  setLoading: (isLoading) => set({ isLoading }),
   setAllTestCases: (allTestCases) => set({ allTestCases }),
-  setError: (error) => set({error}),
+  setError: (error) => set({ error }),
 
-
-  updateTestCase: (updates) =>
+  // === Действия с выделением ===
+  toggleTestCaseSelection: (id) =>
     set((state) => ({
-      testCase: state.testCase ? { ...state.testCase, ...updates } : null,
+      selectedTestCaseIds: state.selectedTestCaseIds.includes(id)
+        ? state.selectedTestCaseIds.filter((selectedId) => selectedId !== id)
+        : [...state.selectedTestCaseIds, id],
     })),
 
-  clearTestCase: () => set({ testCase: null }),
+  selectAllTestCases: (ids) =>
+    set((state) => {
+      const allIds = ids
+      const currentSelected = state.selectedTestCaseIds
 
-  clearAllTestCases: () => set({ allTestCases: [] }),
+      if (allIds.every((id) => currentSelected.includes(id))) {
+        return { selectedTestCaseIds: [] }
+      }
+
+      return { selectedTestCaseIds: allIds }
+    }),
+
+  clearTestCaseSelection: () =>
+    set({ selectedTestCaseIds: [], selectionType: 'default' }),
+
+  setSelectionType: (type) => set({ selectionType: type }),
+
+  toggleTestCaseExpansion: (id) =>
+    set((state) => ({
+      expandedTestCaseIds: state.expandedTestCaseIds.includes(id)
+        ? state.expandedTestCaseIds.filter((expandedId) => expandedId !== id)
+        : [...state.expandedTestCaseIds, id],
+    })),
+
+  // === Действия с данными ===
+  updateTestCaseInList: (caseId, updates) =>
+    set((state) => ({
+      allTestCases: state.allTestCases.map((tc) =>
+        tc.id === caseId ? { ...tc, ...updates } : tc
+      ),
+      testCase:
+        state.testCase?.id === caseId
+          ? { ...state.testCase, ...updates }
+          : state.testCase,
+    })),
+
+  removeTestCasesFromList: (caseIds) =>
+    set((state) => ({
+      allTestCases: state.allTestCases.filter((tc) => !caseIds.includes(tc.id)),
+      selectedTestCaseIds: state.selectedTestCaseIds.filter(
+        (id) => !caseIds.includes(id)
+      ),
+      expandedTestCaseIds: state.expandedTestCaseIds.filter(
+        (id) => !caseIds.includes(id)
+      ),
+    })),
+
+  addTestCasesToList: (testCases) =>
+    set((state) => ({
+      allTestCases: [...state.allTestCases, ...testCases],
+    })),
+
+  updateMultipleTestCases: (caseIds, updates) =>
+    set((state) => ({
+      allTestCases: state.allTestCases.map((tc) =>
+        caseIds.includes(tc.id) ? { ...tc, ...updates } : tc
+      ),
+    })),
+
+  // === Вспомогательные геттеры ===
+  getSelectedTestCases: () => {
+    const state = get()
+    return state.allTestCases.filter((tc) =>
+      state.selectedTestCaseIds.includes(tc.id)
+    )
+  },
+
+  getExpandedTestCases: () => {
+    const state = get()
+    return state.allTestCases.filter((tc) =>
+      state.expandedTestCaseIds.includes(tc.id)
+    )
+  },
+
+  getTestCaseById: (id) => {
+    const state = get()
+    return state.allTestCases.find((tc) => tc.id === id)
+  },
+
+  // === Очистка ===
+  clearTestCase: () => set({ testCase: null }),
+  clearAllTestCases: () =>
+    set({
+      allTestCases: [],
+      selectedTestCaseIds: [],
+      expandedTestCaseIds: [],
+    }),
+  clearAll: () =>
+    set({
+      testCase: null,
+      allTestCases: [],
+      isLoading: false,
+      error: null,
+      selectedTestCaseIds: [],
+      selectionType: 'default',
+      expandedTestCaseIds: [],
+    }),
 }))

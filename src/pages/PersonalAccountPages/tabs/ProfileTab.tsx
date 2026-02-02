@@ -2,13 +2,14 @@ import { useAuth, useUser } from '@contexts/'
 import { ProfileData, statusMap, userRoleMap } from '@interfaces/'
 import type React from 'react'
 import { useForm, Controller } from 'react-hook-form'
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import stylesProfile from '../styles/ProfileTab.module.scss'
 import stylesGeneral from '../styles/Account.module.scss'
 import { useAuthStore, useHeaderStore } from '@stores/'
 import { Link } from 'react-router-dom'
 import { PAGE_ENDPOINTS } from '@constants/'
+import { QuestionDialog } from '@components/'
 
 export const ProfileTab: React.FC = () => {
   const { openAuthModal } = useAuth()
@@ -22,6 +23,9 @@ export const ProfileTab: React.FC = () => {
     formState: { errors, isSubmitting },
   } = useForm<ProfileData>({ defaultValues: user?.profileData })
   const { setHeaderContent } = useHeaderStore()
+  const [showDiag, setShowDiag] = useState(false)
+  const [dialogQuestion, setDialogQuestion] = useState<React.ReactNode>(null)
+  const resolveRef = useRef<((value: boolean) => void) | null>(null)
 
   useEffect(
     () =>
@@ -52,41 +56,73 @@ export const ProfileTab: React.FC = () => {
     }
   }, [company, setValue, watch])
 
-  const handleSave = (data: ProfileData) => {
-    if (user) {
-      if (user.profileData.phone !== phone) {
-        const res = confirm(
-          'Ваш телефон не подтвержден. При сохранении он не будет обновлен. Вы уверены, что хотите продолжить?'
-        )
-        if (!res) {
-          return
-        }
-      }
-      if (user.profileData.email !== email) {
-        const res = confirm(
-          'Ваша почта не подтверждена. При сохранении она не будет обновлена. Вы уверены, что хотите продолжить?'
-        )
-        if (!res) {
-          return
-        }
-      }
+  const askQuestion = (question: React.ReactNode): Promise<boolean> => {
+    console.log("test2")
+    return new Promise((resolve) => {
+      setShowDiag(false)      
+      setTimeout(() => {
+        setDialogQuestion(question)
+        setShowDiag(true)
+        resolveRef.current = resolve
+      }, 0)
+    })
+  }
 
-      if (!data.company) {
-        data.employeeCount = null
-        data.jobPosition = null
-        data.company = null
-      }
-      !data.fatherName && data.fatherName == null
-      if (user.profileData.email !== data.email) {
-        data.emailConfirmed == false
-      }
-      if (user.profileData.phone !== data.phone) {
-        data.phoneConfirmed = false
-      }
-      user.profileData = data
-      console.log(user)
-      updateUserProfile(user)
+  const handleDialogResponse = (response: boolean) => {
+    setShowDiag(false)
+    if (resolveRef.current) {
+      resolveRef.current(response)
+      resolveRef.current = null
     }
+  }
+
+  const handleSave = async (data: ProfileData) => {
+    if (!user) return
+
+    if (user.profileData.phone !== phone) {
+      const shouldContinue = await askQuestion(
+        <>
+          Ваш телефон не подтвержден. При сохранении он не будет обновлен.{' '}
+          <br />
+          Вы уверены, что хотите продолжить?
+        </>
+      )
+      if (!shouldContinue) {
+        return
+      }
+    }
+
+    if (user.profileData.email !== email) {
+      console.log("test")
+      const shouldContinue = await askQuestion(
+        <>
+          Ваша почта не подтверждена. При сохранении она не будет обновлена.{' '}
+          <br />
+          Вы уверены, что хотите продолжить?
+        </>
+      )
+      if (!shouldContinue) {
+        return
+      }
+    }
+
+    if (!data.company) {
+      data.employeeCount = null
+      data.jobPosition = null
+      data.company = null
+    }
+
+    !data.fatherName && (data.fatherName = null)
+
+    if (user.profileData.email !== data.email) {
+      data.emailConfirmed = false
+    }
+    if (user.profileData.phone !== data.phone) {
+      data.phoneConfirmed = false
+    }
+
+    user.profileData = data
+    updateUserProfile(user)
   }
 
   const handleConfirmEmail = () => {
@@ -451,6 +487,19 @@ export const ProfileTab: React.FC = () => {
             </div>
             <div className={stylesProfile.actions}>
               <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  openAuthModal('changePassword')
+                }}
+                className={stylesGeneral.submitButton}
+                style={{ marginRight: '10px' }}
+              >
+                Сменить пароль
+              </button>
+
+              <button
                 type="submit"
                 disabled={isSubmitting}
                 className={stylesGeneral.submitButton}
@@ -491,13 +540,20 @@ export const ProfileTab: React.FC = () => {
                 </tbody>
               </table>
             ) : (
-              <p className={stylesProfile.noTeams}>
-                У вас нет команд!
-              </p>
+              <p className={stylesProfile.noTeams}>У вас нет команд!</p>
             )}
           </div>
         </form>
       </div>
+      <QuestionDialog
+        showQuestion={showDiag}
+        changeShowQuestion={setShowDiag}
+        onYesClick={() => handleDialogResponse(true)}
+        onNoClick={() => handleDialogResponse(false)}
+        closeOnCLick={false}
+      >
+        {dialogQuestion}
+      </QuestionDialog>
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import { useAuth, useProject } from '@contexts/'
-import { ConfirmFormData, LoginFormData, RegisterFormData } from '@interfaces/'
+import { ConfirmFormData, LoginFormData, RegisterFormData, ChangePasswordFormData } from '@interfaces/'
 import React, { useState } from 'react'
-import { ConfirmForm, LoginForm, RegisterForm } from './Forms/'
+import { ConfirmForm, LoginForm, RegisterForm, ChangePasswordForm } from './Forms/'
 
 import styles from './AuthModal.module.scss'
 import { useNavigate } from 'react-router-dom'
@@ -17,8 +17,9 @@ export const AuthModal: React.FC = () => {
     pendingEmail,
     pendingPhone,
     openAuthModal,
+    changePassword,
   } = useAuth()
-  const {loadShortProjects} = useProject()
+  const { loadShortProjects } = useProject()
   const navigate = useNavigate()
 
   const [loginData, setLoginData] = useState<LoginFormData>({
@@ -37,6 +38,12 @@ export const AuthModal: React.FC = () => {
     code: '',
   })
 
+  const [changePasswordData, setChangePasswordData] = useState<ChangePasswordFormData>({
+    oldPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  })
+
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
@@ -49,6 +56,11 @@ export const AuthModal: React.FC = () => {
       confirmPassword: '',
     })
     setConfirmData({ code: '' })
+    setChangePasswordData({
+      oldPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+    })
     setError('')
   }
 
@@ -160,6 +172,83 @@ export const AuthModal: React.FC = () => {
     }
   }
 
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const nativeEvent = e.nativeEvent as Event;
+    if (nativeEvent) {
+      nativeEvent.preventDefault();
+      nativeEvent.stopPropagation();
+      if (nativeEvent.stopImmediatePropagation) {
+        nativeEvent.stopImmediatePropagation();
+      }
+    }
+    
+    setIsLoading(true);
+    setError('');
+
+    if (changePasswordData.newPassword !== changePasswordData.confirmPassword) {
+      setError('Новый пароль и подтверждение не совпадают');
+      setIsLoading(false);
+      return false;
+    }
+
+    if (changePasswordData.newPassword.length < 6) {
+      setError('Новый пароль должен содержать минимум 6 символов');
+      setIsLoading(false);
+      return false;
+    }
+
+    if (!changePasswordData.oldPassword.trim()) {
+      setError('Введите старый пароль');
+      setIsLoading(false);
+      return false;
+    }
+
+    if (!changePasswordData.newPassword.trim()) {
+      setError('Введите новый пароль');
+      setIsLoading(false);
+      return false;
+    }
+
+    try {
+      const success = await changePassword(
+        changePasswordData.oldPassword,
+        changePasswordData.newPassword
+      );
+      
+      if (!success) {
+        setError('Старый пароль неверен');
+      } else {
+        setError('Пароль успешно изменен!');
+        
+        setTimeout(() => {
+          closeAuthModal(authModal);
+          setChangePasswordData({
+            oldPassword: '',
+            newPassword: '',
+            confirmPassword: '',
+          });
+          setError('');
+        }, 1500);
+      }
+    } catch (error: any) {
+      setError(error.message || 'Ошибка при смене пароля');
+    } finally {
+      setIsLoading(false);
+    }
+    
+    return false;
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && authModal === 'changePassword') {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
   const getModalTitle = () => {
     switch (authModal) {
       case 'login':
@@ -170,6 +259,8 @@ export const AuthModal: React.FC = () => {
         return 'Подтверждение e-mail'
       case 'confirmPhone':
         return 'Подтверждение номера'
+      case 'changePassword':
+        return 'Смена пароля'
       default:
         return ''
     }
@@ -179,6 +270,7 @@ export const AuthModal: React.FC = () => {
     <div
       className={`${styles.authModalOverlay} ${authModal ? styles.active : ''}`}
       onClick={handleOverlayClick}
+      onKeyDown={handleKeyDown}
     >
       <div className={styles.authModalContent}>
         <div className={styles.authModalHeader}>
@@ -227,6 +319,18 @@ export const AuthModal: React.FC = () => {
             onSubmit={handleConfirm}
             onSwitchToLogin={switchToLogin}
           />
+        )}
+
+        {authModal === 'changePassword' && (
+          <div onKeyDown={handleKeyDown} style={{marginBottom: "auto"}}>
+            <ChangePasswordForm
+              formData={changePasswordData}
+              error={error}
+              isLoading={isLoading}
+              onChange={(data) => setChangePasswordData((prev) => ({ ...prev, ...data }))}
+              onSubmit={handleChangePassword}
+            />
+          </div>
         )}
       </div>
     </div>
