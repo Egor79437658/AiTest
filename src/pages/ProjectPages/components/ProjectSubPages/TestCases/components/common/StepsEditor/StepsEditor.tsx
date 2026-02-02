@@ -4,7 +4,7 @@ import { StepsTableView } from './StepsTableView/StepsTableView'
 import styles from './StepsEditor.module.scss'
 import { TestDataEditor } from '../TestDataEditor'
 import { useTestCase } from '@contexts/'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { PAGE_ENDPOINTS } from '@constants/'
 
 interface StepsEditorProps {
@@ -34,6 +34,7 @@ export const StepsEditor: React.FC<StepsEditorProps> = ({
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
   const [openDropdown, setOpenDropdown] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const { testCaseId } = useParams<{ testCaseId: string }>()
 
   useEffect(() => {
     if (isAddingStep && steps.length > 0) {
@@ -327,7 +328,7 @@ export const StepsEditor: React.FC<StepsEditorProps> = ({
 
     const step = steps[activeStep]
     const stepNumber = activeStep + 1
-    const testCaseId = step.testCaseId
+    const stepTestCaseId = step.testCaseId
 
     return (
       <div className={styles.stepContent}>
@@ -342,17 +343,17 @@ export const StepsEditor: React.FC<StepsEditorProps> = ({
           </h4>
 
           <div className={styles.stepActions}>
-            {testCaseId !== -1 && (
+            {stepTestCaseId !== -1 && (
               <Link
                 to={
                   window.location.pathname.split(
                     PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE
                   )[0] +
-                  `${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}/${testCaseId}`
+                  `${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}/${stepTestCaseId}`
                 }
               >
                 Открыть{' '}
-                {allTestCases.find((el) => el.id === testCaseId)?.name ||
+                {allTestCases.find((el) => el.id === stepTestCaseId)?.name ||
                   'ERROR'}
               </Link>
             )}
@@ -372,9 +373,9 @@ export const StepsEditor: React.FC<StepsEditorProps> = ({
                 //   )
                 // }}
               >
-                {testCaseId === -1
+                {stepTestCaseId === -1
                   ? 'Классический шаг'
-                  : `Выполнить '${allTestCases.find((el) => el.id === testCaseId)?.name || 'ERROR'}'`}
+                  : `Выполнить '${allTestCases.find((el) => el.id === stepTestCaseId)?.name || 'ERROR'}'`}
                 &nbsp;&nbsp;&nbsp;{' '}
                 <span className={openDropdown ? styles.rotated : ''}>▶</span>
               </button>
@@ -398,7 +399,7 @@ export const StepsEditor: React.FC<StepsEditorProps> = ({
                     setOpenDropdown(!openDropdown)
                     handleTestIdChange(activeStep, -1)
                   }}
-                  className={`${styles.dropdownOption} ${testCaseId === -1 ? styles.selected : ''}`}
+                  className={`${styles.dropdownOption} ${stepTestCaseId === -1 ? styles.selected : ''}`}
                 >
                   Классический шаг
                 </button>
@@ -409,16 +410,17 @@ export const StepsEditor: React.FC<StepsEditorProps> = ({
                     ) {
                       filtered.push(newVal)
                     }
+                    console.log(filtered)
                     return filtered
                   }, [] as TestCase[])
                   .map((el) =>
-                    el.id === testCaseId ? (
+                    el.id === parseInt(testCaseId || "") ? (
                       <></>
                     ) : (
                       <button
                         type="button"
                         key={el.id}
-                        className={`${styles.dropdownOption} ${testCaseId === el.id ? styles.selected : ''}`}
+                        className={`${styles.dropdownOption} ${stepTestCaseId === el.id ? styles.selected : ''}`}
                         onClick={() => {
                           setOpenDropdown(!openDropdown)
                           handleTestIdChange(activeStep, el.id)
@@ -503,7 +505,7 @@ export const StepsEditor: React.FC<StepsEditorProps> = ({
               placeholder="Опишите условия, которые должны быть выполнены перед этим шагом"
               className={styles.textarea}
               rows={2}
-              disabled={testCaseId !== -1 || disabled}
+              disabled={stepTestCaseId !== -1 || disabled}
             />
           </div>
 
