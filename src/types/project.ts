@@ -41,7 +41,14 @@ export interface Project {
   recentTestPlanRuns: TestPlanRun[]
   createdAt: Date
   updatedAt: Date
+  datapool: DataPoolItem[]
   createdBy: number
+}
+
+export interface DataPoolItem {
+  id: number;
+  key: string;
+  value: string;
 }
 
 export interface ProjectContextType {
@@ -52,6 +59,7 @@ export interface ProjectContextType {
   updateProject: (updates: Partial<Project>) => Promise<void>
   clearProject: () => void
   clearError: () => void
+  deleteProject: () => Promise<void>
 }
 
 export interface TestCaseHistoryRecord {

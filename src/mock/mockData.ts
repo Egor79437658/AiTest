@@ -132,6 +132,7 @@ export const mockProjects: Project[] = [
     testPlans: [{ id: 4 }],
     testCases: [{ id: 3 }],
     scripts: [{ id: 3 }],
+    datapool: [],
     recentTestPlanRuns: [
       {
         id: 4,
@@ -164,6 +165,7 @@ export const mockProjects: Project[] = [
     testPlans: [{ id: 3 }],
     testCases: [{ id: 2 }],
     scripts: [{ id: 2 }],
+    datapool: [],
     recentTestPlanRuns: [
       {
         id: 3,
@@ -197,6 +199,7 @@ export const mockProjects: Project[] = [
     testPlans: [{ id: 1 }, { id: 2 }],
     testCases: [{ id: 1 }],
     scripts: [{ id: 1 }],
+    datapool: [],
     recentTestPlanRuns: [
       {
         id: 1,
@@ -221,14 +224,15 @@ export const mockProjects: Project[] = [
     url: 'https://web-portal.example.com',
     hasDatapool: false,
     description: 'Корпоративный веб-портал компании',
+    datapool: [],
     users: [
       {
         id: 2,
         firstName: 'Петр',
         lastName: 'Петров',
         fatherName: 'Петрович',
-        email: 'ivanov@example.com',
-        role: 0,
+        email: 'demo@demo.com',
+        role: 1,
         permissions: 'Полные',
       },
     ],
