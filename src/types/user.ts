@@ -62,7 +62,7 @@ export const ROLE_CONFIG: Record<UserRole, RoleConfig> = {
       'Управление проектом',
       'Управление командой'
     ],
-    description: 'Полный доступ ко всем функциям проекта'
+    description: 'Лидер проекта и главный куратор'
   },
   [UserRole.PROJECT_ADMIN]: {
     label: 'Администратор проекта',
@@ -75,7 +75,7 @@ export const ROLE_CONFIG: Record<UserRole, RoleConfig> = {
       'Запуск скриптов',
       'Управление проектом'
     ],
-    description: 'Почти полный доступ, включая управление проектом'
+    description: 'Полный доступ, включая управление проектом'
   },
   [UserRole.ANALYST]: {
     label: 'Аналитик',

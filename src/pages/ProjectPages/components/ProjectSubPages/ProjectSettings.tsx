@@ -1,23 +1,15 @@
-import React, { useState, useEffect, useCallback, useContext } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { useNavigate, useParams, Link } from 'react-router-dom';
-import styles from './ProjectSettings.module.scss';
-import { mockApiService } from '../../../../services/mockApiService';
-import { ProjectContext } from '../../../../contexts/Project/ProjectContext.tsx';
 import { useHeaderStore } from '@stores/';
-import { UserRole, ROLE_CONFIG } from '../../../../types/user.ts';
-import { Project, ProjectUser } from '../../../../types/project';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { ProjectUser, ROLE_CONFIG, UserRole, DataPoolItem } from '../../../../types/';
+import styles from './ProjectSettings.module.scss';
+import { useProject, useUser } from '@contexts/';
 
 interface ProjectFormData {
   name: string;
   url: string;
   description: string;
-}
-
-interface DataPoolItem {
-  id: string;
-  key: string;
-  value: string;
 }
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -26,7 +18,7 @@ const URL_REGEX = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
 export const ProjectSettings: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
-  const projectContext = useContext(ProjectContext);
+  const {updateProject, deleteProject, project} = useProject()
   const { setHeaderContent } = useHeaderStore();
   
   const {
@@ -39,8 +31,7 @@ export const ProjectSettings: React.FC = () => {
     defaultValues: { name: '', url: '', description: '' }
   });
 
-  const [dataPool, setDataPool] = useState<DataPoolItem[]>([{ id: '1', key: '', value: '' }]);
-  const [project, setProject] = useState<Project | null>(null);
+  const [dataPool, setDataPool] = useState<DataPoolItem[]>([]);
   const [projectUsers, setProjectUsers] = useState<ProjectUser[]>([]);
   const [notification, setNotification] = useState<{ type: 'success' | 'error' | 'warning'; message: string } | null>(null);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
@@ -51,7 +42,7 @@ export const ProjectSettings: React.FC = () => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const {user} = useUser()
 
   const showNotification = useCallback((type: 'success' | 'error' | 'warning', message: string) => {
     setNotification({ type, message });
@@ -75,47 +66,29 @@ export const ProjectSettings: React.FC = () => {
   }, [project, setHeaderContent]);
 
   useEffect(() => {
-    const loadCurrentUser = async () => {
-      try {
-        const user = await mockApiService.getCurrentUser();
-        setCurrentUser(user);
-      } catch (error) {
-        console.error('Error loading current user:', error);
-      }
-    };
-    
-    loadCurrentUser();
-  }, []);
-
-  useEffect(() => {
-    const loadProject = async () => {
-      if (!projectId || !currentUser) return;
+      if (!project || !user) return;
       
       try {
-        const foundProject = await mockApiService.getProject(parseInt(projectId));
-        
-        if (!foundProject) {
-          navigate('/app/home');
-          return;
-        }
 
-        setProject(foundProject);
-        setProjectUsers(foundProject.users || []);
+        setProjectUsers(project.users);
         
         reset({
-          name: foundProject.name || '',
-          url: foundProject.url || '',
-          description: foundProject.description || ''
+          name: project.name,
+          url: project.url,
+          description: project.description
         });
+
+        setDataPool(project.datapool)
         
-        const currentUserInProject = foundProject.users?.find(
-          (u: any) => u.email === currentUser.profileData.email
+        const currentUserInProject = project.users?.find(
+          (u: any) => u.email === user.profileData.email
         );
         
+
         if (currentUserInProject) {
-          setIsAdmin([UserRole.IT_LEADER, UserRole.PROJECT_ADMIN].includes(currentUserInProject.role));
+          setIsAdmin(currentUserInProject.role == UserRole.PROJECT_ADMIN);
         } else {
-          setIsAdmin(foundProject.createdBy === currentUser.id);
+          throw new Error("you're not supposed to be here")
         }
         
         const savedDataPool = localStorage.getItem(`project_${projectId}_datapool`);
@@ -124,7 +97,7 @@ export const ProjectSettings: React.FC = () => {
             const parsedData = JSON.parse(savedDataPool);
             if (Array.isArray(parsedData) && parsedData.length > 0) {
               setDataPool(parsedData.map((item: any, index: number) => ({
-                id: String(index + 1),
+                id: item.id || -1,
                 key: item.key || '',
                 value: item.value || ''
               })));
@@ -139,12 +112,8 @@ export const ProjectSettings: React.FC = () => {
       } finally {
         setIsLoading(false);
       }
-    };
     
-    if (currentUser) {
-      loadProject();
-    }
-  }, [projectId, reset, currentUser, navigate, showNotification]);
+  }, [projectId, user, reset, navigate, showNotification]);
 
   const handleSaveProject = async (data: ProjectFormData) => {
     if (!project || !projectId) return;
@@ -156,15 +125,11 @@ export const ProjectSettings: React.FC = () => {
         name: data.name,
         url: data.url,
         description: data.description,
+        dataPool: dataPool,
         updatedAt: new Date()
       };
 
-      const updatedProject = await mockApiService.updateProject(parseInt(projectId), updateData);
-      setProject(updatedProject);
-      
-      if (projectContext?.updateProject) {
-        await projectContext.updateProject(updateData);
-      }
+        await updateProject(updateData);
 
       showNotification('success', 'Настройки проекта успешно сохранены');
     } catch (error) {
@@ -175,18 +140,25 @@ export const ProjectSettings: React.FC = () => {
     }
   };
 
-  const handleSaveDataPool = () => {
+  const handleSaveDataPool = async () => {
     if (!project || !projectId) return;
     
     const validDataPool = dataPool
       .filter(item => item.key.trim() && item.value.trim())
       .map(item => ({
+        id: item.id,
         key: item.key.trim(),
         value: item.value.trim()
       }));
 
     localStorage.setItem(`project_${project.id}_datapool`, JSON.stringify(validDataPool));
-    showNotification('success', 'DataPool успешно сохранен');
+    try {
+      await updateProject({ datapool: validDataPool });
+      showNotification('success', 'DataPool успешно сохранен');
+    } catch (error) {
+      showNotification('error', 'Ошибка при удалении проекта');
+      console.error('Delete project error:', error);
+    }
   };
 
   const handleDeleteProject = async () => {
@@ -198,12 +170,9 @@ export const ProjectSettings: React.FC = () => {
         return;
       }
 
-      await mockApiService.deleteProject(parseInt(projectId));
       localStorage.removeItem(`project_${project.id}_datapool`);
       
-      if (projectContext?.clearProject) {
-        projectContext.clearProject();
-      }
+      await deleteProject();
 
       showNotification('success', 'Проект успешно удален');
 
@@ -218,19 +187,19 @@ export const ProjectSettings: React.FC = () => {
 
   const handleAddDataPoolRow = () => {
     setDataPool([...dataPool, {
-      id: Date.now().toString(),
+      id: -1,
       key: '',
       value: ''
     }]);
   };
 
-  const handleUpdateDataPoolItem = (id: string, field: 'key' | 'value', value: string) => {
+  const handleUpdateDataPoolItem = (id: number, field: 'key' | 'value', value: string) => {
     setDataPool(dataPool.map(item => 
       item.id === id ? { ...item, [field]: value } : item
     ));
   };
 
-  const handleRemoveDataPoolItem = (id: string) => {
+  const handleRemoveDataPoolItem = (id: number) => {
     if (dataPool.length <= 1) {
       showNotification('error', 'Должна остаться хотя бы одна запись');
       return;
@@ -255,9 +224,9 @@ export const ProjectSettings: React.FC = () => {
     
     setTimeout(() => {
       const sampleData = [
-        { id: '1', key: 'username', value: 'test_user' },
-        { id: '2', key: 'password', value: 'test_password' },
-        { id: '3', key: 'email', value: 'test@example.com' }
+        { id: 1, key: 'username', value: 'test_user' },
+        { id: 2, key: 'password', value: 'test_password' },
+        { id: 3, key: 'email', value: 'test@example.com' }
       ];
       setDataPool(sampleData);
       showNotification('success', 'Файл успешно загружен и обработан');
@@ -292,13 +261,7 @@ export const ProjectSettings: React.FC = () => {
       const updatedUsers = [...projectUsers, newUserData];
       setProjectUsers(updatedUsers);
       
-      const updatedProject = await mockApiService.updateProject(parseInt(projectId), {
-        users: updatedUsers
-      });
-      
-      if (projectContext?.updateProject) {
-        await projectContext.updateProject({ users: updatedUsers });
-      }
+        await updateProject({ users: updatedUsers });
 
       setShowAddUserModal(false);
       setNewUser({ email: '', role: UserRole.USER });
@@ -323,13 +286,7 @@ export const ProjectSettings: React.FC = () => {
       const updatedUsers = projectUsers.filter(user => user.id !== userId);
       setProjectUsers(updatedUsers);
       
-      await mockApiService.updateProject(parseInt(projectId), {
-        users: updatedUsers
-      });
-      
-      if (projectContext?.updateProject) {
-        await projectContext.updateProject({ users: updatedUsers });
-      }
+        await updateProject({ users: updatedUsers });
 
       showNotification('success', 'Пользователь удален из проекта');
     } catch (error) {
@@ -499,9 +456,9 @@ export const ProjectSettings: React.FC = () => {
               <table className={`${styles.dataPoolTable} ${styles.table}`}>
                 <thead>
                   <tr>
-                    <th>Логин</th>
-                    <th>Пароль</th>
-                    <th>Действия</th>
+                    <th>Ключ</th>
+                    <th>Значение</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>

@@ -1,5 +1,6 @@
 import { PAGE_ENDPOINTS } from '@constants/'
 import { useAuth, useProject, useUser } from '@contexts/'
+import { UserRole } from '@interfaces/'
 
 export interface MenuItem {
   title: string
@@ -72,7 +73,7 @@ export const useSidebarNavigation = () => {
             link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.REPORTS}`,
             requireAuth: true,
           },
-          ...( project.users.find(el => el.id === user?.id)?.role === 2 ? [
+          ...( project.users.find(el => el.id === user?.id)?.role === UserRole.PROJECT_ADMIN ? [
             {
               title: 'Настройки',
               link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.SETTINGS}`,

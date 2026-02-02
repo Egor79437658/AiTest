@@ -256,10 +256,14 @@
     background: #000000;
     color: #fff;
     font-weight: 500;
-    text-align: left;
+    text-align: center;
     padding: 12px;
     border-bottom: 2px solid #000000;
     word-break: break-word;
+    &:last-child {
+      width: 100px;
+      text-align: center;
+    }
   }
 
   td {

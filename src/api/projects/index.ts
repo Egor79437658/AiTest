@@ -48,6 +48,15 @@ class ProjectsApi {
     )
     return response
   }
+
+  async deleteProject(
+    projectId: number,
+  ): Promise<void> {
+    const response = await apiClient.delete<void>(
+      `${API_URL.PROJECTS}/${projectId}/`,
+    )
+    return response
+  }
 }
 
 export const projectsApi = new ProjectsApi()
