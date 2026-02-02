@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { TestData } from '@interfaces/'
 import { TEST_DATA_TYPES } from '@constants/'
 import styles from './TestDataEditor.module.scss'
@@ -15,6 +15,8 @@ export const TestDataEditor: React.FC<TestDataEditorProps> = ({
   disabled = false,
 }) => {
   const [localData, setLocalData] = useState<TestData[]>(testData)
+
+  useEffect(() => setLocalData(testData), [testData])
 
   const handleAdd = () => {
     const newData: TestData[] = [

@@ -19,7 +19,6 @@ export const AuthModal: React.FC = () => {
     openAuthModal,
     changePassword,
   } = useAuth()
-  const { loadShortProjects } = useProject()
   const navigate = useNavigate()
 
   const [loginData, setLoginData] = useState<LoginFormData>({
@@ -96,7 +95,6 @@ export const AuthModal: React.FC = () => {
         setError('Неверный email или пароль')
       }
       else {
-        loadShortProjects()
         navigate(`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.HOME}`)
       }
     } catch {
@@ -161,7 +159,6 @@ export const AuthModal: React.FC = () => {
       else {
         closeAuthModal(authModal)
         if(window.location.pathname === PAGE_ENDPOINTS.INDEX) {
-          loadShortProjects()
           navigate(`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.HOME}`)
         }
       }

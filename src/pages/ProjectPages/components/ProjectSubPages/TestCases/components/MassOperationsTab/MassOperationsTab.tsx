@@ -4,16 +4,20 @@ import { QuestionDialog } from '@components/'
 import { useProject } from '@contexts/'
 
 interface MassOperationsTabProps {
-  totalTestCases: number
-  newTestCasesCount?: number
+  totalTCPositive: number
+  totalTCNegative: number
+  newTCPositive: number
+  newTCNegative: number
   onGenerateAll: (includeNegative: boolean) => void
   onGenerateNew: (includeNegative: boolean) => void
   onRefactorAll: () => void
 }
 
 export const MassOperationsTab: React.FC<MassOperationsTabProps> = ({
-  totalTestCases,
-  newTestCasesCount = 0,
+  totalTCPositive,
+  totalTCNegative,
+  newTCPositive,
+  newTCNegative,
   onGenerateAll,
   onGenerateNew,
   onRefactorAll,
@@ -66,7 +70,12 @@ export const MassOperationsTab: React.FC<MassOperationsTabProps> = ({
             как позитивные, так и негативные сценарии.
           </p>
           <div className={styles.stats}>
-            <span className={styles.statItem}>Всего ТК: {totalTestCases}</span>
+            <span className={styles.statItem}>
+              Всего ТК: {totalTCPositive + totalTCNegative}
+            </span>
+            <span className={styles.statItem}>
+              Негативных ТК: {totalTCNegative}
+            </span>     
           </div>
           <button
             className={styles.primaryButton}
@@ -85,15 +94,20 @@ export const MassOperationsTab: React.FC<MassOperationsTabProps> = ({
           </p>
           <div className={styles.stats}>
             <span className={styles.statItem}>
-              Новых ТК: {newTestCasesCount}
+              Новых ТК: {newTCPositive + newTCNegative}
+            </span>
+            <span className={styles.statItem}>
+              Негативных ТК: {newTCNegative}
             </span>
           </div>
           <button
             className={styles.primaryButton}
             onClick={() => setShowGenerateNewDialog(true)}
-            disabled={newTestCasesCount === 0}
+            disabled={newTCPositive + newTCNegative === 0}
           >
-            {newTestCasesCount === 0 ? 'Нет новых ТК' : 'Запустить генерацию'}
+            {newTCPositive + newTCNegative === 0
+              ? 'Нет новых ТК'
+              : 'Запустить генерацию'}
           </button>
         </div>
 
@@ -105,7 +119,12 @@ export const MassOperationsTab: React.FC<MassOperationsTabProps> = ({
             проекта.
           </p>
           <div className={styles.stats}>
-            <span className={styles.statItem}>Всего ТК: {totalTestCases}</span>
+            <span className={styles.statItem}>
+              Всего ТК: {totalTCPositive + totalTCNegative}
+            </span>
+            <span className={styles.statItem}>
+              Негативных ТК: {totalTCNegative}
+            </span>
           </div>
           <button
             className={styles.refactorButton}
@@ -121,6 +140,7 @@ export const MassOperationsTab: React.FC<MassOperationsTabProps> = ({
         showQuestion={showGenerateAllDialog}
         changeShowQuestion={setShowGenerateAllDialog}
         onYesClick={handleGenerateAll}
+        className={styles.dialog}
         onNoClick={() => {
           setShowGenerateAllDialog(false)
           setIncludeNegative(false)
@@ -128,28 +148,28 @@ export const MassOperationsTab: React.FC<MassOperationsTabProps> = ({
       >
         <div className={styles.dialogContent}>
           <h3>Генерация всех тест-кейсов</h3>
-          <p>
-            Будет сгенерировано: <strong>{totalTestCases} тест-кейсов</strong>
-          </p>
-          <p>
-            Проект: <strong>{project?.name}</strong>
-          </p>
-
-          <div className={styles.checkboxSection}>
-            <label className={styles.checkboxLabel}>
-              <input
-                type="checkbox"
-                checked={includeNegative}
-                onChange={(e) => setIncludeNegative(e.target.checked)}
-                className={styles.checkboxInput}
-              />
-              <span className={styles.checkboxCustom}></span>
-              Включая негативные тест-кейсы
-            </label>
-            <p className={styles.checkboxDescription}>
-              Негативные тест-кейсы проверяют реакцию системы на некорректные
-              данные и ошибочные сценарии
+          <div className={styles.questionMain}>
+            <p className={styles.message}>
+              Будет сгенерировано TK:{' '}
+              <strong>
+                {includeNegative
+                  ? totalTCPositive + totalTCNegative
+                  : totalTCPositive}{' '}
+              </strong>
             </p>
+
+            <div className={styles.checkboxSection}>
+              <label className={styles.checkboxLabel}>
+                <input
+                  type="checkbox"
+                  checked={includeNegative}
+                  onChange={(e) => setIncludeNegative(e.target.checked)}
+                  className={styles.checkboxInput}
+                />
+                <span className={styles.checkboxCustom}></span>
+                Включая негативные
+              </label>
+            </div>
           </div>
 
           <p className={styles.dialogNote}>
@@ -164,6 +184,7 @@ export const MassOperationsTab: React.FC<MassOperationsTabProps> = ({
         showQuestion={showGenerateNewDialog}
         changeShowQuestion={setShowGenerateNewDialog}
         onYesClick={handleGenerateNew}
+        className={styles.dialog}
         onNoClick={() => {
           setShowGenerateNewDialog(false)
           setIncludeNegative(false)
@@ -171,29 +192,28 @@ export const MassOperationsTab: React.FC<MassOperationsTabProps> = ({
       >
         <div className={styles.dialogContent}>
           <h3>Генерация новых тест-кейсов</h3>
-          <p>
-            Будет сгенерировано:{' '}
-            <strong>{newTestCasesCount} новых тест-кейсов</strong>
-          </p>
-          <p>
-            Проект: <strong>{project?.name}</strong>
-          </p>
-
-          <div className={styles.checkboxSection}>
-            <label className={styles.checkboxLabel}>
-              <input
-                type="checkbox"
-                checked={includeNegative}
-                onChange={(e) => setIncludeNegative(e.target.checked)}
-                className={styles.checkboxInput}
-              />
-              <span className={styles.checkboxCustom}></span>
-              Включая негативные тест-кейсы
-            </label>
-            <p className={styles.checkboxDescription}>
-              Негативные тест-кейсы проверяют реакцию системы на некорректные
-              данные и ошибочные сценарии
+          <div className={styles.questionMain}>
+            <p>
+              Будет сгенерировано TK:{' '}
+              <strong>
+                {includeNegative
+                  ? newTCPositive + newTCNegative
+                  : newTCPositive}{' '}
+              </strong>
             </p>
+
+            <div className={styles.checkboxSection}>
+              <label className={styles.checkboxLabel}>
+                <input
+                  type="checkbox"
+                  checked={includeNegative}
+                  onChange={(e) => setIncludeNegative(e.target.checked)}
+                  className={styles.checkboxInput}
+                />
+                <span className={styles.checkboxCustom}></span>
+                Включая негативные
+              </label>
+            </div>
           </div>
 
           <p className={styles.dialogNote}>
@@ -208,33 +228,15 @@ export const MassOperationsTab: React.FC<MassOperationsTabProps> = ({
         showQuestion={showRefactorAllDialog}
         changeShowQuestion={setShowRefactorAllDialog}
         onYesClick={handleRefactorAll}
+        className={styles.dialog}
         onNoClick={() => setShowRefactorAllDialog(false)}
       >
         <div className={styles.dialogContent}>
           <h3>Рефакторинг всех тест-кейсов</h3>
           <p>
-            Будет оптимизировано: <strong>{totalTestCases} тест-кейсов</strong>
+            Будет оптимизировано ТК:{' '}
+            <strong>{totalTCPositive + totalTCNegative}</strong>
           </p>
-          <p>
-            Проект: <strong>{project?.name}</strong>
-          </p>
-
-          <div className={styles.warningSection}>
-            <div className={styles.warningIcon}>⚠️</div>
-            <div className={styles.warningText}>
-              <p>
-                <strong>Внимание!</strong>
-              </p>
-              <p>
-                Эта операция займет некоторое время и может повлиять на
-                выполнение текущих тестов.
-              </p>
-              <p>
-                После рефакторинга рекомендуется проверить тест-планы на
-                актуальность.
-              </p>
-            </div>
-          </div>
 
           <p className={styles.dialogNote}>
             Нажмите <strong>"Да"</strong> для запуска рефакторинга или{' '}

@@ -24,7 +24,7 @@ export interface TableColumn {
   selectFrom?: { value: any, label: string }[]
 }
 
-interface TableProps<T> {
+interface TableProps<T extends Record<string, any> > {
   id?: string;
   columns: TableColumn[];
   data: T[];
@@ -35,7 +35,7 @@ interface TableProps<T> {
   rowStyleFunc?: (tableData: T) => string
 }
 
-export const Table = <T, >({
+export const Table = <T extends Record<string, any>, >({
   id,
   columns,
   data,

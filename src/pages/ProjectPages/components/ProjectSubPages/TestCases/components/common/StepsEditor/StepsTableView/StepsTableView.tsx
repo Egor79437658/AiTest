@@ -46,7 +46,7 @@ export const StepsTableView: React.FC<StepsTableViewProps> = ({
   }
 
   const getDataIcon = (step: TestCaseStep): string => {
-    if (step.testData) return '📊'
+    if (step.testData.length) return '📊'
     if (step.precondition) return '⚙️'
     return ''
   }
@@ -158,7 +158,7 @@ export const StepsTableView: React.FC<StepsTableViewProps> = ({
                     {getDataIcon(step) && (
                       <span
                         className={styles.dataIcon}
-                        title={step.testData || step.precondition}
+                        title="Этот объект содержит тестовые данные"
                       >
                         {getDataIcon(step)}
                       </span>

@@ -132,6 +132,7 @@ export const mockProjects: Project[] = [
     testPlans: [{ id: 4 }],
     testCases: [{ id: 3 }],
     scripts: [{ id: 3 }],
+    datapool: [],
     recentTestPlanRuns: [
       {
         id: 4,
@@ -164,6 +165,7 @@ export const mockProjects: Project[] = [
     testPlans: [{ id: 3 }],
     testCases: [{ id: 2 }],
     scripts: [{ id: 2 }],
+    datapool: [],
     recentTestPlanRuns: [
       {
         id: 3,
@@ -197,6 +199,7 @@ export const mockProjects: Project[] = [
     testPlans: [{ id: 1 }, { id: 2 }],
     testCases: [{ id: 1 }],
     scripts: [{ id: 1 }],
+    datapool: [],
     recentTestPlanRuns: [
       {
         id: 1,
@@ -221,14 +224,15 @@ export const mockProjects: Project[] = [
     url: 'https://web-portal.example.com',
     hasDatapool: false,
     description: 'Корпоративный веб-портал компании',
+    datapool: [],
     users: [
       {
         id: 2,
         firstName: 'Петр',
         lastName: 'Петров',
         fatherName: 'Петрович',
-        email: 'ivanov@example.com',
-        role: 0,
+        email: 'demo@demo.com',
+        role: 1,
         permissions: 'Полные',
       },
     ],
@@ -274,12 +278,14 @@ export const mockTestCases: TestCase[] = [
     tags: ['функциональность', 'UI', 'базовый'],
     steps: [
       {
+        testCaseId: -1,
         precondition: 'pre 1',
         action: 'act 1',
         result: 'res1',
-        testData: 'Тестовые данные для шага 1',
         elementName: 'Поле ввода',
         formName: 'Форма авторизации',
+        testData: [],
+        elementLocation: '',
       },
     ],
     testData: [
@@ -340,7 +346,11 @@ export const mockTestCases: TestCase[] = [
         precondition: 'pre 1',
         action: 'act 1',
         result: 'res1',
-        testData: 'Тестовые данные мобильного приложения',
+        testCaseId: -1,
+        testData: [],
+        elementLocation: '',
+        elementName: '',
+        formName: '',
       },
     ],
     testData: [],
@@ -380,7 +390,11 @@ export const mockTestCases: TestCase[] = [
         precondition: 'pre 1',
         action: 'act 1',
         result: 'res1',
-        testData: 'API ключ: xyz123',
+        testCaseId: -1,
+        testData: [],
+        elementLocation: '',
+        elementName: '',
+        formName: '',
       },
     ],
     testData: [
@@ -439,9 +453,29 @@ export const mockTestCases: TestCase[] = [
     steps: [
       {
         precondition: 'pre 1',
+        testCaseId: -1,
         action: 'act 1',
         result: 'res1',
-        testData: 'Тестовые данные для архивации',
+        testData: [],
+        elementLocation: '',
+        elementName: '',
+        formName: '',
+      },
+      {
+        precondition: 'pre 2',
+        testCaseId: 6,
+        action: 'act 2',
+        result: 'res2',
+        testData: [
+          {
+            name: 'Путь к архиву',
+            value: '/data/archive.zip',
+            type: 'parameter' as const,
+          },
+        ],
+        elementLocation: '',
+        elementName: '',
+        formName: '',
       },
     ],
     testData: [],
@@ -455,7 +489,7 @@ export const mockTestCases: TestCase[] = [
     lastModified: new Date('2023-12-26T10:00:00'),
   },
   {
-    id: 2,
+    id: 5,
     idt: 'TC-005',
     flag: true,
     name: 'тест-кейс 5',
@@ -479,9 +513,29 @@ export const mockTestCases: TestCase[] = [
     steps: [
       {
         precondition: 'pre 1',
+        testCaseId: -1,
         action: 'act 1',
         result: 'res1',
-        testData: 'Обновленные тестовые данные',
+        testData: [],
+        elementLocation: '',
+        elementName: '',
+        formName: '',
+      },
+      {
+        precondition: 'pre 2',
+        testCaseId: 6,
+        action: 'act 2',
+        result: 'res2',
+        testData: [
+          {
+            name: 'Путь к архиву',
+            value: '/data/archive.zip',
+            type: 'parameter' as const,
+          },
+        ],
+        elementLocation: '',
+        elementName: '',
+        formName: '',
       },
     ],
     testData: [
@@ -506,7 +560,7 @@ export const mockTestCases: TestCase[] = [
     flag: true,
     name: 'тест-кейс 6',
     description: 'Проверка функционала архивации - версия 2',
-    positive: true,
+    positive: false,
     version: '000.000.001',
     status: 1 as TestCaseStatus,
     priority: 1 as TestCasePriority,
@@ -527,7 +581,11 @@ export const mockTestCases: TestCase[] = [
         precondition: 'pre 1',
         action: 'act 1',
         result: 'res1',
-        testData: 'Обновленные тестовые данные',
+        testCaseId: -1,
+        testData: [],
+        elementLocation: '',
+        elementName: '',
+        formName: '',
       },
     ],
     testData: [
@@ -573,25 +631,31 @@ export const mockTestCases: TestCase[] = [
         precondition: 'Перейти к оформлению заказа',
         action: 'Выбрать способ оплаты "Банковская карта"',
         result: 'Открыта форма ввода данных карты',
-        testData: 'Способ оплаты: Банковская карта',
+        testCaseId: -1,
         elementName: 'Радиокнопка "Банковская карта"',
         formName: 'Форма оплаты',
+        testData: [],
+        elementLocation: '',
       },
       {
         precondition: 'Заполнить данные карты',
         action: 'Ввести номер карты, срок действия, CVV',
         result: 'Данные карты приняты, кнопка "Оплатить" активна',
-        testData: 'Номер карты: 4111 1111 1111 1111, Срок: 12/25, CVV: 123',
+        testCaseId: -1,
         elementName: 'Поле "Номер карты", "Срок действия", "CVV"',
         formName: 'Форма оплаты',
+        testData: [],
+        elementLocation: '',
       },
       {
         precondition: 'Подтвердить оплату',
         action: 'Нажать кнопку "Оплатить"',
         result: 'Отображение сообщения об успешной оплате',
-        testData: '',
+        testCaseId: -1,
         elementName: 'Кнопка "Оплатить"',
         formName: 'Форма оплаты',
+        testData: [],
+        elementLocation: '',
       },
     ],
     testData: [
@@ -651,25 +715,31 @@ export const mockTestCases: TestCase[] = [
         precondition: 'Открыть страницу поиска',
         action: 'Ввести поисковый запрос "ноутбук"',
         result: 'Отображены результаты поиска',
-        testData: 'Поисковый запрос: "ноутбук"',
+        testCaseId: -1,
         elementName: 'Поле поиска',
         formName: 'Главная страница',
+        testData: [],
+        elementLocation: '',
       },
       {
         precondition: 'Применить фильтр по цене',
         action: 'Установить диапазон цены от 30000 до 80000 рублей',
         result: 'Результаты отфильтрованы по заданному диапазону',
-        testData: 'Диапазон цены: 30000-80000 руб.',
+        testCaseId: -1,
         elementName: 'Слайдер цены',
         formName: 'Панель фильтров',
+        testData: [],
+        elementLocation: '',
       },
       {
         precondition: 'Применить фильтр по бренду',
         action: 'Выбрать бренды "Lenovo" и "HP"',
         result: 'Результаты отфильтрованы по выбранным брендам',
-        testData: 'Бренды: Lenovo, HP',
+        testCaseId: -1,
         elementName: 'Чекбоксы брендов',
         formName: 'Панель фильтров',
+        testData: [],
+        elementLocation: '',
       },
     ],
     testData: [
@@ -720,51 +790,45 @@ export const mockTestCases: TestCase[] = [
 export const mockProjectsHistory = [
   {
     id: 5,
-    date: new Date("2024-1-1"),
-    field: "Предусловие",
-    oldVal: "старое предусловие",
-    newVal: "новое предусловие"
-
+    date: new Date('2024-1-1'),
+    field: 'Предусловие',
+    oldVal: 'старое предусловие',
+    newVal: 'новое предусловие',
   },
   {
     id: 5,
-    date: new Date("2024-1-2"),
-    field: "описание",
-    oldVal: "старое описание",
-    newVal: "новое описание"
-    
+    date: new Date('2024-1-2'),
+    field: 'описание',
+    oldVal: 'старое описание',
+    newVal: 'новое описание',
   },
   {
     id: 5,
-    date: new Date("2024-1-3"),
-    field: "Позитивный",
-    oldVal: "True",
-    newVal: "False"
-
+    date: new Date('2024-1-3'),
+    field: 'Позитивный',
+    oldVal: 'True',
+    newVal: 'False',
   },
   {
     id: 6,
-    date: new Date("2024-1-1"),
-    field: "Предусловие",
-    oldVal: "старое предусловие",
-    newVal: "новое предусловие"
-
+    date: new Date('2024-1-1'),
+    field: 'Предусловие',
+    oldVal: 'старое предусловие',
+    newVal: 'новое предусловие',
   },
   {
     id: 6,
-    date: new Date("2024-1-2"),
-    field: "описание",
-    oldVal: "старое описание",
-    newVal: "новое описание"
-    
+    date: new Date('2024-1-2'),
+    field: 'описание',
+    oldVal: 'старое описание',
+    newVal: 'новое описание',
   },
   {
     id: 6,
-    date: new Date("2024-1-3"),
-    field: "Позитивный",
-    oldVal: "True",
-    newVal: "False"
-
+    date: new Date('2024-1-3'),
+    field: 'Позитивный',
+    oldVal: 'True',
+    newVal: 'False',
   },
 ]
 

@@ -14,10 +14,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     useUserStore()
   const { accessToken } = useAuthStore()
 
-  const [initialLoadComplete, setInitialLoadComplete] = useState(false)
-
-  useEffect(() => {
-    const loadUserData = async () => {
+  const initializeUser = async () => {
       if (accessToken) {
         try {
           setLoading(true)
@@ -30,11 +27,9 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
           }
 
           setUser(userData)
-          setInitialLoadComplete(true)
         } catch (error) {
           console.error('Failed to load user data:', error)
           setError('Не удалось загрузить данные пользователя')
-          setInitialLoadComplete(true)
         } finally {
           setLoading(false)
         }
@@ -42,31 +37,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         if (user) {
           clearUser()
         }
-        setInitialLoadComplete(true)
       }
     }
-
-    const timer = setTimeout(() => {
-      loadUserData()
-    }, 300)
-
-    return () => clearTimeout(timer)
-  }, [accessToken, setUser, setLoading, setError, clearUser, user])
-
-  if (!initialLoadComplete) {
-    return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
-        }}
-      >
-        <div>Загрузка приложения...</div>
-      </div>
-    )
-  }
 
   // if (accessToken && useUserStore.getState().isLoading && !user) {
   //   return (
@@ -131,7 +103,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     profileData: UpdateProfileData
   ): Promise<void> => {
     if (!user) return
-
     try {
       setLoading(true)
       let updatedUser
@@ -145,7 +116,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         updatedUser = await usersApi.updateMyProfile(profileData)
       }
 
-      setUser(updatedUser)
+      setUser(
+        {...user, 
+          profileData: {
+            ...user.profileData, 
+            ...updatedUser.profileData
+          },
+        })
     } catch (error) {
       console.error('Failed to update user profile:', error)
       setError('Не удалось обновить профиль')
@@ -173,7 +150,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         updatedUser = await usersApi.updateMySettings(settingsData)
       }
 
-      setUser(updatedUser)
+      setUser(
+        {...user, 
+          settingsData: {
+            ...user.settingsData, 
+            ...updatedUser.settingsData
+          },
+        })
     } catch (error) {
       console.error('Failed to update user settings:', error)
       setError('Не удалось обновить настройки')
@@ -227,7 +210,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     clearError,
     clearUser,
     getUserProfile: getUserProfile,
-    deleteMyAccount
+    deleteMyAccount,
+    initializeUser
   }
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>

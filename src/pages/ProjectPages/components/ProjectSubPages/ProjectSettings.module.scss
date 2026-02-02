@@ -1,0 +1,717 @@
+@use "@styles/_variables.scss" as vars;
+
+.projectSettings {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  
+  @media (max-width: 768px) {
+    padding: 15px;
+  }
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #333;
+  flex-wrap: wrap;
+}
+
+.breadcrumbItem {
+  color: #333;
+  cursor: pointer;
+  
+  &:hover {
+    color: #000000;
+  }
+}
+
+.breadcrumbSeparator {
+  color: #555;
+  flex-shrink: 0;
+}
+
+.breadcrumbItemActive {
+  color: #000000;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.section {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #000000;
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #000000;
+  word-break: break-word; 
+
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+  }
+}
+
+.formGroup {
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #222;
+    font-size: 14px;
+    word-break: break-word; 
+    &.required::after {
+      content: " *";
+      color: #000000;
+    }
+  }
+
+  .input,
+  .textarea,
+  .select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #000000;
+    background: #fff;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box; 
+    max-width: 100%; 
+    &:focus {
+      outline: none;
+      border-color: #000000;
+    }
+
+    &.error {
+      border-color: #000000;
+    }
+  }
+
+  .input,
+  .select {
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    white-space: nowrap; 
+  }
+
+  .textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.5;
+    word-break: break-word; 
+    white-space: pre-wrap; 
+  }
+
+  .select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23000000' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px;
+    appearance: none;
+    padding-right: 40px;
+  }
+}
+
+.errorMessage {
+  color: #000000;
+  font-size: 12px;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  word-break: break-word; 
+
+  &::before {
+    content: "⚠";
+    font-size: 12px;
+  }
+}
+
+.characterCounter {
+  text-align: right;
+  font-size: 12px;
+  color: #444;
+  margin-top: 4px;
+  word-break: break-word; 
+
+  &.warning {
+    color: #333;
+  }
+
+  &.error {
+    color: #000000;
+  }
+}
+
+
+.dataPoolModeSelector {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.modeButton {
+  padding: 10px 20px;
+  background: #fff;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box; 
+  white-space: nowrap; 
+
+  &:hover {
+    border-color: #000000;
+    color: #000000;
+  }
+
+  &.active {
+    background: #000000;
+    border-color: #000000;
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    
+    &:hover {
+      border-color: #aaa;
+      color: #333;
+    }
+  }
+}
+
+.uploadArea {
+  border: 2px dashed #aaa;
+  border-radius: 8px;
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+
+  &:hover {
+    border-color: #000000;
+    background: rgba(0, 0, 0, 0.02);
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+
+  .uploadIcon {
+    font-size: 36px;
+    color: #777;
+    margin-bottom: 12px;
+  }
+
+  .uploadText {
+    font-size: 16px;
+    color: #000000;
+    margin-bottom: 8px;
+    font-weight: 500;
+    word-break: break-word;
+  }
+
+  .fileInfo {
+    font-size: 13px;
+    color: #444;
+    word-break: break-word; 
+  }
+}
+
+.dataPoolTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  font-size: 14px;
+  table-layout: fixed; 
+
+  th {
+    background: #000000;
+    color: #fff;
+    font-weight: 500;
+    text-align: center;
+    padding: 12px;
+    border-bottom: 2px solid #000000;
+    word-break: break-word;
+    &:last-child {
+      width: 100px;
+      text-align: center;
+    }
+  }
+
+  td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    word-break: break-word; 
+    
+    &:last-child {
+      width: 100px;
+      text-align: center;
+    }
+  }
+}
+
+.tableInput {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #000000;
+  background: #fff;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box; 
+  max-width: 100%; 
+
+  &:focus {
+    outline: none;
+    border-color: #000000;
+  }
+}
+
+.dataPoolActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.teamHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.teamTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  table-layout: fixed;
+
+  th {
+    background: #111;
+    color: #fff;
+    font-weight: 500;
+    text-align: left;
+    padding: 12px;
+    border-bottom: 2px solid #000000;
+    word-break: break-word;
+  }
+
+  td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    word-break: break-word; 
+    
+    &:last-child {
+      width: 120px;
+      text-align: center;
+    }
+  }
+}
+
+.roleBadge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: rgba(0, 0, 0, 0.1);
+  color: #000000;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  word-break: break-word; 
+  white-space: nowrap; 
+}
+
+.permissionsInfo {
+  font-size: 11px;
+  color: #444;
+  margin-top: 4px;
+  word-break: break-word; 
+}
+
+.emptyState {
+  text-align: center;
+  padding: 40px 20px;
+  color: #444;
+  font-style: italic;
+
+  .emptyIcon {
+    font-size: 36px;
+    margin-bottom: 12px;
+    color: #aaa;
+  }
+}
+
+.primaryButton {
+  padding: 10px 20px;
+  background: #000000;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  box-sizing: border-box;
+  white-space: nowrap; 
+
+  &:hover:not(:disabled) {
+    background: #111;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.secondaryButton {
+  padding: 10px 20px;
+  background: transparent;
+  color: #000000;
+  border: 1px solid #000000;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box; 
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.dangerButton {
+  padding: 10px 20px;
+  background: transparent;
+  color: #000000;
+  border: 1px solid #000000;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box; 
+  white-space: nowrap; 
+
+  &:hover:not(:disabled) {
+    background: #000000;
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.smallButton {
+  padding: 6px 12px;
+  font-size: 12px;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+
+.actionsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  margin-top: 20px;
+  border-top: 1px solid #ddd;
+  flex-wrap: wrap;
+  gap: 12px;
+  box-sizing: border-box; 
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.modalContent {
+  background: #fff;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 500px;
+  padding: 24px;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-sizing: border-box; 
+
+  @media (max-width: 768px) {
+    padding: 20px;
+    max-height: 85vh;
+  }
+}
+
+.modalTitle {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #000000;
+  margin: 0 0 16px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #000000;
+  word-break: break-word; 
+}
+
+.modalSubtitle {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 20px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.modalButtons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  flex-wrap: wrap;
+  box-sizing: border-box; 
+
+  @media (max-width: 768px) {
+    justify-content: stretch;
+    
+    button {
+      flex: 1;
+    }
+  }
+}
+
+.warningBlock {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 16px;
+  border-radius: 4px;
+  border-left: 4px solid #000000;
+  margin-bottom: 20px;
+  box-sizing: border-box; 
+}
+
+.warningTitle {
+  font-weight: 500;
+  color: #000000;
+  margin-bottom: 8px;
+  word-break: break-word; 
+}
+
+.warningList {
+  color: #000000;
+  margin: 0;
+  padding-left: 20px;
+  
+  li {
+    margin-bottom: 4px;
+    word-break: break-word; 
+  }
+}
+
+.notification {
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  border-left: 4px solid transparent;
+  word-break: break-word; 
+
+  &.success {
+    background: rgba(0, 0, 0, 0.05);
+    color: #000000;
+    border-left-color: #000000;
+
+    &::before {
+      content: "✓";
+      font-weight: bold;
+    }
+  }
+
+  &.error {
+    background: rgba(0, 0, 0, 0.05);
+    color: #000000;
+    border-left-color: #000000;
+
+    &::before {
+      content: "✗";
+      font-weight: bold;
+    }
+  }
+
+  &.warning {
+    background: rgba(0, 0, 0, 0.05);
+    color: #000000;
+    border-left-color: #000000;
+
+    &::before {
+      content: "!";
+      font-weight: bold;
+    }
+  }
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  box-sizing: border-box; 
+
+  .loadingSpinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(170, 170, 170, 0.3);
+    border-top-color: #000000;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.permissionSummary {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  padding: 12px;
+  margin-top: 12px;
+  border-left: 3px solid #000000;
+  box-sizing: border-box;
+
+  .permissionTitle {
+    font-weight: 500;
+    color: #000000;
+    margin-bottom: 8px;
+    word-break: break-word;
+  }
+
+  .permissionList {
+    font-size: 13px;
+    color: #333;
+    line-height: 1.5;
+    
+    li {
+      margin-bottom: 4px;
+      word-break: break-word; 
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .dataPoolTable,
+  .teamTable {
+    font-size: 13px;
+    display: block;
+    overflow-x: auto; 
+
+    th,
+    td {
+      padding: 8px 6px;
+      min-width: 80px;
+    }
+  }
+  
+  .primaryButton,
+  .secondaryButton,
+  .dangerButton {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  
+  .dataPoolModeSelector {
+    flex-direction: column;
+    
+    .modeButton {
+      width: 100%;
+    }
+  }
+  
+  .teamHeader {
+    flex-direction: column;
+    align-items: stretch;
+    
+    .primaryButton {
+      width: 100%;
+    }
+  }
+
+  .sectionTitle {
+    font-size: 1.1rem;
+  }
+
+  .input,
+  .textarea,
+  .select {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+
+  .breadcrumb {
+    font-size: 12px;
+    gap: 4px;
+  }
+
+  .modalContent {
+    padding: 16px;
+  }
+}

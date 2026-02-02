@@ -10,26 +10,20 @@ import {
   ProjectUsers,
   RecentTestPlan,
 } from './components'
+import { PAGE_ENDPOINTS } from '@constants/'
 
 export const ProjectContainer: React.FC = () => {
   const { isAuthenticated } = useAuth()
-  const { user } = useUser()
-  const { project, loadProject, isLoading } = useProject()
-  const [errorMsg, setErrorMsg] = useState('')
+  const { project } = useProject()
   const { setHeaderContent } = useHeaderStore()
   const { setPipelineContent } = usePipelineStore()
-  const { projectId } = useParams<{ projectId: string }>()
 
-  const targetProjectId = projectId
-    ? parseInt(projectId)
-    : user?.projectData[0]?.id
-  const hasLoadedRef = useRef(false)
 
   useEffect(() => {
     const headerContent = (
       <div>
         <Link to="/">ЯМП&nbsp;</Link>
-        &mdash;&nbsp; проект &mdash;&nbsp; {project?.name}
+        &mdash;&nbsp; <Link to={`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.HOME}`}>Проект &nbsp;</Link> &mdash;&nbsp; {project?.name}
       </div>
     )
 
@@ -41,36 +35,8 @@ export const ProjectContainer: React.FC = () => {
     }
   }, [project?.name, setHeaderContent])
 
-  useEffect(() => {
-    if (
-      targetProjectId &&
-      !isLoading &&
-      (!hasLoadedRef.current || project?.id !== targetProjectId)
-    ) {
-      hasLoadedRef.current = true
-      try {
-        loadProject(targetProjectId)
-      } catch (e: any) {
-        setErrorMsg(e.message)
-      }
-    }
-  }, [targetProjectId, project?.id, isLoading, loadProject])
-
   if (!isAuthenticated) {
     return <div>Пожалуйста, войдите в систему для доступа к проектам</div>
-  }
-
-  if (errorMsg) {
-    return (
-      <div>
-        Прозошла ошибка: {errorMsg} <br />
-        <Link to="/">Вернуться к списку проектов</Link>
-      </div>
-    )
-  }
-
-  if (isLoading) {
-    return <div>Загрузка данных проекта...</div>
   }
 
   if (!project) {

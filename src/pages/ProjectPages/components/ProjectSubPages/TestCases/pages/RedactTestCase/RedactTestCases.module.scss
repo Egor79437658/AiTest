@@ -422,7 +422,7 @@
   .form {
     width: 100%;
     margin: 15px auto;
-    padding: 20px;
+    padding: 10px;
   }
 
   .formHeader {
@@ -437,12 +437,12 @@
   .stepTab {
     flex: 1;
     min-width: 70px;
-    padding: 8px 12px;
+    padding: 4px 6px;
     font-size: 13px;
   }
 
   .stepContent {
-    padding: 20px;
+    padding: 10px;
   }
 
   .iconButton {
@@ -453,13 +453,13 @@
 
   .infoGrid {
     grid-template-columns: 1fr;
-    padding: 15px;
+    padding: 10px;
   }
 }
 
 @media (max-width: 480px) {
   .form {
-    padding: 16px;
+    padding: 5px;
   }
 
   h2 {
@@ -633,7 +633,7 @@
 // Адаптивность
 @media (max-width: 768px) {
   .section {
-    padding: 20px;
+    padding: 10px;
   }
 
   .formGrid {
@@ -641,6 +641,6 @@
   }
 
   .checkboxGroup {
-    padding: 12px;
+    padding: 6px;
   }
 }

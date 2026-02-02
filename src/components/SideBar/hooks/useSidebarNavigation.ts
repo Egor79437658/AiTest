@@ -1,5 +1,6 @@
 import { PAGE_ENDPOINTS } from '@constants/'
 import { useAuth, useProject, useUser } from '@contexts/'
+import { UserRole } from '@interfaces/'
 
 export interface MenuItem {
   title: string
@@ -11,7 +12,7 @@ export interface MenuItem {
 
 export const useSidebarNavigation = () => {
   const { isAuthenticated, openAuthModal } = useAuth()
-  const { projects, project } = useProject()
+  const { project } = useProject()
   const { user } = useUser()
 
   const baseItems: MenuItem[] = []
@@ -41,49 +42,46 @@ export const useSidebarNavigation = () => {
           link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/new`,
           requireAuth: true,
         },
-        ...(project
-          ? [
-              {
-                title: 'Обзор',
-                link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}`,
-                requireAuth: true,
-              },
-              {
-                title: 'Тест-кейсы',
-                link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}`,
-                requireAuth: true,
-              },
-              {
-                title: 'Тест-план',
-                link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}`,
-                requireAuth: true,
-              },
-              {
-                title: 'Скрипты',
-                link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.SCRIPT}`,
-                requireAuth: true,
-              },
-              {
-                title: 'Автотестинг',
-                link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.AUTO_TEST}`,
-                requireAuth: true,
-              },
-              {
-                title: 'Отчеты',
-                link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.REPORTS}`,
-                requireAuth: true,
-              },
-              ...(project.users.find((el) => el.id === user?.id)?.role === 2
-                ? [
-                    {
-                      title: 'Настройки',
-                      link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}`,
-                      requireAuth: true,
-                    },
-                  ]
-                : []),
-            ]
-          : []),
+        ...(project ? [
+          {
+            title: 'Обзор',
+            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}`,
+            requireAuth: true,
+          },
+          {
+            title: 'Тест-кейсы',
+            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}`,
+            requireAuth: true,
+          },
+          {
+            title: 'Тест-план',
+            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}`,
+            requireAuth: true,
+          },
+          {
+            title: 'Скрипты',
+            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.SCRIPT}`,
+            requireAuth: true,
+          },
+          {
+            title: 'Автотестинг',
+            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.AUTO_TEST}`,
+            requireAuth: true,
+          },
+          {
+            title: 'Отчеты',
+            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.REPORTS}`,
+            requireAuth: true,
+          },
+          ...( project.users.find(el => el.id === user?.id)?.role === UserRole.PROJECT_ADMIN ? [
+            {
+              title: 'Настройки',
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.SETTINGS}`,
+              requireAuth: true,
+            },
+          ] : [])
+          
+        ] : [])
       ],
     },
     {

@@ -13,7 +13,6 @@ export const ProjectTestCases: React.FC = () => {
   const { project } = useProject()
   const {
     allTestCases: testCases,
-    loadAllTestCases,
     isLoading,
     error,
     setAllTestCases,
@@ -26,6 +25,9 @@ export const ProjectTestCases: React.FC = () => {
   const [deleteIds, setDeleteIds] = useState<number[]>([])
   const [refactorIds, setRefactorIds] = useState<number[]>([])
   const [includeNegative, setIncludeNegative] = useState(false)
+  const [totalTCPositive, setTotalTCPositive] = useState(0)
+  const [newTCPositive, setNewTCPositive] = useState(0)
+  const [newTCNegative, setNewTCNegative] = useState(0)
 
   const handleRefactor = (ids: number[]) => {
     setRefactorIds(ids)
@@ -82,7 +84,7 @@ export const ProjectTestCases: React.FC = () => {
 
     const updated = testCases.map((testCase) => {
       if (ids.includes(testCase.id)) {
-        return { ...testCase, status: 0 as TestCaseStatus}
+        return { ...testCase, status: 0 as TestCaseStatus }
       } else return testCase
     })
     console.log(updated)
@@ -119,15 +121,20 @@ export const ProjectTestCases: React.FC = () => {
     )
   }, [project, setHeaderContent])
 
+
   useEffect(() => {
-    if (project) {
-      try {
-        loadAllTestCases(project.id)
-      } catch (e: any) {
-        console.log('failed to load test-cases:', e)
-      }
-    }
-  }, [project, loadAllTestCases])
+    setTotalTCPositive(testCases.filter((el) => el.positive).length)
+    setNewTCPositive(
+      testCases.filter(
+        (el) => el.positive && !project?.testCases.some((tc) => tc.id === el.id)
+      ).length
+    )
+    setNewTCNegative(
+      testCases.filter(
+        (el) => !el.positive && !project?.testCases.some((tc) => tc.id === el.id)
+      ).length
+    )
+  }, [testCases])
 
   const getProjectBaseUrl = () => {
     const path = window.location.pathname
@@ -181,13 +188,13 @@ export const ProjectTestCases: React.FC = () => {
             className={`${styles.tab} ${activeTab === 'table' ? styles.activeTab : ''}`}
             onClick={() => setActiveTab('table')}
           >
-            Список тест-кейсов
+            База тест-кейсов
           </button>
           <button
             className={`${styles.tab} ${activeTab === 'operations' ? styles.activeTab : ''}`}
             onClick={() => setActiveTab('operations')}
           >
-            Массовые операции
+            Генерация ТК
           </button>
         </div>
 
@@ -203,8 +210,10 @@ export const ProjectTestCases: React.FC = () => {
             />
           ) : (
             <MassOperationsTab
-              totalTestCases={testCases.length}
-              newTestCasesCount={newTestCasesCount}
+              totalTCPositive={totalTCPositive}
+              totalTCNegative={testCases.length - totalTCPositive}
+              newTCPositive={newTCPositive}
+              newTCNegative={newTCNegative}
               onGenerateAll={handleGenerateAll}
               onGenerateNew={handleGenerateNew}
               onRefactorAll={handleRefactorAll}
@@ -274,7 +283,7 @@ export const ProjectTestCases: React.FC = () => {
               <h4>Выбранные тест-кейсы:</h4>
               {testCases
                 .filter((tc) => refactorIds.includes(tc.id))
-                .slice(0, 5) // Показываем только первые 5
+                // .slice(0, 5) // Показываем только первые 5
                 .map((tc) => (
                   <div key={tc.id} className={styles.selectedItem}>
                     {tc.name} (ID: {tc.id})

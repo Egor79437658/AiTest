@@ -236,7 +236,7 @@ class MockApiService {
       ...mockUsers[userIndex],
       profileData: {
         ...mockUsers[userIndex].profileData,
-        ...profileData,
+        ...profileData.profileData,
       },
     }
 
@@ -254,7 +254,7 @@ class MockApiService {
       ...mockUsers[userIndex],
       settingsData: {
         ...mockUsers[userIndex].settingsData,
-        ...settingsData,
+        ...settingsData.settingsData,
       },
     }
 
@@ -384,7 +384,32 @@ class MockApiService {
     return structuredClone(updatedProject)
   }
 
-  async getHistoryChange(testCaseId: number): Promise<TestCaseHistoryRecord[]> {
+
+  async deleteProject(projectId: number): Promise<void> {
+    await delay(500)
+
+    const projectIndex = mockProjects.findIndex((p) => p.id === projectId)
+
+    if (projectIndex === -1) {
+      throw new Error('Project not found')
+    }
+
+  
+    mockProjects.splice(projectIndex, 1)
+
+ 
+    mockUsers.forEach(user => {
+      user.projectData = user.projectData.filter(
+        project => project.id !== projectId
+      )
+    })
+
+    
+    localStorage.removeItem(`project_${projectId}_datapool`)
+
+    console.log(`Project ${projectId} deleted successfully from mock data`)
+ }
+ async getHistoryChange(testCaseId: number): Promise<TestCaseHistoryRecord[]> {
     await delay(800)
     return mockProjectsHistory.filter(el => el.id === testCaseId)
 
@@ -566,7 +591,7 @@ class MockApiService {
     return structuredClone(testCase)
   }
 
-  async bulkDeleteTestCases(
+  async deleteTestCases(
     projectId: number,
     testCaseIds: number[]
   ): Promise<void> {

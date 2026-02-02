@@ -17,14 +17,15 @@ export type TestCasePriority = 0 | 1 | 2 // 0: low, 1: med, 2: high
 
 export interface TestCaseStep {
   id?: number
+  testCaseId: number,
   precondition: string
   action: string
   result: string
-  testData?: string
-  elementName?: string
-  elementLocation?: string
-  formName?: string
-  screenshot?: string
+  testData: TestData[]
+  elementName: string
+  elementLocation: string
+  formName: string
+  // screenshot?: string
 }
 
 export interface TestData {

@@ -59,6 +59,11 @@ export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
 
   const loadAllTestCases = useCallback(
     async (projectId: number): Promise<TestCase[]> => {
+      if (isNaN(projectId) || !isFinite(projectId)) {
+        setError('некорректное значение id проекта')
+        console.error(`некорректное значение id проекта ${projectId}`)
+        throw new Error(`некорректное значение id проекта ${projectId}`)
+      }
       setLoading(true)
       setError(null)
 
@@ -88,6 +93,17 @@ export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
       caseId: number,
       updates: TestCaseUpdateData
     ): Promise<TestCase> => {
+      if (isNaN(projectId) || !isFinite(projectId)) {
+        setError('некорректное значение id проекта')
+        console.error(`некорректное значение id проекта ${projectId}`)
+        throw new Error(`некорректное значение id проекта ${projectId}`)
+      }
+
+      if (isNaN(caseId) || !isFinite(caseId)) {
+        setError('некорректное значение id тест-кейса')
+        console.error(`некорректное значение id тест-кейса ${caseId}`)
+        throw new Error(`некорректное значение id тест-кейса ${caseId}`)
+      }
       setLoading(true)
       setError(null)
 
@@ -132,6 +148,12 @@ export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
         throw new Error('Нет выбранных тест-кейсов для удаления')
       }
 
+      if (isNaN(projectId) || !isFinite(projectId)) {
+        setError('некорректное значение id проекта')
+        console.error(`некорректное значение id проекта ${projectId}`)
+        throw new Error(`некорректное значение id проекта ${projectId}`)
+      }
+
       setLoading(true)
       setError(null)
 
@@ -172,6 +194,11 @@ export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
 
   const createNewTestCase = useCallback(
     async (projectId: number, data: TestCaseFormData): Promise<TestCase> => {
+      if (isNaN(projectId) || !isFinite(projectId)) {
+        setError('некорректное значение id проекта')
+        console.error(`некорректное значение id проекта ${projectId}`)
+        throw new Error(`некорректное значение id проекта ${projectId}`)
+      }
       setLoading(true)
       setError(null)
 
@@ -204,13 +231,17 @@ export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
     ]
   )
 
-
   const bulkUpdateTestCases = useCallback(
     async (
       projectId: number,
       caseIds: number[],
       updates: TestCaseUpdateData
     ): Promise<void> => {
+      if (isNaN(projectId) || !isFinite(projectId)) {
+        setError('некорректное значение id проекта')
+        console.error(`некорректное значение id проекта ${projectId}`)
+        throw new Error(`некорректное значение id проекта ${projectId}`)
+      }
       setLoading(true)
       setError(null)
 
@@ -270,12 +301,22 @@ export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
     return Object.values(grouped).map((versions) => versions[0])
   }, [getGroupedTestCases])
 
-
-
-const loadTestCaseHistory = useCallback(
+  const loadTestCaseHistory = useCallback(
     async (projectId: number, testCaseId: number) => {
+      if (isNaN(projectId) || !isFinite(projectId)) {
+        setError('некорректное значение id проекта')
+        console.error(`некорректное значение id проекта ${projectId}`)
+        throw new Error(`некорректное значение id проекта ${projectId}`)
+      }
+
+      if (isNaN(testCaseId) || !isFinite(testCaseId)) {
+        setError('некорректное значение id тест-кейса')
+        console.error(`некорректное значение id тест-кейса ${testCaseId}`)
+        throw new Error(`некорректное значение id тест-кейса ${testCaseId}`)
+      }
       setLoading(true)
-      try {        
+      setError(null)
+      try {
         setTestHistory(await getTestCaseHistory(projectId, testCaseId))
       } catch (error) {
         console.error('Failed to load history:', error)
@@ -294,7 +335,7 @@ const loadTestCaseHistory = useCallback(
     isLoading,
     error,
     history: history,
-    
+
     // Выделение
     selectedTestCaseIds,
     selectionType,
@@ -303,7 +344,7 @@ const loadTestCaseHistory = useCallback(
       selectAllTestCases(allTestCases.map((tc) => tc.id)),
     clearTestCaseSelection,
     setSelectionType,
-    
+
     // Действия с данными
     loadHistory: loadTestCaseHistory,
     loadAllTestCases,
@@ -330,8 +371,6 @@ const loadTestCaseHistory = useCallback(
       grouped: Object.keys(getGroupedTestCases()).length,
       latestVersions: getLatestVersions().length,
     },
-
-
   }
 
   return (
