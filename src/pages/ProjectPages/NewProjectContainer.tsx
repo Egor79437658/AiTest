@@ -1,10 +1,10 @@
 import type React from 'react'
 import styles from './styles/NewProjectContainer.module.scss'
 import { useAuth, useProject, useUser } from '@contexts/'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useHeaderStore } from '@stores/'
-import { TextArea } from '@components/'
+import { Breadcrumbs, TextArea } from '@components/'
 import { Controller, useForm } from 'react-hook-form'
 import { MOCK_MODE, PAGE_ENDPOINTS } from '@constants/'
 import { mockApiService } from '../../services/mockApiService'
@@ -19,10 +19,10 @@ type FormData = {
 export const NewProjectContainer: React.FC = () => {
   const { isAuthenticated } = useAuth()
   const { user, isLoading, refreshUser } = useUser()
-  const { loadProject, } = useProject()
+  const { loadProject } = useProject()
   const { setHeaderContent } = useHeaderStore()
   const navigator = useNavigate()
-  const [errorMsg, setErrorMsg] = useState("")
+  const [errorMsg, setErrorMsg] = useState('')
   const {
     control,
     handleSubmit,
@@ -31,16 +31,9 @@ export const NewProjectContainer: React.FC = () => {
     formState: { errors, isSubmitting },
   } = useForm<FormData>()
 
-  useEffect(
-    () =>
-      setHeaderContent(
-        <div>
-          <Link to="/">ЯМП&nbsp;</Link>
-          &mdash;&nbsp; новый проект
-        </div>
-      ),
-    [setHeaderContent]
-  )
+  useEffect(() => {
+    setHeaderContent(<Breadcrumbs items={[{ text: 'новый проект' }]} />)
+  }, [setHeaderContent])
 
   if (!isAuthenticated) {
     return <div>Please log in to access projects</div>
@@ -62,12 +55,12 @@ export const NewProjectContainer: React.FC = () => {
       }
       await loadProject(newProject.id)
       await refreshUser()
-      navigator(`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${newProject.id}`)
+      navigator(
+        `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${newProject.id}`
+      )
+    } catch (e: any) {
+      setErrorMsg('что-то пошло не так - ' + e.message)
     }
-    catch(e: any) {
-      setErrorMsg("что-то пошло не так - " + e.message)
-    }
-  
   }
 
   return (

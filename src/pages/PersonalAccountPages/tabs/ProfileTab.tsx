@@ -9,7 +9,8 @@ import stylesGeneral from '../styles/Account.module.scss'
 import { useAuthStore, useHeaderStore } from '@stores/'
 import { Link } from 'react-router-dom'
 import { PAGE_ENDPOINTS } from '@constants/'
-import { QuestionDialog } from '@components/'
+import { Breadcrumbs, QuestionDialog } from '@components/'
+import { SyncLoader } from 'react-spinners'
 
 export const ProfileTab: React.FC = () => {
   const { openAuthModal } = useAuth()
@@ -27,16 +28,15 @@ export const ProfileTab: React.FC = () => {
   const [dialogQuestion, setDialogQuestion] = useState<React.ReactNode>(null)
   const resolveRef = useRef<((value: boolean) => void) | null>(null)
 
-  useEffect(
-    () =>
+  useEffect(() => {
+    if (user?.profileData.username) {
       setHeaderContent(
-        <div>
-          <Link to="/">ЯМП&nbsp;</Link>
-          &mdash;&nbsp; {user?.profileData.username} &nbsp;&mdash;&nbsp; профиль
-        </div>
-      ),
-    [setHeaderContent]
-  )
+        <Breadcrumbs
+          items={[{ text: user.profileData.username }, { text: 'профиль' }]}
+        />
+      )
+    }
+  }, [setHeaderContent, user?.profileData.username])
 
   const company = watch('company')
   const email = watch('email')
@@ -57,9 +57,9 @@ export const ProfileTab: React.FC = () => {
   }, [company, setValue, watch])
 
   const askQuestion = (question: React.ReactNode): Promise<boolean> => {
-    console.log("test2")
+    console.log('test2')
     return new Promise((resolve) => {
-      setShowDiag(false)      
+      setShowDiag(false)
       setTimeout(() => {
         setDialogQuestion(question)
         setShowDiag(true)
@@ -93,7 +93,7 @@ export const ProfileTab: React.FC = () => {
     }
 
     if (user.profileData.email !== email) {
-      console.log("test")
+      console.log('test')
       const shouldContinue = await askQuestion(
         <>
           Ваша почта не подтверждена. При сохранении она не будет обновлена.{' '}
@@ -149,7 +149,8 @@ export const ProfileTab: React.FC = () => {
     return (
       <div className={stylesGeneral.pageContainer}>
         <div className={stylesProfile.profileTab}>
-          <div>Загрузка профиля...</div>
+          <div>Загрузка профиля</div>
+          <SyncLoader color="#000000" />
         </div>
       </div>
     )

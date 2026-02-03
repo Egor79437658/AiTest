@@ -15,7 +15,6 @@ export const HistoryTestCase: React.FC = () => {
     loadHistory(project?.id || -1, parseInt(testCaseId || ''))
   }, [project, testCaseId])
 
-
   const columns: TableColumn[] = [
     {
       key: 'date',
@@ -45,7 +44,13 @@ export const HistoryTestCase: React.FC = () => {
     },
   ]
 
-  if (isLoading) return <div className={styles.loadingDiv}>Загрузка...</div>
+  if (isLoading)
+    return (
+      <>
+        <div className={styles.loadingDiv}>Загрузка</div>
+        <SyncLoader color="#000000" />
+      </>
+    )
   if (error) return <div className={styles.errorDiv}>{error}</div>
 
   return (

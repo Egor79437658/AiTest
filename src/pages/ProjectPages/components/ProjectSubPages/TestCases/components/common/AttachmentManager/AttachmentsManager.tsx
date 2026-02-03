@@ -1,6 +1,7 @@
 import React, { useRef } from 'react'
 import { Attachment } from '@interfaces/'
 import styles from './AttachmentsManager.module.scss'
+import { toast } from 'sonner'
 
 interface AttachmentsManagerProps {
   attachments: Attachment[]
@@ -44,7 +45,9 @@ export const AttachmentsManager: React.FC<AttachmentsManagerProps> = ({
     })
 
     if (errors.length > 0) {
-      alert(errors.join('\n'))
+      toast.error(errors.join('\n'), {
+        position: 'top-center',
+      })
     }
 
     if (newAttachments.length > 0) {

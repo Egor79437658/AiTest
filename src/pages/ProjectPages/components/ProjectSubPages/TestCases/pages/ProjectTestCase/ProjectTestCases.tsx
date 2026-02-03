@@ -5,7 +5,7 @@ import { useHeaderStore } from '@stores/'
 import { Link, useNavigate } from 'react-router-dom'
 import { ProjectTestCaseTable } from '../../components/ProjectTestCaseTable/ProjectTestCaseTable'
 import styles from './ProjectTestCases.module.scss'
-import { QuestionDialog } from '@components/'
+import { Breadcrumbs, QuestionDialog } from '@components/'
 import { TestCase, TestCaseStatus } from '@interfaces/'
 import { MassOperationsTab } from '../../components'
 
@@ -103,24 +103,24 @@ export const ProjectTestCases: React.FC = () => {
   }
 
   useEffect(() => {
-    setHeaderContent(
-      <div>
-        <Link to="/">ЯМП&nbsp;</Link>
-        &mdash;&nbsp;{' '}
-        <Link
-          to={
-            window.location.pathname.split(
-              '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE
-            )[0]
-          }
-        >
-          {project?.name}&nbsp;
-        </Link>{' '}
-        &mdash;&nbsp; Тест-кейсы
-      </div>
-    )
+    if (project) {
+      setHeaderContent(
+        <Breadcrumbs
+          items={[
+            {
+              text: 'Проекты',
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.HOME}`,
+            },
+            {
+              text: project.name,
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}`,
+            },
+            { text: 'Тест-кейсы' },
+          ]}
+        />
+      )
+    }
   }, [project, setHeaderContent])
-
 
   useEffect(() => {
     setTotalTCPositive(testCases.filter((el) => el.positive).length)
@@ -131,7 +131,8 @@ export const ProjectTestCases: React.FC = () => {
     )
     setNewTCNegative(
       testCases.filter(
-        (el) => !el.positive && !project?.testCases.some((tc) => tc.id === el.id)
+        (el) =>
+          !el.positive && !project?.testCases.some((tc) => tc.id === el.id)
       ).length
     )
   }, [testCases])

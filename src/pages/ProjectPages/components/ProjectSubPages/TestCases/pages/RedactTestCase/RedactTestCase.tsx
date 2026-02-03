@@ -5,12 +5,11 @@ import {
   TestCaseUpdateData,
   testCaseStatusMap,
   testCasePriorityMap,
-  TestData,
   TestCaseStep,
 } from '@interfaces/'
 import { useHeaderStore } from '@stores/'
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import styles from './RedactTestCases.module.scss'
 import { Controller, useForm } from 'react-hook-form'
 import {
@@ -19,7 +18,9 @@ import {
   TagsInput,
   TestDataEditor,
 } from '../../components'
-import { QuestionDialog } from '@components/'
+import { Breadcrumbs, QuestionDialog } from '@components/'
+import { toast } from 'sonner'
+import { SyncLoader } from 'react-spinners'
 
 interface TestCaseFormData {
   name: string
@@ -168,43 +169,37 @@ export const RedactTestCase: React.FC = () => {
   }, [testCaseId, testCases, project, reset, currentUser])
 
   useEffect(() => {
-    const pageTitle = testCaseId
-      ? `Редактирование тест-кейса`
-      : 'Создание тест-кейса'
+    const pageTitle = testCaseId ? 'Редактирование' : 'Создание'
 
-    setHeaderContent(
-      <div>
-        <Link to="/">ЯМП&nbsp;</Link>
-        &mdash;&nbsp;{' '}
-        <Link
-          to={
-            window.location.href.split(
-              '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE
-            )[0]
-          }
-        >
-          {project?.name}&nbsp;
-        </Link>{' '}
-        &mdash;&nbsp;{' '}
-        <Link
-          to={
-            window.location.href.split(
-              '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE
-            )[0] +
-            '/' +
-            PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE
-          }
-        >
-          Тест-кейсы&nbsp;
-        </Link>{' '}
-        &mdash;&nbsp; {pageTitle}
-      </div>
-    )
+    if (project) {
+      setHeaderContent(
+        <Breadcrumbs
+          items={[
+            {
+              text: 'Проекты',
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.HOME}`,
+            },
+            {
+              text: project.name,
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}`,
+            },
+            {
+              text: 'Тест-кейсы',
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}`,
+            },
+            { text: pageTitle },
+          ]}
+          maxVisibleItems={3}
+        />
+      )
+    }
   }, [testCase, project, setHeaderContent, testCaseId])
 
   const handleSave = async (data: TestCaseFormData) => {
     if (!project) {
-      alert('Проект не выбран')
+      toast.error('Проект не выбран!', {
+        position: 'top-center',
+      })
       return
     }
 
@@ -230,17 +225,23 @@ export const RedactTestCase: React.FC = () => {
 
       if (testCase) {
         await updateTestCase(project.id, testCase.id, updateData)
-        alert('Тест-кейс успешно обновлен!')
+        toast.success('Тест-кейс успешно обновлен!', {
+          position: 'top-center',
+        })
       } else {
         // Здесь должен быть вызов API для создания
         console.log('Создание нового тест-кейса:', updateData)
-        alert('Тест-кейс успешно создан!')
+        toast.success('Тест-кейс успешно созлдан!', {
+          position: 'top-center',
+        })
       }
 
-      navigate(-1) // Возврат на предыдущую страницу
+      navigate(-1)
     } catch (error) {
       console.error('Ошибка при сохранении тест-кейса:', error)
-      alert('Произошла ошибка при сохранении тест-кейса')
+      toast.success('Тест-кейс успешно сохранен!', {
+        position: 'top-center',
+      })
     }
   }
 
@@ -257,11 +258,15 @@ export const RedactTestCase: React.FC = () => {
 
       // Здесь должен быть вызов API
       console.log('Создание новой версии:', newVersionData)
-      alert('Новая версия создана успешно!')
+      toast.success('Новая версия успешно создана!', {
+        position: 'top-center',
+      })
       navigate(-1)
     } catch (error) {
       console.error('Ошибка при создании новой версии:', error)
-      alert('Произошла ошибка при создании новой версии')
+      toast.error('Произошла ошибка при создании нового кейса!', {
+        position: 'top-center',
+      })
     }
   }
 
@@ -278,7 +283,8 @@ export const RedactTestCase: React.FC = () => {
       <div className={styles.pageContainer}>
         <div className={styles.loading}>
           <div className={styles.loadingSpinner}></div>
-          <p>Загрузка тест-кейса...</p>
+          <p>Загрузка тест-кейса</p>
+          <SyncLoader color="#000000" />
         </div>
       </div>
     )

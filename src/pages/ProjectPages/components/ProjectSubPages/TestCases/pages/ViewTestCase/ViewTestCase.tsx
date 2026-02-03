@@ -1,10 +1,12 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import { Link, useNavigate, useParams, useLocation } from 'react-router-dom'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { useProject, useTestCase } from '@contexts/'
 import { useHeaderStore } from '@stores/'
 import { PAGE_ENDPOINTS } from '@constants/'
 import { TestCase, TestCaseStep } from '@interfaces/'
 import styles from './ViewTestCase.module.scss'
+import { Breadcrumbs } from '@components/'
+import { SyncLoader } from 'react-spinners'
 
 interface StepGroup {
   steps: TestCaseStep[]
@@ -84,37 +86,29 @@ export const ViewTestCase: React.FC = () => {
 
   useEffect(() => {
     const pageTitle = 'Просмотр тест-кейса'
-    const versionInfo = versionParam ? ` (версия ${versionParam})` : ''
 
-    setHeaderContent(
-      <div>
-        <Link to="/">ЯМП&nbsp;</Link>
-        &mdash;&nbsp;{' '}
-        <Link
-          to={
-            window.location.href.split(
-              '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE
-            )[0]
-          }
-        >
-          {project?.name}&nbsp;
-        </Link>{' '}
-        &mdash;&nbsp;{' '}
-        <Link
-          to={
-            window.location.href.split(
-              '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE
-            )[0] +
-            '/' +
-            PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE
-          }
-        >
-          Тест-кейсы&nbsp;
-        </Link>{' '}
-        &mdash;&nbsp; {pageTitle}
-        {versionInfo}
-      </div>
-    )
+    if (project) {
+      setHeaderContent(
+        <Breadcrumbs
+          items={[
+            {
+              text: 'Проекты',
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.HOME}`,
+            },
+            {
+              text: project.name,
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}`,
+            },
+            {
+              text: 'Тест-кейсы',
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}`,
+            },
+            { text: `${pageTitle}` },
+          ]}
+          maxVisibleItems={2}
+        />
+      )
+    }
   }, [testCase, project, setHeaderContent, versionParam])
 
   const toggleStep = (index: number) => {
@@ -138,7 +132,8 @@ export const ViewTestCase: React.FC = () => {
       <div className={styles.pageContainer}>
         <div className={styles.loading}>
           <div className={styles.loadingSpinner}></div>
-          <p>Загрузка тест-кейса...</p>
+          <p>Загрузка тест-кейса</p>
+          <SyncLoader color="#000000" />
         </div>
       </div>
     )

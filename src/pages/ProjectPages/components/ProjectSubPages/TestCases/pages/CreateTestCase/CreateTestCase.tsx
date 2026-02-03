@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { Controller, useForm } from 'react-hook-form'
 import { useProject, useTestCase, useUser } from '@contexts/'
 import { useHeaderStore } from '@stores/'
-import { Link } from 'react-router-dom'
 import { PAGE_ENDPOINTS } from '@constants/'
 import {
   TestCaseFormData,
@@ -17,7 +16,7 @@ import {
   TagsInput,
   TestDataEditor,
 } from '../../components'
-import { QuestionDialog } from '@components/'
+import { Breadcrumbs, QuestionDialog } from '@components/'
 
 export const CreateTestCase: React.FC = () => {
   const { project } = useProject()
@@ -58,36 +57,29 @@ export const CreateTestCase: React.FC = () => {
   // Получаем значения формы для валидации
   const watchedValues = watch()
 
-  // Устанавливаем заголовок страницы
   useEffect(() => {
-    setHeaderContent(
-      <div>
-        <Link to="/">ЯМП&nbsp;</Link>
-        &mdash;&nbsp;{' '}
-        <Link
-          to={
-            window.location.href.split(
-              '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE
-            )[0]
-          }
-        >
-          {project?.name}&nbsp;
-        </Link>{' '}
-        &mdash;&nbsp;{' '}
-        <Link
-          to={
-            window.location.href.split(
-              '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE
-            )[0] +
-            '/' +
-            PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE
-          }
-        >
-          Тест-кейсы&nbsp;
-        </Link>{' '}
-        &mdash;&nbsp; Создание тест-кейса
-      </div>
-    )
+    if (project) {
+      setHeaderContent(
+        <Breadcrumbs
+          items={[
+            {
+              text: 'Проекты',
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.HOME}`,
+            },
+            {
+              text: project.name,
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}`,
+            },
+            {
+              text: 'Тест-кейсы',
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}`,
+            },
+            { text: 'Создание' },
+          ]}
+          maxVisibleItems={2}
+        />
+      )
+    }
   }, [project, setHeaderContent])
 
   // Автоматически увеличиваем версию

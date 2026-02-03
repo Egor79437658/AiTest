@@ -5,6 +5,7 @@ import { useHeaderStore, usePipelineStore } from '@stores/'
 import { useEffect } from 'react'
 import { PAGE_ENDPOINTS } from '@constants/'
 import styles from './styles/ContainerHome.module.scss'
+import { Breadcrumbs } from '@components/'
 
 export const HomeContainer: React.FC = () => {
   const { user } = useUser()
@@ -14,12 +15,13 @@ export const HomeContainer: React.FC = () => {
 
   useEffect(() => clearProject(), [])
   useEffect(() => {
-    setHeaderContent(
-      <div>
-        <Link to="/">ЯМП&nbsp;</Link>
-        &mdash;&nbsp; {user?.profileData.username} &nbsp;&mdash;&nbsp; проекты
-      </div>
-    )
+    if (user?.profileData.username) {
+      setHeaderContent(
+        <Breadcrumbs
+          items={[{ text: user.profileData.username }, { text: 'проекты' }]}
+        />
+      )
+    }
 
     return () => {
       setHeaderContent(null)

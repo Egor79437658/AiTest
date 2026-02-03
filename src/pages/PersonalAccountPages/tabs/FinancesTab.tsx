@@ -4,7 +4,8 @@ import stylesFinance from '../styles/FinanceTab.module.scss'
 import stylesGeneral from '../styles/Account.module.scss'
 import { useEffect, useState } from 'react'
 import { useHeaderStore } from '@stores/'
-import { Link } from 'react-router-dom'
+import { Breadcrumbs } from '@components/'
+import { SyncLoader } from 'react-spinners'
 
 const statusMap = {
   active: 'Активен',
@@ -21,16 +22,15 @@ export const FinanceTab: React.FC = () => {
   const [error, setError] = useState('')
   const { setHeaderContent } = useHeaderStore()
 
-  useEffect(
-    () =>
+  useEffect(() => {
+    if (user?.profileData.username) {
       setHeaderContent(
-        <div>
-          <Link to="/">ЯМП&nbsp;</Link>
-          &mdash;&nbsp; {user?.profileData.username} &nbsp;&mdash;&nbsp; финансы
-        </div>
-      ),
-    [setHeaderContent]
-  )
+        <Breadcrumbs
+          items={[{ text: user.profileData.username }, { text: 'финансы' }]}
+        />
+      )
+    }
+  }, [setHeaderContent, user?.profileData.username])
   const changeBalance = (val: number) => {
     console.log('change balance: +', val)
     if (user) {
@@ -69,7 +69,8 @@ export const FinanceTab: React.FC = () => {
   if (isLoading) {
     return (
       <div className={stylesGeneral.pageContainer}>
-        <div>Загрузка профиля...</div>
+        <div>Загрузка профиля</div>
+        <SyncLoader color="#000000" />
       </div>
     )
   }
