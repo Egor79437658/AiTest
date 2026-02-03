@@ -1,6 +1,7 @@
 import { useProject } from '@contexts/'
 import { useEffect } from 'react'
 import { Outlet, useParams } from 'react-router-dom'
+import { SyncLoader } from 'react-spinners'
 
 export const ProjectOutlet: React.FC = () => {
   const { loadProject, isLoading, error } = useProject()
@@ -26,7 +27,8 @@ export const ProjectOutlet: React.FC = () => {
           height: '100vh',
         }}
       >
-        <div>Загрузка проекта...</div>
+        <div>Загрузка проекта</div>
+        <SyncLoader color="#000000" />
       </div>
     )
   }
@@ -38,7 +40,7 @@ export const ProjectOutlet: React.FC = () => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          flexDirection: "column",
+          flexDirection: 'column',
           height: '100vh',
         }}
       >
@@ -48,5 +50,5 @@ export const ProjectOutlet: React.FC = () => {
     )
   }
 
-  return <Outlet/>
+  return <Outlet />
 }

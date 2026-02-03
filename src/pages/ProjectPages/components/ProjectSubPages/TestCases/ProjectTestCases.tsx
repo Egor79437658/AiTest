@@ -1,4 +1,4 @@
-import { MySwiper } from '@components/'
+import { Breadcrumbs, MySwiper } from '@components/'
 import { PAGE_ENDPOINTS } from '@constants/'
 import { useProject, useTestCase } from '@contexts/'
 import { testCaseStatusMap } from '@interfaces/'
@@ -7,6 +7,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { SwiperSlide } from 'swiper/react'
 import styles from './ProjectTestCases.module.scss'
+import { SyncLoader } from 'react-spinners'
 
 export const ProjectTestCases: React.FC = () => {
   const { project } = useProject()
@@ -61,23 +62,24 @@ export const ProjectTestCases: React.FC = () => {
   }
 
   useEffect(() => {
-    setHeaderContent(
-      <div>
-        <Link to="/">ЯМП&nbsp;</Link>
-        &mdash;&nbsp;{' '}
-        <Link
-          to={
-            window.location.href.split(
-              '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE
-            )[0]
-          }
-        >
-          {project?.name}&nbsp;
-        </Link>{' '}
-        &mdash;&nbsp; Тест-кейсы
-      </div>
-    )
-  }, [])
+    if (project) {
+      setHeaderContent(
+        <Breadcrumbs
+          items={[
+            {
+              text: 'Проекты',
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.HOME}`,
+            },
+            {
+              text: project.name,
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}`,
+            },
+            { text: 'Тест-кейсы' },
+          ]}
+        />
+      )
+    }
+  }, [project, setHeaderContent])
 
   useEffect(() => {
     if (project) {
@@ -105,7 +107,12 @@ export const ProjectTestCases: React.FC = () => {
   }
 
   if (isLoading) {
-    return <div>Загрузка тест-кейсов...</div>
+    return (
+      <>
+        <div>Загрузка тест-кейсов</div>
+        <SyncLoader color="#000000" />
+      </>
+    )
   }
 
   return (

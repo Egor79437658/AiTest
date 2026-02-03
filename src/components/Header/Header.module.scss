@@ -1,4 +1,4 @@
-@use "/src/styles/_variables.scss" as vars;
+@use '/src/styles/_variables.scss' as vars;
 
 .header {
   display: flex;
@@ -9,7 +9,7 @@
   color: vars.$darkColor;
   background: #fff;
   z-index: 1;
-  font-family: "Bounded";
+  font-family: 'Bounded';
   & * {
     font-family: inherit;
   }
@@ -41,7 +41,6 @@
   align-items: center;
   gap: 12px;
   position: relative;
-  margin-right: 200px;
   margin-left: 20px;
 
   .userGreeting {
@@ -121,5 +120,89 @@
     }
     pointer-events: none;
     box-shadow: none;
+  }
+}
+
+.headerMid {
+  display: flex;
+  flex-direction: column;
+  min-width: 50%;
+  gap: 12px;
+  font-size: 20px;
+  text-decoration: none;
+  flex: 1;
+  min-width: 0;
+  max-width: 60%;
+
+  & * {
+    color: black;
+  }
+
+  .breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    flex-wrap: wrap;
+
+    .breadcrumbItem {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+
+      &.collapsible {
+        flex-shrink: 1;
+        min-width: 0;
+      }
+
+      .breadcrumbText {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 200px;
+      }
+    }
+
+    .separator {
+      color: #666;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  .headerMid {
+    max-width: 50%;
+    .breadcrumbs .breadcrumbItem .breadcrumbText {
+      max-width: 150px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .headerMid {
+    order: 3;
+    width: 100%;
+    max-width: 100%;
+    font-size: 16px;
+
+    .breadcrumbs {
+      justify-content: center;
+
+      .breadcrumbItem .breadcrumbText {
+        max-width: 100px;
+      }
+    }
+  }
+
+  .headerRight {
+    margin-right: 0;
   }
 }

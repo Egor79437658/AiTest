@@ -6,6 +6,7 @@ import { TestDataEditor } from '../TestDataEditor'
 import { useTestCase } from '@contexts/'
 import { Link, useParams } from 'react-router-dom'
 import { PAGE_ENDPOINTS } from '@constants/'
+import { toast } from 'sonner'
 
 interface StepsEditorProps {
   steps: TestCaseStep[]
@@ -115,7 +116,9 @@ export const StepsEditor: React.FC<StepsEditorProps> = ({
         // по идее никогда не должно выстрелить
         // тк выбор кейсов идет из выпадающих списков,
         // что формируются на основе allTestCases
-        alert('что-то пошло не так!!')
+        toast.error('что-то пошло не так!!', {
+          position: 'top-center',
+        })
         throw new Error(`не найден тест-кейс c id - ${value}`)
       }
       const updatedStep = {
@@ -414,7 +417,7 @@ export const StepsEditor: React.FC<StepsEditorProps> = ({
                     return filtered
                   }, [] as TestCase[])
                   .map((el) =>
-                    el.id === parseInt(testCaseId || "") ? (
+                    el.id === parseInt(testCaseId || '') ? (
                       <></>
                     ) : (
                       <button

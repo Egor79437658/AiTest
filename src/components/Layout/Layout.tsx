@@ -5,6 +5,7 @@ import styles from './Layout.module.scss'
 import { AuthModal, Header, MenuButton, Pipeline, Sidebar } from '@components/'
 import { useEffect, useRef } from 'react'
 import { useDiealogHeightStore } from '@stores/'
+import { SyncLoader } from 'react-spinners'
 
 export const Layout: React.FC = () => {
   const { isOpen, toggleSidebar } = useSidebar()
@@ -58,7 +59,8 @@ export const Layout: React.FC = () => {
           height: '100vh',
         }}
       >
-        <div>Загрузка пользователя...</div>
+        <div>Загрузка пользователя</div>
+        <SyncLoader color="#000000" />
       </div>
     )
   }
@@ -89,7 +91,9 @@ export const Layout: React.FC = () => {
       />
       <div className={styles.flexDiv}>
         <Sidebar />
-        <div className={`${styles.nextTosidebarDiv} ${isOpen && styles.shrinked}`}>
+        <div
+          className={`${styles.nextTosidebarDiv} ${isOpen && styles.shrinked}`}
+        >
           <Pipeline />
           <div className={styles.contentLayout}>
             <div className={styles.mainContent}>

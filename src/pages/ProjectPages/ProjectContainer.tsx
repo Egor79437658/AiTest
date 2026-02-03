@@ -11,6 +11,7 @@ import {
   RecentTestPlan,
 } from './components'
 import { PAGE_ENDPOINTS } from '@constants/'
+import { Breadcrumbs } from '@components/'
 
 export const ProjectContainer: React.FC = () => {
   const { isAuthenticated } = useAuth()
@@ -18,13 +19,17 @@ export const ProjectContainer: React.FC = () => {
   const { setHeaderContent } = useHeaderStore()
   const { setPipelineContent } = usePipelineStore()
 
-
   useEffect(() => {
     const headerContent = (
-      <div>
-        <Link to="/">ЯМП&nbsp;</Link>
-        &mdash;&nbsp; <Link to={`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.HOME}`}>Проект &nbsp;</Link> &mdash;&nbsp; {project?.name}
-      </div>
+      <Breadcrumbs
+        items={[
+          {
+            text: 'Проекты',
+            link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.HOME}`,
+          },
+          { text: project?.name || 'Проект' },
+        ]}
+      />
     )
 
     setHeaderContent(headerContent)
@@ -33,7 +38,7 @@ export const ProjectContainer: React.FC = () => {
     return () => {
       setHeaderContent(null)
     }
-  }, [project?.name, setHeaderContent])
+  }, [project?.name, setHeaderContent, setPipelineContent])
 
   if (!isAuthenticated) {
     return <div>Пожалуйста, войдите в систему для доступа к проектам</div>

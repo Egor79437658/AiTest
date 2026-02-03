@@ -80,4 +80,37 @@ export const ChevronRightIcon: React.FC<IconProps> = ({ className, style }) => (
   >
     <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
   </svg>
+) 
+
+export const CloneIcon: React.FC<IconProps> = ({ className, style }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    className={className}
+    style={style}
+  >
+    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+  </svg>
+)
+
+export const PlayIcon: React.FC<IconProps> = ({ className, style }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    className={className}
+    style={style}
+  >
+    <path d="M8 5v14l11-7z" />
+  </svg>
+)
+
+export const SortIcon: React.FC<IconProps> = ({ className, style }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    className={className}
+    style={style}
+  >
+    <path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z" />
+  </svg>
 )

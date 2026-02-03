@@ -353,14 +353,13 @@
     }
   }
 
-  /* Стили для кнопки запуска в таблице */
   &.runButton {
     background-color: #28a745;
     color: white;
 
     svg {
-      fill: white; /* Белый цвет иконки запуска */
-      stroke: white; /* Также задаем stroke для контурных иконок */
+      fill: white;
+      stroke: white;
     }
 
     &:hover {
@@ -368,7 +367,7 @@
       color: white;
 
       svg {
-        fill: white; /* Остается белым при наведении */
+        fill: white;
         stroke: white;
       }
     }
@@ -655,15 +654,15 @@
     background-color: #28a745;
 
     svg {
-      fill: white; /* Добавляем белый цвет для иконки */
-      stroke: white; /* Для контурных иконок */
+      fill: white;
+      stroke: white;
     }
 
     &:hover:not(:disabled) {
       background-color: #218838;
 
       svg {
-        fill: white; /* Сохраняем белый при наведении */
+        fill: white;
         stroke: white;
       }
     }
@@ -757,10 +756,9 @@
       height: 14px;
     }
 
-    /* Адаптация для кнопки запуска на мобильных */
     &.runButton {
       svg {
-        fill: white; /* Сохраняем белый цвет на мобильных */
+        fill: white;
         stroke: white;
       }
     }
@@ -775,7 +773,6 @@
     padding: 8px 16px;
     font-size: 13px;
 
-    /* Для кнопки запуска в футере на мобильных */
     &.runButton {
       svg {
         fill: white;
@@ -811,7 +808,7 @@
 
     &.runButton {
       svg {
-        fill: white; 
+        fill: white;
         stroke: white;
       }
     }

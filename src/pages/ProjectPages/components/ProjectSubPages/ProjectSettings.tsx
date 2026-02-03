@@ -1,250 +1,293 @@
-import { useHeaderStore } from '@stores/';
-import React, { useCallback, useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ProjectUser, ROLE_CONFIG, UserRole, DataPoolItem } from '../../../../types/';
-import styles from './ProjectSettings.module.scss';
-import { useProject, useUser } from '@contexts/';
+import { useHeaderStore } from '@stores/'
+import React, { useCallback, useEffect, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { useNavigate, useParams } from 'react-router-dom'
+import {
+  ProjectUser,
+  ROLE_CONFIG,
+  UserRole,
+  DataPoolItem,
+} from '../../../../types/'
+import styles from './ProjectSettings.module.scss'
+import { useProject, useUser } from '@contexts/'
+import { Breadcrumbs } from '@components/'
+import { PAGE_ENDPOINTS } from '@constants/'
 
 interface ProjectFormData {
-  name: string;
-  url: string;
-  description: string;
+  name: string
+  url: string
+  description: string
 }
 
-const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const URL_REGEX = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+const URL_REGEX = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/
 
 export const ProjectSettings: React.FC = () => {
-  const { projectId } = useParams<{ projectId: string }>();
-  const navigate = useNavigate();
-  const {updateProject, deleteProject, project} = useProject()
-  const { setHeaderContent } = useHeaderStore();
-  
+  const { projectId } = useParams<{ projectId: string }>()
+  const navigate = useNavigate()
+  const { updateProject, deleteProject, project } = useProject()
+  const { setHeaderContent } = useHeaderStore()
+
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting, isDirty },
-    reset
+    reset,
   } = useForm<ProjectFormData>({
     mode: 'onBlur',
-    defaultValues: { name: '', url: '', description: '' }
-  });
+    defaultValues: { name: '', url: '', description: '' },
+  })
 
-  const [dataPool, setDataPool] = useState<DataPoolItem[]>([]);
-  const [projectUsers, setProjectUsers] = useState<ProjectUser[]>([]);
-  const [notification, setNotification] = useState<{ type: 'success' | 'error' | 'warning'; message: string } | null>(null);
-  const [showAddUserModal, setShowAddUserModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteConfirm, setDeleteConfirm] = useState('');
-  const [newUser, setNewUser] = useState({ email: '', role: UserRole.USER as UserRole });
-  const [dataPoolMode, setDataPoolMode] = useState<'upload' | 'manual'>('manual');
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const {user} = useUser()
+  const [dataPool, setDataPool] = useState<DataPoolItem[]>([])
+  const [projectUsers, setProjectUsers] = useState<ProjectUser[]>([])
+  const [notification, setNotification] = useState<{
+    type: 'success' | 'error' | 'warning'
+    message: string
+  } | null>(null)
+  const [showAddUserModal, setShowAddUserModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deleteConfirm, setDeleteConfirm] = useState('')
+  const [newUser, setNewUser] = useState({
+    email: '',
+    role: UserRole.USER as UserRole,
+  })
+  const [dataPoolMode, setDataPoolMode] = useState<'upload' | 'manual'>(
+    'manual'
+  )
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const { user } = useUser()
 
-  const showNotification = useCallback((type: 'success' | 'error' | 'warning', message: string) => {
-    setNotification({ type, message });
-    setTimeout(() => setNotification(null), 5000);
-  }, []);
+  const showNotification = useCallback(
+    (type: 'success' | 'error' | 'warning', message: string) => {
+      setNotification({ type, message })
+      setTimeout(() => setNotification(null), 5000)
+    },
+    []
+  )
 
   useEffect(() => {
     if (project) {
       setHeaderContent(
-        <div className={styles.breadcrumb}>
-          <Link to="/" className={styles.breadcrumbItem}>ЯМП</Link>
-          <span className={styles.breadcrumbSeparator}>&mdash;</span>
-          <span className={styles.breadcrumbItemActive}>{project.name} &mdash; настройки</span>
-        </div>
-      );
+        <Breadcrumbs
+          items={[
+            {
+              text: 'Проекты',
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.HOME}`,
+            },
+            {
+              text: project.name,
+              link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${project.id}`,
+            },
+            { text: 'настройки' },
+          ]}
+        />
+      )
     }
-    
+
     return () => {
-      setHeaderContent(null);
-    };
-  }, [project, setHeaderContent]);
+      setHeaderContent(null)
+    }
+  }, [project, setHeaderContent])
 
   useEffect(() => {
-      if (!project || !user) return;
-      
-      try {
-
-        setProjectUsers(project.users);
-        
-        reset({
-          name: project.name,
-          url: project.url,
-          description: project.description
-        });
-
-        setDataPool(project.datapool)
-        
-        const currentUserInProject = project.users?.find(
-          (u: any) => u.email === user.profileData.email
-        );
-        
-
-        if (currentUserInProject) {
-          setIsAdmin(currentUserInProject.role == UserRole.PROJECT_ADMIN);
-        } else {
-          throw new Error("you're not supposed to be here")
-        }
-        
-        const savedDataPool = localStorage.getItem(`project_${projectId}_datapool`);
-        if (savedDataPool) {
-          try {
-            const parsedData = JSON.parse(savedDataPool);
-            if (Array.isArray(parsedData) && parsedData.length > 0) {
-              setDataPool(parsedData.map((item: any, index: number) => ({
-                id: item.id || -1,
-                key: item.key || '',
-                value: item.value || ''
-              })));
-            }
-          } catch (error) {
-            console.error('Error parsing data pool:', error);
-          }
-        }
-      } catch (error) {
-        console.error('Error loading project:', error);
-        showNotification('error', 'Ошибка загрузки проекта');
-      } finally {
-        setIsLoading(false);
-      }
-    
-  }, [projectId, user, reset, navigate, showNotification]);
-
-  const handleSaveProject = async (data: ProjectFormData) => {
-    if (!project || !projectId) return;
+    if (!project || !user) return
 
     try {
-      setIsLoading(true);
+      setProjectUsers(project.users)
+
+      reset({
+        name: project.name,
+        url: project.url,
+        description: project.description,
+      })
+
+      setDataPool(project.datapool)
+
+      const currentUserInProject = project.users?.find(
+        (u: any) => u.email === user.profileData.email
+      )
+
+      if (currentUserInProject) {
+        setIsAdmin(currentUserInProject.role == UserRole.PROJECT_ADMIN)
+      } else {
+        throw new Error("you're not supposed to be here")
+      }
+
+      const savedDataPool = localStorage.getItem(
+        `project_${projectId}_datapool`
+      )
+      if (savedDataPool) {
+        try {
+          const parsedData = JSON.parse(savedDataPool)
+          if (Array.isArray(parsedData) && parsedData.length > 0) {
+            setDataPool(
+              parsedData.map((item: any, index: number) => ({
+                id: item.id || -1,
+                key: item.key || '',
+                value: item.value || '',
+              }))
+            )
+          }
+        } catch (error) {
+          console.error('Error parsing data pool:', error)
+        }
+      }
+    } catch (error) {
+      console.error('Error loading project:', error)
+      showNotification('error', 'Ошибка загрузки проекта')
+    } finally {
+      setIsLoading(false)
+    }
+  }, [projectId, user, reset, navigate, showNotification])
+
+  const handleSaveProject = async (data: ProjectFormData) => {
+    if (!project || !projectId) return
+
+    try {
+      setIsLoading(true)
 
       const updateData = {
         name: data.name,
         url: data.url,
         description: data.description,
         dataPool: dataPool,
-        updatedAt: new Date()
-      };
+        updatedAt: new Date(),
+      }
 
-        await updateProject(updateData);
+      await updateProject(updateData)
 
-      showNotification('success', 'Настройки проекта успешно сохранены');
+      showNotification('success', 'Настройки проекта успешно сохранены')
     } catch (error) {
-      showNotification('error', 'Ошибка при сохранении настроек');
-      console.error('Save project error:', error);
+      showNotification('error', 'Ошибка при сохранении настроек')
+      console.error('Save project error:', error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleSaveDataPool = async () => {
-    if (!project || !projectId) return;
-    
+    if (!project || !projectId) return
+
     const validDataPool = dataPool
-      .filter(item => item.key.trim() && item.value.trim())
-      .map(item => ({
+      .filter((item) => item.key.trim() && item.value.trim())
+      .map((item) => ({
         id: item.id,
         key: item.key.trim(),
-        value: item.value.trim()
-      }));
+        value: item.value.trim(),
+      }))
 
-    localStorage.setItem(`project_${project.id}_datapool`, JSON.stringify(validDataPool));
+    localStorage.setItem(
+      `project_${project.id}_datapool`,
+      JSON.stringify(validDataPool)
+    )
     try {
-      await updateProject({ datapool: validDataPool });
-      showNotification('success', 'DataPool успешно сохранен');
+      await updateProject({ datapool: validDataPool })
+      showNotification('success', 'DataPool успешно сохранен')
     } catch (error) {
-      showNotification('error', 'Ошибка при удалении проекта');
-      console.error('Delete project error:', error);
+      showNotification('error', 'Ошибка при удалении проекта')
+      console.error('Delete project error:', error)
     }
-  };
+  }
 
   const handleDeleteProject = async () => {
-    if (!project || !projectId) return;
+    if (!project || !projectId) return
 
     try {
       if (deleteConfirm !== project.name) {
-        showNotification('error', `Введите "${project.name}" для подтверждения`);
-        return;
+        showNotification('error', `Введите "${project.name}" для подтверждения`)
+        return
       }
 
-      localStorage.removeItem(`project_${project.id}_datapool`);
-      
-      await deleteProject();
+      localStorage.removeItem(`project_${project.id}_datapool`)
 
-      showNotification('success', 'Проект успешно удален');
+      await deleteProject()
+
+      showNotification('success', 'Проект успешно удален')
 
       setTimeout(() => {
-        navigate('/app/home');
-      }, 1500);
+        navigate('/app/home')
+      }, 1500)
     } catch (error) {
-      showNotification('error', 'Ошибка при удалении проекта');
-      console.error('Delete project error:', error);
+      showNotification('error', 'Ошибка при удалении проекта')
+      console.error('Delete project error:', error)
     }
-  };
+  }
 
   const handleAddDataPoolRow = () => {
-    setDataPool([...dataPool, {
-      id: -1,
-      key: '',
-      value: ''
-    }]);
-  };
+    setDataPool([
+      ...dataPool,
+      {
+        id: -1,
+        key: '',
+        value: '',
+      },
+    ])
+  }
 
-  const handleUpdateDataPoolItem = (id: number, field: 'key' | 'value', value: string) => {
-    setDataPool(dataPool.map(item => 
-      item.id === id ? { ...item, [field]: value } : item
-    ));
-  };
+  const handleUpdateDataPoolItem = (
+    id: number,
+    field: 'key' | 'value',
+    value: string
+  ) => {
+    setDataPool(
+      dataPool.map((item) =>
+        item.id === id ? { ...item, [field]: value } : item
+      )
+    )
+  }
 
   const handleRemoveDataPoolItem = (id: number) => {
     if (dataPool.length <= 1) {
-      showNotification('error', 'Должна остаться хотя бы одна запись');
-      return;
+      showNotification('error', 'Должна остаться хотя бы одна запись')
+      return
     }
 
-    setDataPool(dataPool.filter(item => item.id !== id));
-  };
+    setDataPool(dataPool.filter((item) => item.id !== id))
+  }
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const file = e.target.files?.[0]
+    if (!file) return
 
-    const validExtensions = ['.csv', '.json', '.xlsx', '.xls'];
-    const extension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
-    
+    const validExtensions = ['.csv', '.json', '.xlsx', '.xls']
+    const extension = file.name
+      .toLowerCase()
+      .substring(file.name.lastIndexOf('.'))
+
     if (!validExtensions.includes(extension)) {
-      showNotification('error', 'Неподдерживаемый формат файла');
-      return;
+      showNotification('error', 'Неподдерживаемый формат файла')
+      return
     }
 
-    setUploadedFile(file);
-    
+    setUploadedFile(file)
+
     setTimeout(() => {
       const sampleData = [
         { id: 1, key: 'username', value: 'test_user' },
         { id: 2, key: 'password', value: 'test_password' },
-        { id: 3, key: 'email', value: 'test@example.com' }
-      ];
-      setDataPool(sampleData);
-      showNotification('success', 'Файл успешно загружен и обработан');
-    }, 1000);
-  };
+        { id: 3, key: 'email', value: 'test@example.com' },
+      ]
+      setDataPool(sampleData)
+      showNotification('success', 'Файл успешно загружен и обработан')
+    }, 1000)
+  }
 
   const handleAddUser = async () => {
-    if (!project || !projectId) return;
+    if (!project || !projectId) return
 
     if (!EMAIL_REGEX.test(newUser.email)) {
-      showNotification('error', 'Введите корректный email адрес');
-      return;
+      showNotification('error', 'Введите корректный email адрес')
+      return
     }
 
-    const existingUser = projectUsers.find(user => user.email === newUser.email);
+    const existingUser = projectUsers.find(
+      (user) => user.email === newUser.email
+    )
     if (existingUser) {
-      showNotification('error', 'Пользователь с таким email уже в проекте');
-      return;
+      showNotification('error', 'Пользователь с таким email уже в проекте')
+      return
     }
 
     try {
@@ -255,45 +298,52 @@ export const ProjectSettings: React.FC = () => {
         fatherName: null,
         email: newUser.email,
         role: newUser.role,
-        permissions: JSON.stringify(ROLE_CONFIG[newUser.role].permissions)
-      };
+        permissions: JSON.stringify(ROLE_CONFIG[newUser.role].permissions),
+      }
 
-      const updatedUsers = [...projectUsers, newUserData];
-      setProjectUsers(updatedUsers);
-      
-        await updateProject({ users: updatedUsers });
+      const updatedUsers = [...projectUsers, newUserData]
+      setProjectUsers(updatedUsers)
 
-      setShowAddUserModal(false);
-      setNewUser({ email: '', role: UserRole.USER });
-      showNotification('success', `Пользователь ${newUser.email} добавлен в проект`);
+      await updateProject({ users: updatedUsers })
+
+      setShowAddUserModal(false)
+      setNewUser({ email: '', role: UserRole.USER })
+      showNotification(
+        'success',
+        `Пользователь ${newUser.email} добавлен в проект`
+      )
     } catch (error) {
-      showNotification('error', 'Ошибка при добавлении пользователя');
-      console.error('Add user error:', error);
+      showNotification('error', 'Ошибка при добавлении пользователя')
+      console.error('Add user error:', error)
     }
-  };
+  }
 
   const handleRemoveUser = async (userId: number) => {
-    if (!project || !projectId) return;
+    if (!project || !projectId) return
 
-    const userToRemove = projectUsers.find(user => user.id === userId);
-    if (!userToRemove) return;
+    const userToRemove = projectUsers.find((user) => user.id === userId)
+    if (!userToRemove) return
 
-    if (!window.confirm(`Вы уверены, что хотите удалить ${userToRemove.firstName} ${userToRemove.lastName} из проекта?`)) {
-      return;
+    if (
+      !window.confirm(
+        `Вы уверены, что хотите удалить ${userToRemove.firstName} ${userToRemove.lastName} из проекта?`
+      )
+    ) {
+      return
     }
 
     try {
-      const updatedUsers = projectUsers.filter(user => user.id !== userId);
-      setProjectUsers(updatedUsers);
-      
-        await updateProject({ users: updatedUsers });
+      const updatedUsers = projectUsers.filter((user) => user.id !== userId)
+      setProjectUsers(updatedUsers)
 
-      showNotification('success', 'Пользователь удален из проекта');
+      await updateProject({ users: updatedUsers })
+
+      showNotification('success', 'Пользователь удален из проекта')
     } catch (error) {
-      showNotification('error', 'Ошибка при удалении пользователя');
-      console.error('Remove user error:', error);
+      showNotification('error', 'Ошибка при удалении пользователя')
+      console.error('Remove user error:', error)
     }
-  };
+  }
 
   if (isLoading) {
     return (
@@ -302,11 +352,11 @@ export const ProjectSettings: React.FC = () => {
           <div className={styles.loadingSpinner}></div>
         </div>
       </div>
-    );
+    )
   }
 
   if (!project) {
-    return null;
+    return null
   }
 
   if (!isAdmin) {
@@ -325,7 +375,7 @@ export const ProjectSettings: React.FC = () => {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -341,13 +391,15 @@ export const ProjectSettings: React.FC = () => {
           <h2 className={styles.sectionTitle}>Основная информация</h2>
 
           <div className={styles.formGroup}>
-            <label htmlFor="projectName" className={styles.required}>Название проекта</label>
+            <label htmlFor="projectName" className={styles.required}>
+              Название проекта
+            </label>
             <Controller
               name="name"
               control={control}
               rules={{
                 required: 'Название проекта обязательно',
-                minLength: { value: 3, message: 'Минимум 3 символа' }
+                minLength: { value: 3, message: 'Минимум 3 символа' },
               }}
               render={({ field }) => (
                 <>
@@ -358,20 +410,29 @@ export const ProjectSettings: React.FC = () => {
                     className={`${styles.input} ${errors.name ? styles.error : ''}`}
                     placeholder="Введите название проекта"
                   />
-                  {errors.name && <div className={styles.errorMessage}>{errors.name.message}</div>}
+                  {errors.name && (
+                    <div className={styles.errorMessage}>
+                      {errors.name.message}
+                    </div>
+                  )}
                 </>
               )}
             />
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="projectUrl" className={styles.required}>URL проекта</label>
+            <label htmlFor="projectUrl" className={styles.required}>
+              URL проекта
+            </label>
             <Controller
               name="url"
               control={control}
               rules={{
                 required: 'URL проекта обязателен',
-                pattern: { value: URL_REGEX, message: 'Введите корректный URL' }
+                pattern: {
+                  value: URL_REGEX,
+                  message: 'Введите корректный URL',
+                },
               }}
               render={({ field }) => (
                 <>
@@ -382,7 +443,11 @@ export const ProjectSettings: React.FC = () => {
                     className={`${styles.input} ${errors.url ? styles.error : ''}`}
                     placeholder="https://example.com"
                   />
-                  {errors.url && <div className={styles.errorMessage}>{errors.url.message}</div>}
+                  {errors.url && (
+                    <div className={styles.errorMessage}>
+                      {errors.url.message}
+                    </div>
+                  )}
                 </>
               )}
             />
@@ -427,7 +492,7 @@ export const ProjectSettings: React.FC = () => {
 
           {dataPoolMode === 'upload' ? (
             <>
-              <div 
+              <div
                 className={styles.uploadArea}
                 onClick={() => document.getElementById('fileInput')?.click()}
               >
@@ -468,7 +533,13 @@ export const ProjectSettings: React.FC = () => {
                         <input
                           type="text"
                           value={item.key}
-                          onChange={(e) => handleUpdateDataPoolItem(item.id, 'key', e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateDataPoolItem(
+                              item.id,
+                              'key',
+                              e.target.value
+                            )
+                          }
                           className={styles.tableInput}
                           placeholder="..."
                         />
@@ -477,7 +548,13 @@ export const ProjectSettings: React.FC = () => {
                         <input
                           type="text"
                           value={item.value}
-                          onChange={(e) => handleUpdateDataPoolItem(item.id, 'value', e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateDataPoolItem(
+                              item.id,
+                              'value',
+                              e.target.value
+                            )
+                          }
                           className={styles.tableInput}
                           placeholder="..."
                         />
@@ -549,7 +626,8 @@ export const ProjectSettings: React.FC = () => {
                     <td>{user.email}</td>
                     <td>
                       <div className={styles.roleBadge}>
-                        {ROLE_CONFIG[user.role as UserRole]?.label || 'Пользователь'}
+                        {ROLE_CONFIG[user.role as UserRole]?.label ||
+                          'Пользователь'}
                       </div>
                       <div className={styles.permissionsInfo}>
                         {ROLE_CONFIG[user.role as UserRole]?.description || ''}
@@ -560,7 +638,10 @@ export const ProjectSettings: React.FC = () => {
                         type="button"
                         onClick={() => handleRemoveUser(user.id)}
                         className={styles.dangerButton}
-                        disabled={user.role === UserRole.IT_LEADER || user.id === project?.createdBy}
+                        disabled={
+                          user.role === UserRole.IT_LEADER ||
+                          user.id === project?.createdBy
+                        }
                       >
                         Удалить
                       </button>
@@ -585,7 +666,7 @@ export const ProjectSettings: React.FC = () => {
           >
             {isSubmitting ? 'Сохранение...' : 'Сохранить изменения'}
           </button>
-          
+
           <button
             type="button"
             onClick={() => setShowDeleteModal(true)}
@@ -597,17 +678,27 @@ export const ProjectSettings: React.FC = () => {
       </form>
 
       {showAddUserModal && (
-        <div className={styles.modalOverlay} onClick={() => setShowAddUserModal(false)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setShowAddUserModal(false)}
+        >
+          <div
+            className={styles.modalContent}
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className={styles.modalTitle}>Добавить пользователя</h3>
-            
+
             <div className={styles.formGroup}>
-              <label htmlFor="userEmail" className={styles.required}>Email пользователя</label>
+              <label htmlFor="userEmail" className={styles.required}>
+                Email пользователя
+              </label>
               <input
                 id="userEmail"
                 type="email"
                 value={newUser.email}
-                onChange={(e) => setNewUser({...newUser, email: e.target.value})}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, email: e.target.value })
+                }
                 className={styles.input}
                 placeholder="user@example.com"
               />
@@ -618,21 +709,32 @@ export const ProjectSettings: React.FC = () => {
               <select
                 id="userRole"
                 value={newUser.role}
-                onChange={(e) => setNewUser({...newUser, role: parseInt(e.target.value) as UserRole})}
+                onChange={(e) =>
+                  setNewUser({
+                    ...newUser,
+                    role: parseInt(e.target.value) as UserRole,
+                  })
+                }
                 className={styles.select}
               >
                 {Object.entries(ROLE_CONFIG).map(([value, config]) => (
-                  <option key={value} value={value}>{config.label}</option>
+                  <option key={value} value={value}>
+                    {config.label}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div className={styles.permissionSummary}>
-              <div className={styles.permissionTitle}>Права для роли "{ROLE_CONFIG[newUser.role]?.label}":</div>
+              <div className={styles.permissionTitle}>
+                Права для роли "{ROLE_CONFIG[newUser.role]?.label}":
+              </div>
               <ul className={styles.permissionList}>
-                {ROLE_CONFIG[newUser.role]?.permissions.map((permission, index) => (
-                  <li key={index}>• {permission}</li>
-                ))}
+                {ROLE_CONFIG[newUser.role]?.permissions.map(
+                  (permission, index) => (
+                    <li key={index}>• {permission}</li>
+                  )
+                )}
               </ul>
             </div>
 
@@ -658,12 +760,25 @@ export const ProjectSettings: React.FC = () => {
       )}
 
       {showDeleteModal && (
-        <div className={styles.modalOverlay} onClick={() => { setShowDeleteModal(false); setDeleteConfirm(''); }}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <h3 className={styles.modalTitle}>Подтверждение удаления проекта</h3>
-            
+        <div
+          className={styles.modalOverlay}
+          onClick={() => {
+            setShowDeleteModal(false)
+            setDeleteConfirm('')
+          }}
+        >
+          <div
+            className={styles.modalContent}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className={styles.modalTitle}>
+              Подтверждение удаления проекта
+            </h3>
+
             <div className={styles.warningBlock}>
-              <div className={styles.warningTitle}>⚠️ Будут удалены все данные проекта:</div>
+              <div className={styles.warningTitle}>
+                ⚠️ Будут удалены все данные проекта:
+              </div>
               <ul className={styles.warningList}>
                 <li>Тест-кейсы</li>
                 <li>Скрипты автоматизации</li>
@@ -688,11 +803,14 @@ export const ProjectSettings: React.FC = () => {
                 placeholder="Введите название проекта"
               />
             </div>
-              
+
             <div className={styles.modalButtons}>
               <button
                 type="button"
-                onClick={() => { setShowDeleteModal(false); setDeleteConfirm(''); }}
+                onClick={() => {
+                  setShowDeleteModal(false)
+                  setDeleteConfirm('')
+                }}
                 className={styles.secondaryButton}
               >
                 Отмена
@@ -710,5 +828,5 @@ export const ProjectSettings: React.FC = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}

@@ -2,10 +2,12 @@ import { useUser } from '../../contexts/'
 import { ProfileData, statusMap, userRoleMap } from '../../types/user'
 import stylesProfile from './styles/ProfileTab.module.scss'
 import stylesGeneral from './styles/Account.module.scss'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { PAGE_ENDPOINTS } from '../../constants'
 import { useHeaderStore } from '../../stores/'
 import { useEffect, useState } from 'react'
+import { Breadcrumbs } from '@components/'
+import { SyncLoader } from 'react-spinners'
 
 export const ViewProfileTab = () => {
   const { getUserProfile, isLoading, error } = useUser()
@@ -20,11 +22,15 @@ export const ViewProfileTab = () => {
         console.log(profile)
         setProfileData(profile)
         setHeaderContent(
-          <div>
-            <Link to="/">ЯМП&nbsp;</Link>
-            &mdash;&nbsp; Профиль пользователя &nbsp;&mdash;&nbsp;{' '}
-            {profile.username}
-          </div>
+          <Breadcrumbs
+            items={[
+              {
+                text: 'Профиль пользователя',
+                link: `${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.ACCOUNT.INDEX}/${PAGE_ENDPOINTS.ACCOUNT.PROFILE}`,
+              },
+              { text: profile.username || 'Пользователь' },
+            ]}
+          />
         )
       } catch (e) {
         console.log(e)
@@ -38,7 +44,8 @@ export const ViewProfileTab = () => {
     return (
       <div className={stylesGeneral.pageContainer}>
         <div className={stylesProfile.profileTab}>
-          <div>Загрузка профиля...</div>
+          <div>Загрузка профиля</div>
+          <SyncLoader color="#000000" />
         </div>
       </div>
     )

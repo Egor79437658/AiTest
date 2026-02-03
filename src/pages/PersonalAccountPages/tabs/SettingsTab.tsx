@@ -5,9 +5,10 @@ import { useForm, Controller } from 'react-hook-form'
 import stylesSettings from '../styles/SettingsTab.module.scss'
 import { useHeaderStore } from '@stores/'
 import { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import stylesGeneral from '../styles/Account.module.scss'
-import { QuestionDialog } from '@components/'
+import { Breadcrumbs, QuestionDialog } from '@components/'
+import { SyncLoader } from 'react-spinners'
 
 export const SettingsTab: React.FC = () => {
   const { user, updateUserSettings, isLoading, deleteMyAccount } = useUser()
@@ -22,17 +23,15 @@ export const SettingsTab: React.FC = () => {
   const messageDiv = useRef<HTMLDivElement>(null)
   const navigator = useNavigate()
 
-  useEffect(
-    () =>
+  useEffect(() => {
+    if (user?.profileData.username) {
       setHeaderContent(
-        <div>
-          <Link to="/">ЯМП&nbsp;</Link>
-          &mdash;&nbsp; {user?.profileData.username} &nbsp;&mdash;&nbsp;
-          настройки
-        </div>
-      ),
-    [setHeaderContent]
-  )
+        <Breadcrumbs
+          items={[{ text: user.profileData.username }, { text: 'настройки' }]}
+        />
+      )
+    }
+  }, [setHeaderContent, user?.profileData.username])
 
   const setTempClass = (className: string) => {
     if (messageDiv.current) {
@@ -97,7 +96,7 @@ export const SettingsTab: React.FC = () => {
         if (messageDiv.current) {
           messageDiv.current.classList.remove(stylesSettings.showError)
         }
-        navigator("/")
+        navigator('/')
       }
     } catch (e: any) {
       setMessageContent(
@@ -116,7 +115,8 @@ export const SettingsTab: React.FC = () => {
   if (isLoading) {
     return (
       <div className={stylesGeneral.pageContainer}>
-        <div>Загрузка профиля...</div>
+        <div>Загрузка профиля</div>
+        <SyncLoader color="#000000" />
       </div>
     )
   }

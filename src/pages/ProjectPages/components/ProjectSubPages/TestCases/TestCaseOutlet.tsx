@@ -1,6 +1,7 @@
 import { useTestCase } from '@contexts/'
 import { useEffect } from 'react'
 import { Outlet, useParams } from 'react-router-dom'
+import { SyncLoader } from 'react-spinners'
 
 export const TestCasesOutlet: React.FC = () => {
   const { loadAllTestCases, isLoading, error } = useTestCase()
@@ -26,7 +27,8 @@ export const TestCasesOutlet: React.FC = () => {
           height: '100vh',
         }}
       >
-        <div>Загрузка тест-кейсов...</div>
+        <div>Загрузка тест-кейсов</div>
+        <SyncLoader color="#000000" />
       </div>
     )
   }
