@@ -35,3 +35,8 @@ export interface AuthResponse {
 export interface ConfirmResponse {
   success: boolean
 }
+
+export interface ChangePasswordData {
+  oldPassword: string
+  newPassword: string
+}

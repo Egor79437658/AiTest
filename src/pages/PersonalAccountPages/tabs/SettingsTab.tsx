@@ -1,40 +1,113 @@
-import { useAuth, useUser } from '@contexts/'
+import { useUser } from '@contexts/'
 import { SettingsData } from '@interfaces/'
 import type React from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import stylesSettings from '../styles/SettingsTab.module.scss'
 import { useHeaderStore } from '@stores/'
-import { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import stylesGeneral from '../styles/Account.module.scss'
+import { QuestionDialog } from '@components/'
 
 export const SettingsTab: React.FC = () => {
-  const { user, updateUserSettings, isLoading } = useUser()
+  const { user, updateUserSettings, isLoading, deleteMyAccount } = useUser()
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<SettingsData>({ defaultValues: user?.settingsData })
   const { setHeaderContent } = useHeaderStore()
+  const [showDiag, setShowDiag] = useState(false)
+  const [messageContent, setMessageContent] = useState(<></>)
+  const messageDiv = useRef<HTMLDivElement>(null)
+  const navigator = useNavigate()
 
   useEffect(
     () =>
       setHeaderContent(
         <div>
           <Link to="/">ЯМП&nbsp;</Link>
-          &mdash;&nbsp; {user?.profileData.username} &nbsp;&mdash;&nbsp; настройки
+          &mdash;&nbsp; {user?.profileData.username} &nbsp;&mdash;&nbsp;
+          настройки
         </div>
       ),
     [setHeaderContent]
   )
 
-  const handleSave = (data: SettingsData) => {
+  const setTempClass = (className: string) => {
+    if (messageDiv.current) {
+      messageDiv.current.classList.add(className)
+    }
+    setTimeout(() => {
+      if (messageDiv.current) {
+        messageDiv.current.classList.remove(className)
+      }
+    }, 4000)
+  }
+
+  const handleSave = async (data: SettingsData) => {
     if (user) {
       data.company = !!data.company
       data.jobPosition = !!data.jobPosition
       user.settingsData = data
-      console.log(user)
-      updateUserSettings(user)
+      try {
+        const res = await updateUserSettings(user)
+        if (res.status !== 200) {
+          setMessageContent(
+            <>
+              При сохранении произошла ошибка!
+              <br />
+              {res.message || ''}
+            </>
+          )
+          setTempClass(stylesSettings.showError)
+        } else {
+          if (messageDiv.current) {
+            messageDiv.current.classList.remove(stylesSettings.showError)
+          }
+        }
+      } catch (e: any) {
+        setMessageContent(
+          <>
+            При сохранении произошла ошибка!
+            <br />
+            {e.message || ''}
+          </>
+        )
+        setTempClass(stylesSettings.showError)
+      }
+    }
+  }
+
+  const handleDelete = async () => {
+    try {
+      setMessageContent(<>Удаляем...</>)
+      const res = await deleteMyAccount()
+      // if(Math.random() < 0.5) {res.status = 201}
+      if (res.status !== 200) {
+        setMessageContent(
+          <>
+            При удалении произошла ошибка!
+            <br />
+            {res.message || ''}
+          </>
+        )
+        setTempClass(stylesSettings.showError)
+      } else {
+        if (messageDiv.current) {
+          messageDiv.current.classList.remove(stylesSettings.showError)
+        }
+        navigator("/")
+      }
+    } catch (e: any) {
+      setMessageContent(
+        <>
+          При удалении произошла ошибка!
+          <br />
+          {e.message || ''}
+        </>
+      )
+      setTempClass(stylesSettings.showError)
     }
   }
 
@@ -257,7 +330,7 @@ export const SettingsTab: React.FC = () => {
                             <label className={stylesSettings.checkboxLabel}>
                               <input
                                 type="checkbox"
-                                checked={field.value}
+                                checked={field.value.flag}
                                 onChange={field.onChange}
                                 className={stylesSettings.checkbox}
                               />
@@ -278,13 +351,32 @@ export const SettingsTab: React.FC = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className={stylesGeneral.submitButton}
+              className={`${stylesGeneral.submitButton} ${stylesSettings.sendSettingsBtn}`}
             >
               {isSubmitting ? 'Сохранение...' : 'Сохранить настройки'}
             </button>
           </div>
         </form>
+        <button
+          type="button"
+          onClick={() => setShowDiag(!showDiag)}
+          className={`${stylesGeneral.submitButton} ${stylesSettings.deleteBtn}`}
+        >
+          Удалить аккаунт
+        </button>
+        <div className={stylesSettings.messageDiv} ref={messageDiv}>
+          {messageContent}
+        </div>
       </div>
+      <QuestionDialog
+        showQuestion={showDiag}
+        changeShowQuestion={setShowDiag}
+        onYesClick={handleDelete}
+        className={stylesSettings.dialog}
+      >
+        Вы уверены, что хотите удалить аккаунт? <br />
+        Это действие невозможно отменить
+      </QuestionDialog>
     </div>
   )
 }

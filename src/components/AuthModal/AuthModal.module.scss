@@ -87,7 +87,10 @@
 .authFormGroup {
   margin-bottom: 16px;
   font-family: 'Roboto for Learning';
+  display: flex;
+  justify-content: center;
 
+  
   * {
     font-family: inherit;
   }
@@ -209,4 +212,14 @@
   &:hover {
     color: vars.$lightGrayBlueColor;
   }
+}
+
+.success {
+  color: #2ecc71;
+  background-color: rgba(46, 204, 113, 0.1);
+  border: 1px solid #2ecc71;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  text-align: center;
 }

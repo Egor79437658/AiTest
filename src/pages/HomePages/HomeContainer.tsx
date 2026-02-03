@@ -8,7 +8,7 @@ import styles from './styles/ContainerHome.module.scss'
 
 export const HomeContainer: React.FC = () => {
   const { user } = useUser()
-  const { projects, clearProject } = useProject()
+  const { clearProject } = useProject()
   const { setHeaderContent } = useHeaderStore()
   const { setPipelineContent } = usePipelineStore()
 
@@ -25,8 +25,6 @@ export const HomeContainer: React.FC = () => {
       setHeaderContent(null)
     }
   }, [setHeaderContent, user?.profileData.username])
-
-  // useEffect(() => console.log(projects), [projects])
 
   useEffect(() => {
     setPipelineContent(null)

@@ -18,8 +18,8 @@ type FormData = {
 
 export const NewProjectContainer: React.FC = () => {
   const { isAuthenticated } = useAuth()
-  const { user, isLoading } = useUser()
-  const { loadProject, loadShortProjects } = useProject()
+  const { user, isLoading, refreshUser } = useUser()
+  const { loadProject, } = useProject()
   const { setHeaderContent } = useHeaderStore()
   const navigator = useNavigate()
   const [errorMsg, setErrorMsg] = useState("")
@@ -61,7 +61,7 @@ export const NewProjectContainer: React.FC = () => {
         newProject = await projectsApi.createProject(data)
       }
       await loadProject(newProject.id)
-      await loadShortProjects()
+      await refreshUser()
       navigator(`${PAGE_ENDPOINTS.OUTLET}/${PAGE_ENDPOINTS.PROJECT}/${newProject.id}`)
     }
     catch(e: any) {

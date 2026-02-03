@@ -20,8 +20,6 @@ export const PersonalAccountLayout: React.FC = () => {
   const [activeTab, setActiveTab] = useState(location.pathname.split('/')[3])
   useEffect(() => {
     setActiveTab(location.pathname.split('/')[3])
-    console.log(location)
-    console.log(location.pathname.split('/')[3])
   }, [location])
 
   useEffect(

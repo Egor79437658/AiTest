@@ -1,14 +1,11 @@
-import React, { useEffect } from 'react'
-import { useAuthStore } from '@stores/'
-import { useUserStore } from '@stores/'
 import { authApi } from '@api'
-import { AuthContext } from './AuthContext'
-import { AuthModalType, AuthContextType } from '@interfaces/'
 import { MOCK_MODE } from '@constants/'
+import { AuthContextType, AuthModalType } from '@interfaces/'
+import { useAuthStore, useUserStore } from '@stores/'
+import React, { useEffect } from 'react'
 import { mockApiService } from '../../services/mockApiService'
-import { useNavigate } from 'react-router-dom'
-import { useProject } from '../Project'
-import { useProjectStore } from '../../stores/projectStore'
+import { useProjectStore } from '../../stores/'
+import { AuthContext } from './AuthContext'
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -157,6 +154,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
 
+  const changePassword = async (
+    oldPassword: string,
+    newPassword: string
+  ): Promise<boolean> => {
+    try {
+      let result
+      if (MOCK_MODE) {
+        result = await mockApiService.changePassword({ oldPassword, newPassword })
+      } else {
+        result = await authApi.changePassword({ oldPassword, newPassword })
+      }
+
+      return result.success
+    } catch (error) {
+      console.error('Change password failed:', error)
+      return false
+    }
+  }
+
   const logout = (): void => {
     if (MOCK_MODE) {
       mockApiService.logout()
@@ -193,6 +209,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     login,
     register,
     confirmPending,
+    changePassword,
     logout,
     openAuthModal,
     closeAuthModal,
