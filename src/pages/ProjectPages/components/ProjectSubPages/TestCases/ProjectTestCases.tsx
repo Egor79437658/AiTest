@@ -3,11 +3,7 @@ import { PAGE_ENDPOINTS } from '@constants/'
 import { useProject, useTestCase } from '@contexts/'
 import { testCaseStatusMap } from '@interfaces/'
 import { useHeaderStore } from '@stores/'
-import React, {
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { SwiperSlide } from 'swiper/react'
 import styles from './ProjectTestCases.module.scss'
@@ -58,7 +54,7 @@ export const ProjectTestCases: React.FC = () => {
 
   const handleChangeCase = (id: number) => {
     console.log(id)
-    navigator(window.location.href+`/${id}`)
+    navigator(window.location.href + `/${id}`)
   }
   const handleOpenHistory = (id: number) => {
     console.log(id)
@@ -129,68 +125,68 @@ export const ProjectTestCases: React.FC = () => {
                 className={styles.swiperSlide}
                 style={{ width: 'auto' }}
               >
-                <h2>{el.name}</h2>
+                <h3>{el.name}</h3>
                 {index !== 0 && (
                   <h3 className={styles.warning}>Устаревшая версия!</h3>
                 )}
-                <div>
+                <div className={styles.testCaseSection}>
                   <label htmlFor="checkbox">Checkbox: </label>
                   <span>{el.flag ? 'true' : 'false'}</span>
                 </div>
 
-                <div>
+                <div className={styles.testCaseSection}>
                   <label htmlFor="id">IDT: </label>
                   <span>{el.id}</span>
                 </div>
 
-                <div>
+                <div className={styles.testCaseSection}>
                   <label htmlFor="status">Статус: </label>
                   <span>{testCaseStatusMap[el.status]}</span>
                 </div>
 
-                <div>
+                <div className={styles.testCaseSection}>
                   <label htmlFor="positive">Позитвный: </label>
                   <span>{el.positive ? 'Да' : 'Нет'}</span>
                 </div>
 
-                <div>
+                <div className={styles.testCaseSection}>
                   <label htmlFor="version">Версия: </label>
                   <span>{el.version}</span>
                 </div>
 
-                <div>
+                <div className={styles.testCaseSection}>
                   <label htmlFor="scriptIds">Скрипты: </label>
                   <span>{el.scriptIds.map((val) => val.name).join(' ')}</span>
                 </div>
 
-                <div>
+                <div className={styles.testCaseSection}>
                   <label htmlFor="precondition">Предусловие: </label>
                   <span>{el.precondition}</span>
                 </div>
 
-                <div>
+                <div className={styles.testCaseSection}>
                   <label htmlFor="testCases">
                     Тест-кейсы, где используется:{' '}
                   </label>
                   <span>{el.testCases.map((val) => val.name).join(' ')}</span>
                 </div>
 
-                <div>
+                <div className={styles.testCaseSection}>
                   <label htmlFor="username">Владелец: </label>
                   <span>{el.owner.username}</span>
                 </div>
 
-                <div>
+                <div className={styles.testCaseSection}>
                   <label htmlFor="creationDate">Дата создания: </label>
                   <span>{el.creationDate.toLocaleDateString()}</span>
                 </div>
 
-                <div>
+                <div className={styles.testCaseSection}>
                   <label htmlFor="usedInTestPlans">Входит в тест-план?: </label>
                   <span>{el.usedInTestPlans ? 'Да' : 'Нет'}</span>
                 </div>
 
-                <h3>Тест-планы</h3>
+                {/* <h3>Тест-планы</h3>
                 <div>
                   {el.testPlans.length > 0 ? (
                     <table className={styles.table}>
@@ -219,7 +215,7 @@ export const ProjectTestCases: React.FC = () => {
                   ) : (
                     <p className={styles.noTable}>У вас нет команд!</p>
                   )}
-                </div>
+                </div> */}
               </SwiperSlide>
             ))}
           <div className={styles.swiperFooter}>
@@ -270,9 +266,7 @@ export const ProjectTestCases: React.FC = () => {
         </MySwiper>
       ))}
       <div className={styles.pageFooter}>
-        <button 
-        className={styles.actionButton} 
-        onClick={() => handleDelete()}>
+        <button className={styles.actionButton} onClick={() => handleDelete()}>
           Удалить отмеченные
         </button>
 
