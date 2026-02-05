@@ -14,7 +14,7 @@
   margin-bottom: 20px;
 }
 
-.testPlanTable {
+.testCaseTable {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
@@ -82,7 +82,7 @@
   }
 
   .actionsCell {
-    width: 160px;
+    width: 140px;
     white-space: nowrap;
     text-align: center;
   }
@@ -101,17 +101,8 @@
     width: 100px;
   }
 
-  .testCasesCell {
-    width: 80px;
-    text-align: center;
-  }
-
   .dateCell {
     width: 110px;
-  }
-
-  .lastRunCell {
-    width: 120px;
   }
 
   .ownerCell {
@@ -260,18 +251,18 @@
     }
   }
 
-  &.runCheckbox {
+  &.refactorCheckbox {
     .customCheckbox {
-      border-color: #28a745;
+      border-color: #eeca60;
 
       &:hover {
-        border-color: #1e7e34;
+        border-color: #a57f0e;
       }
     }
 
     input[type='checkbox']:checked + .customCheckbox {
-      background-color: #28a745;
-      border-color: #28a745;
+      background-color: #eeca60;
+      border-color: #eeca60;
     }
   }
 }
@@ -352,27 +343,6 @@
       color: #17a2b8;
     }
   }
-
-  /* Стили для кнопки запуска в таблице */
-  &.runButton {
-    background-color: #28a745;
-    color: white;
-
-    svg {
-      fill: white; /* Белый цвет иконки запуска */
-      stroke: white; /* Также задаем stroke для контурных иконок */
-    }
-
-    &:hover {
-      background-color: #218838;
-      color: white;
-
-      svg {
-        fill: white; /* Остается белым при наведении */
-        stroke: white;
-      }
-    }
-  }
 }
 
 .nameContent {
@@ -400,45 +370,6 @@
   font-weight: 500;
   border: 1px solid #ffeaa7;
   margin-left: 8px;
-}
-
-.testCasesCount {
-  display: inline-block;
-  padding: 4px 8px;
-  background-color: #e9ecef;
-  border-radius: 12px;
-  font-weight: 600;
-  color: #495057;
-  font-size: 12px;
-  border: 1px solid #dee2e6;
-}
-
-.lastRunInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.lastRunDate {
-  font-size: 12px;
-  color: #495057;
-}
-
-.lastRunDuration {
-  font-size: 11px;
-  color: #6c757d;
-}
-
-.noRun {
-  color: #6c757d;
-  font-style: italic;
-  font-size: 12px;
-}
-
-.noStatus {
-  color: #6c757d;
-  font-style: italic;
-  font-size: 12px;
 }
 
 .statusBadge {
@@ -539,15 +470,13 @@
   }
 }
 
-.testCasesList {
+.testPlansList {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: 200px;
-  overflow-y: auto;
 }
 
-.testCaseItem {
+.testPlanItem {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -564,27 +493,16 @@
     transform: translateX(2px);
   }
 
-  .testCaseName {
+  .testPlanName {
     font-weight: 500;
     color: vars.$darkColor;
     font-size: 13px;
   }
 
-  .testCaseVersion {
+  .testPlanDate {
     color: #6c757d;
     font-size: 11px;
-    background: #f8f9fa;
-    padding: 2px 6px;
-    border-radius: 10px;
   }
-}
-
-.moreTestCases {
-  text-align: center;
-  padding: 8px;
-  color: #6c757d;
-  font-size: 12px;
-  font-style: italic;
 }
 
 .noData {
@@ -651,21 +569,12 @@
     }
   }
 
-  &.runButton {
-    background-color: #28a745;
-
-    svg {
-      fill: white; /* Добавляем белый цвет для иконки */
-      stroke: white; /* Для контурных иконок */
-    }
+  &.refactorButton {
+    background-color: #eeca60;
+    color: #212529;
 
     &:hover:not(:disabled) {
-      background-color: #218838;
-
-      svg {
-        fill: white; /* Сохраняем белый при наведении */
-        stroke: white;
-      }
+      background-color: #e0a800;
     }
   }
 }
@@ -690,7 +599,7 @@
     padding: 15px;
   }
 
-  .testPlanTable {
+  .testCaseTable {
     font-size: 13px;
 
     th,
@@ -718,7 +627,7 @@
 }
 
 @media (max-width: 800px) {
-  .testPlanTable {
+  .testCaseTable {
     font-size: 12px;
 
     th,
@@ -756,14 +665,6 @@
       width: 14px;
       height: 14px;
     }
-
-    /* Адаптация для кнопки запуска на мобильных */
-    &.runButton {
-      svg {
-        fill: white; /* Сохраняем белый цвет на мобильных */
-        stroke: white;
-      }
-    }
   }
 
   .statusBadge {
@@ -774,14 +675,6 @@
   .footerButton {
     padding: 8px 16px;
     font-size: 13px;
-
-    /* Для кнопки запуска в футере на мобильных */
-    &.runButton {
-      svg {
-        fill: white;
-        stroke: white;
-      }
-    }
   }
 }
 
@@ -790,7 +683,7 @@
     padding: 10px 5px;
   }
 
-  .testPlanTable {
+  .testCaseTable {
     font-size: 11px;
 
     th,
@@ -807,22 +700,6 @@
     svg {
       width: 12px;
       height: 12px;
-    }
-
-    &.runButton {
-      svg {
-        fill: white; 
-        stroke: white;
-      }
-    }
-  }
-
-  .footerButton {
-    &.runButton {
-      svg {
-        fill: white;
-        stroke: white;
-      }
     }
   }
 }
