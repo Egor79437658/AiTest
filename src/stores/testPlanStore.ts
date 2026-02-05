@@ -1,4 +1,4 @@
-import { TestPlan, TestPlanUpdateData, TestPlanRun } from '@interfaces/'
+import { TestPlan, TestPlanUpdateData, TestPlanRun } from '../types/'
 import { create } from 'zustand'
 
 interface TestPlanState {

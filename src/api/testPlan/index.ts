@@ -1,6 +1,6 @@
-import { TestPlan, TestPlanRun, TestPlanUpdateData } from '@interfaces/'
+import { TestPlan, TestPlanRun, TestPlanUpdateData } from '../../types/'
 import { apiClient } from '../client'
-import { API_URL } from '@constants/'
+import { API_URL } from '../../constants/'
 
 class TestPlanApi {
   async getAllTestPlans(projectId: number): Promise<TestPlan[]> {
