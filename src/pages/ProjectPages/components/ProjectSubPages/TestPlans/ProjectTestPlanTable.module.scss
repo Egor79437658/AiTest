@@ -14,7 +14,7 @@
   margin-bottom: 20px;
 }
 
-.testCaseTable {
+.testPlanTable {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
@@ -82,7 +82,7 @@
   }
 
   .actionsCell {
-    width: 140px;
+    width: 160px;
     white-space: nowrap;
     text-align: center;
   }
@@ -101,8 +101,17 @@
     width: 100px;
   }
 
+  .testCasesCell {
+    width: 80px;
+    text-align: center;
+  }
+
   .dateCell {
     width: 110px;
+  }
+
+  .lastRunCell {
+    width: 120px;
   }
 
   .ownerCell {
@@ -251,18 +260,18 @@
     }
   }
 
-  &.refactorCheckbox {
+  &.runCheckbox {
     .customCheckbox {
-      border-color: #eeca60;
+      border-color: #28a745;
 
       &:hover {
-        border-color: #a57f0e;
+        border-color: #1e7e34;
       }
     }
 
     input[type='checkbox']:checked + .customCheckbox {
-      background-color: #eeca60;
-      border-color: #eeca60;
+      background-color: #28a745;
+      border-color: #28a745;
     }
   }
 }
@@ -343,6 +352,26 @@
       color: #17a2b8;
     }
   }
+
+  &.runButton {
+    background-color: #28a745;
+    color: white;
+
+    svg {
+      fill: white;
+      stroke: white;
+    }
+
+    &:hover {
+      background-color: #218838;
+      color: white;
+
+      svg {
+        fill: white;
+        stroke: white;
+      }
+    }
+  }
 }
 
 .nameContent {
@@ -370,6 +399,45 @@
   font-weight: 500;
   border: 1px solid #ffeaa7;
   margin-left: 8px;
+}
+
+.testCasesCount {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #e9ecef;
+  border-radius: 12px;
+  font-weight: 600;
+  color: #495057;
+  font-size: 12px;
+  border: 1px solid #dee2e6;
+}
+
+.lastRunInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lastRunDate {
+  font-size: 12px;
+  color: #495057;
+}
+
+.lastRunDuration {
+  font-size: 11px;
+  color: #6c757d;
+}
+
+.noRun {
+  color: #6c757d;
+  font-style: italic;
+  font-size: 12px;
+}
+
+.noStatus {
+  color: #6c757d;
+  font-style: italic;
+  font-size: 12px;
 }
 
 .statusBadge {
@@ -470,13 +538,15 @@
   }
 }
 
-.testPlansList {
+.testCasesList {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
 }
 
-.testPlanItem {
+.testCaseItem {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -493,16 +563,27 @@
     transform: translateX(2px);
   }
 
-  .testPlanName {
+  .testCaseName {
     font-weight: 500;
     color: vars.$darkColor;
     font-size: 13px;
   }
 
-  .testPlanDate {
+  .testCaseVersion {
     color: #6c757d;
     font-size: 11px;
+    background: #f8f9fa;
+    padding: 2px 6px;
+    border-radius: 10px;
   }
+}
+
+.moreTestCases {
+  text-align: center;
+  padding: 8px;
+  color: #6c757d;
+  font-size: 12px;
+  font-style: italic;
 }
 
 .noData {
@@ -569,12 +650,21 @@
     }
   }
 
-  &.refactorButton {
-    background-color: #eeca60;
-    color: #212529;
+  &.runButton {
+    background-color: #28a745;
+
+    svg {
+      fill: white;
+      stroke: white;
+    }
 
     &:hover:not(:disabled) {
-      background-color: #e0a800;
+      background-color: #218838;
+
+      svg {
+        fill: white;
+        stroke: white;
+      }
     }
   }
 }
@@ -599,7 +689,7 @@
     padding: 15px;
   }
 
-  .testCaseTable {
+  .testPlanTable {
     font-size: 13px;
 
     th,
@@ -627,7 +717,7 @@
 }
 
 @media (max-width: 800px) {
-  .testCaseTable {
+  .testPlanTable {
     font-size: 12px;
 
     th,
@@ -665,6 +755,13 @@
       width: 14px;
       height: 14px;
     }
+
+    &.runButton {
+      svg {
+        fill: white;
+        stroke: white;
+      }
+    }
   }
 
   .statusBadge {
@@ -675,6 +772,13 @@
   .footerButton {
     padding: 8px 16px;
     font-size: 13px;
+
+    &.runButton {
+      svg {
+        fill: white;
+        stroke: white;
+      }
+    }
   }
 }
 
@@ -683,7 +787,7 @@
     padding: 10px 5px;
   }
 
-  .testCaseTable {
+  .testPlanTable {
     font-size: 11px;
 
     th,
@@ -700,6 +804,22 @@
     svg {
       width: 12px;
       height: 12px;
+    }
+
+    &.runButton {
+      svg {
+        fill: white;
+        stroke: white;
+      }
+    }
+  }
+
+  .footerButton {
+    &.runButton {
+      svg {
+        fill: white;
+        stroke: white;
+      }
     }
   }
 }

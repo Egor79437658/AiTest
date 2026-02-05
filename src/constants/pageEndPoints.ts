@@ -5,7 +5,6 @@ export const PAGE_ENDPOINTS = {
   PROJECT: 'project',
   PROJECT_ID: ':projectId',
   TEST_CASE_ID: ':testCaseId',
-  HISTORY: 'history',
   PROJECT_PARTS: {
     TEST_CASE: 'test-cases',
     TEST_PLAN: 'test-plan',
