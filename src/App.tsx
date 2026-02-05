@@ -36,6 +36,7 @@ import {
   TestPlanRunHistory,
   TestPlanRunDetails,
 } from './pages/ProjectPages/components/ProjectSubPages'
+import { Toaster } from 'sonner'
 
 const router = createBrowserRouter([
   {
@@ -158,6 +159,7 @@ function App() {
             <TestCaseProvider>
               <TestPlanProvider>
                 <RouterProvider router={router} />
+                <Toaster />
               </TestPlanProvider>
             </TestCaseProvider>
           </SidebarProvider>
