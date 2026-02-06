@@ -5,6 +5,8 @@ import {
   TestCasePriority,
   TestCaseStatus,
   User,
+  TestPlan,
+  TestPlanRun,
 } from '@interfaces/'
 
 export const mockUsers: User[] = [
@@ -134,12 +136,13 @@ export const mockProjects: Project[] = [
     scripts: [{ id: 3 }],
     datapool: [],
     recentTestPlanRuns: [
-      {
-        id: 4,
-        name: 'Мобильное регрессионное тестирование',
-        lastRunDate: new Date('2023-12-26T10:00:00'),
-        status: 'успешно',
-      },
+  {
+    id: 101,
+    name: 'Регрессионное тестирование',
+    startedAt: new Date('2024-01-24T14:00:00'),
+    status: 'с_ошибками',
+    duration: 270000,
+  },
     ],
     createdAt: new Date('2023-12-25T10:00:00'),
     updatedAt: new Date('2023-12-25T10:00:00'),
@@ -167,12 +170,13 @@ export const mockProjects: Project[] = [
     scripts: [{ id: 2 }],
     datapool: [],
     recentTestPlanRuns: [
-      {
-        id: 3,
-        name: 'UI тестирование',
-        lastRunDate: new Date('2023-12-26T10:00:00'),
-        status: 'успешно',
-      },
+  {
+    id: 101,
+    name: 'Регрессионное тестирование',
+    startedAt: new Date('2024-01-24T14:00:00'),
+    status: 'с_ошибками',
+    duration: 270000,
+  },
     ],
     createdAt: new Date('2023-12-26T10:00:00'),
     updatedAt: new Date('2023-12-26T10:00:00'),
@@ -201,18 +205,20 @@ export const mockProjects: Project[] = [
     scripts: [{ id: 1 }],
     datapool: [],
     recentTestPlanRuns: [
-      {
-        id: 1,
-        name: 'Регрессионное тестирование',
-        lastRunDate: new Date('2023-12-26T10:00:00'),
-        status: 'успешно',
-      },
-      {
-        id: 2,
-        name: 'Smoke тестирование',
-        lastRunDate: new Date('2023-12-26T10:00:00'),
-        status: 'с ошибками',
-      },
+  {
+    id: 103,
+    name: 'UI тестирование',
+    startedAt: new Date('2024-01-23T11:00:00'),
+    status: 'успешно',
+    duration: 240000,
+  },
+  {
+    id: 104,
+    name: 'Мобильное регрессионное тестирование',
+    startedAt: new Date('2024-01-22T15:00:00'),
+    status: 'успешно',
+    duration: 360000,
+  },
     ],
     createdAt: new Date('2023-12-26T10:00:00'),
     updatedAt: new Date('2023-12-26T10:00:00'),
@@ -240,12 +246,13 @@ export const mockProjects: Project[] = [
     testCases: [{ id: 5 }, { id: 6 }],
     scripts: [{ id: 5 }],
     recentTestPlanRuns: [
-      {
-        id: 5,
-        name: 'Мобильное регрессионное тестирование',
-        lastRunDate: new Date('2023-12-26T10:00:00'),
-        status: 'с ошибками',
-      },
+  {
+    id: 105,
+    name: 'Функциональное тестирование',
+    startedAt: new Date('2024-01-21T13:00:00'),
+    status: 'с_ошибками',
+    duration: 420000,
+  }
     ],
     createdAt: new Date('2023-12-26T10:00:00'),
     updatedAt: new Date('2023-12-26T10:00:00'),
@@ -669,7 +676,7 @@ export const mockTestCases: TestCase[] = [
     ],
     attachments: [
       {
-        name: 'Скриншот успешной оплаты',
+        name: 'Скриншот успешной оплата',
         url: '/attachments/payment_success.png',
         type: 'image/png',
         size: 307200,
@@ -838,3 +845,438 @@ export const mockTokens = {
 }
 
 export const MOCK_PASSWORD = 'password123'
+
+export const MOCK_TEST_PLANS: TestPlan[] = [
+  {
+    id: 1,
+    name: 'Регрессионное тестирование',
+    version: '1.0.0',
+    projectId: 3,
+    testCaseCount: 3,
+    owner: { id: 1, username: 'testuser' },
+    createdAt: new Date('2024-01-20T10:00:00'),
+    lastRunAt: new Date('2024-01-25T14:30:00'),
+    duration: 300000,
+    lastRunStatus: 'успешно',
+    status: 'active',
+    description: 'Полное регрессионное тестирование всех функций приложения',
+    testCases: [
+      {
+        id: 1,
+        testPlanId: 1,
+        order: 1,
+        testCase: { id: 7, name: 'Авторизация пользователя', version: '001.002.001' }
+      },
+      {
+        id: 2,
+        testPlanId: 1,
+        order: 2,
+        testCase: { id: 8, name: 'Проверка корзины покупок', version: '002.001.000' }
+      },
+      {
+        id: 3,
+        testPlanId: 1,
+        order: 3,
+        testCase: { id: 9, name: 'Проверка поиска товаров', version: '001.001.001' }
+      }
+    ]
+  },
+  {
+    id: 2,
+    name: 'Smoke тестирование',
+    version: '1.1.0',
+    projectId: 3,
+    testCaseCount: 2,
+    owner: { id: 2, username: 'demo' },
+    createdAt: new Date('2024-01-22T09:00:00'),
+    lastRunAt: new Date('2024-01-24T11:45:00'),
+    duration: 180000,
+    lastRunStatus: 'с_ошибками',
+    status: 'active',
+    description: 'Базовое smoke тестирование критических функций',
+    testCases: [
+      {
+        id: 4,
+        testPlanId: 2,
+        order: 1,
+        testCase: { id: 7, name: 'Авторизация пользователя', version: '001.002.001' }
+      },
+      {
+        id: 5,
+        testPlanId: 2,
+        order: 2,
+        testCase: { id: 8, name: 'Проверка корзины покупок', version: '002.001.000' }
+      }
+    ]
+  },
+  {
+    id: 3,
+    name: 'UI тестирование',
+    version: '2.0.0',
+    projectId: 2,
+    testCaseCount: 2,
+    owner: { id: 1, username: 'testuser' },
+    createdAt: new Date('2024-01-18T14:20:00'),
+    lastRunAt: new Date('2024-01-23T16:10:00'),
+    duration: 240000,
+    lastRunStatus: 'успешно',
+    status: 'active',
+    description: 'Тестирование пользовательского интерфейса и навигации',
+    testCases: [
+      {
+        id: 6,
+        testPlanId: 3,
+        order: 1,
+        testCase: { id: 2, name: 'тест-кейс 2', version: '001.000.100' }
+      },
+      {
+        id: 7,
+        testPlanId: 3,
+        order: 2,
+        testCase: { id: 3, name: 'тест-кейс 3', version: '001.000.000' }
+      }
+    ]
+  },
+  {
+    id: 4,
+    name: 'Мобильное регрессионное тестирование',
+    version: '1.2.0',
+    projectId: 1,
+    testCaseCount: 2,
+    owner: { id: 1, username: 'testuser' },
+    createdAt: new Date('2024-01-15T11:30:00'),
+    lastRunAt: new Date('2024-01-22T13:45:00'),
+    duration: 360000,
+    lastRunStatus: 'успешно',
+    status: 'draft',
+    description: 'Регрессионное тестирование мобильной версии приложения',
+    testCases: [
+      {
+        id: 8,
+        testPlanId: 4,
+        order: 1,
+        testCase: { id: 2, name: 'тест-кейс 2', version: '001.000.100' }
+      },
+      {
+        id: 9,
+        testPlanId: 4,
+        order: 2,
+        testCase: { id: 3, name: 'тест-кейс 3', version: '001.000.000' }
+      }
+    ]
+  },
+  {
+    id: 5,
+    name: 'Функциональное тестирование',
+    version: '1.0.0',
+    projectId: 4,
+    testCaseCount: 2,
+    owner: { id: 2, username: 'demo' },
+    createdAt: new Date('2024-01-10T08:15:00'),
+    lastRunAt: new Date('2024-01-21T10:30:00'),
+    duration: 420000,
+    lastRunStatus: 'с_ошибками',
+    status: 'archived',
+    description: 'Полное функциональное тестирование всех модулей',
+    testCases: [
+      {
+        id: 10,
+        testPlanId: 5,
+        order: 1,
+        testCase: { id: 5, name: 'тест-кейс 5', version: '000.000.001' }
+      },
+      {
+        id: 11,
+        testPlanId: 5,
+        order: 2,
+        testCase: { id: 6, name: 'тест-кейс 6', version: '000.000.000' }
+      }
+    ]
+  },
+  {
+    id: 6,
+    name: 'Регрессионное тестирование авторизации',
+    version: '1.3.0',
+    projectId: 1,
+    testCaseCount: 1,
+    owner: { id: 1, username: 'testuser' },
+    createdAt: new Date('2024-01-19T16:00:00'),
+    lastRunAt: new Date('2024-01-20T10:00:00'),
+    duration: 120000,
+    lastRunStatus: 'успешно',
+    status: 'active',
+    description: 'Тестирование различных сценариев авторизации',
+    testCases: [
+      {
+        id: 12,
+        testPlanId: 6,
+        order: 1,
+        testCase: { id: 7, name: 'Авторизация пользователя', version: '001.002.001' }
+      }
+    ]
+  },
+  {
+    id: 7,
+    name: 'Тестирование e-commerce',
+    version: '2.1.0',
+    projectId: 2,
+    testCaseCount: 1,
+    owner: { id: 2, username: 'demo' },
+    createdAt: new Date('2024-01-17T09:30:00'),
+    lastRunAt: new Date('2024-01-19T10:00:00'),
+    duration: 150000,
+    lastRunStatus: 'успешно',
+    status: 'active',
+    description: 'Тестирование функций электронной коммерции',
+    testCases: [
+      {
+        id: 13,
+        testPlanId: 7,
+        order: 1,
+        testCase: { id: 8, name: 'Проверка корзины покупок', version: '002.001.000' }
+      }
+    ]
+  },
+  {
+    id: 8,
+    name: 'Smoke тесты',
+    version: '1.0.1',
+    projectId: 3,
+    testCaseCount: 1,
+    owner: { id: 1, username: 'testuser' },
+    createdAt: new Date('2024-01-19T11:00:00'),
+    lastRunAt: new Date('2024-01-20T09:00:00'),
+    duration: 90000,
+    lastRunStatus: 'успешно',
+    status: 'active',
+    description: 'Быстрые smoke тесты основных функций',
+    testCases: [
+      {
+        id: 14,
+        testPlanId: 8,
+        order: 1,
+        testCase: { id: 8, name: 'Проверка корзины покупок', version: '002.001.000' }
+      }
+    ]
+  },
+  {
+    id: 9,
+    name: 'Функциональное тестирование поиска',
+    version: '1.2.1',
+    projectId: 1,
+    testCaseCount: 1,
+    owner: { id: 1, username: 'testuser' },
+    createdAt: new Date('2024-01-14T13:00:00'),
+    lastRunAt: new Date('2024-01-15T10:00:00'),
+    duration: 180000,
+    lastRunStatus: 'успешно',
+    status: 'active',
+    description: 'Тестирование поисковых алгоритмов и фильтров',
+    testCases: [
+      {
+        id: 15,
+        testPlanId: 9,
+        order: 1,
+        testCase: { id: 9, name: 'Проверка поиска товаров', version: '001.001.001' }
+      }
+    ]
+  },
+  {
+    id: 10,
+    name: 'Интеграционное тестирование',
+    version: '3.0.0',
+    projectId: 1,
+    testCaseCount: 1,
+    owner: { id: 1, username: 'testuser' },
+    createdAt: new Date('2024-01-21T10:00:00'),
+    lastRunAt: new Date('2024-01-22T10:00:00'),
+    duration: 240000,
+    lastRunStatus: 'успешно',
+    status: 'active',
+    description: 'Тестирование интеграции между различными системами',
+    testCases: [
+      {
+        id: 16,
+        testPlanId: 10,
+        order: 1,
+        testCase: { id: 9, name: 'Проверка поиска товаров', version: '001.001.001' }
+      }
+    ]
+  }
+]
+
+export const MOCK_TEST_PLAN_RUNS: TestPlanRun[] = [
+  {
+    id: 100,
+    testPlanId: 1,
+    name: 'Регрессионное тестирование',
+    startedAt: new Date('2024-01-25T10:00:00'),
+    finishedAt: new Date('2024-01-25T10:05:00'),
+    status: 'успешно',
+    triggeredBy: { id: 1, username: 'testuser' },
+    duration: 300000,
+    results: [
+      {
+        testCaseId: 7,
+        status: 'успешно',
+        startedAt: new Date('2024-01-25T10:00:00'),
+        finishedAt: new Date('2024-01-25T10:01:00'),
+        duration: 60000
+      },
+      {
+        testCaseId: 8,
+        status: 'успешно',
+        startedAt: new Date('2024-01-25T10:01:00'),
+        finishedAt: new Date('2024-01-25T10:03:00'),
+        duration: 120000
+      },
+      {
+        testCaseId: 9,
+        status: 'успешно',
+        startedAt: new Date('2024-01-25T10:03:00'),
+        finishedAt: new Date('2024-01-25T10:05:00'),
+        duration: 120000
+      }
+    ]
+  },
+  {
+    id: 101,
+    testPlanId: 1,
+    name: 'Регрессионное тестирование',
+    startedAt: new Date('2024-01-24T14:00:00'),
+    finishedAt: new Date('2024-01-24T14:04:30'),
+    status: 'с_ошибками',
+    triggeredBy: { id: 2, username: 'demo' },
+    duration: 270000,
+    results: [
+      {
+        testCaseId: 7,
+        status: 'успешно',
+        startedAt: new Date('2024-01-24T14:00:00'),
+        finishedAt: new Date('2024-01-24T14:01:00'),
+        duration: 60000
+      },
+      {
+        testCaseId: 8,
+        status: 'с_ошибками',
+        startedAt: new Date('2024-01-24T14:01:00'),
+        finishedAt: new Date('2024-01-24T14:03:00'),
+        duration: 120000,
+        error: 'Таймаут при добавлении товара в корзину'
+      },
+      {
+        testCaseId: 9,
+        status: 'пропущен',
+        startedAt: new Date('2024-01-24T14:03:00'),
+        finishedAt: new Date('2024-01-24T14:03:30'),
+        duration: 30000
+      }
+    ]
+  },
+  {
+    id: 102,
+    testPlanId: 2,
+    name: 'Smoke тестирование',
+    startedAt: new Date('2024-01-24T09:00:00'),
+    finishedAt: new Date('2024-01-24T09:03:00'),
+    status: 'с_ошибками',
+    triggeredBy: { id: 1, username: 'testuser' },
+    duration: 180000,
+    results: [
+      {
+        testCaseId: 7,
+        status: 'успешно',
+        startedAt: new Date('2024-01-24T09:00:00'),
+        finishedAt: new Date('2024-01-24T09:01:00'),
+        duration: 60000
+      },
+      {
+        testCaseId: 8,
+        status: 'с_ошибками',
+        startedAt: new Date('2024-01-24T09:01:00'),
+        finishedAt: new Date('2024-01-24T09:03:00'),
+        duration: 120000,
+        error: 'Не удалось проверить корзину покупок'
+      }
+    ]
+  },
+  {
+    id: 103,
+    testPlanId: 3,
+    name: 'UI тестирование',
+    startedAt: new Date('2024-01-23T11:00:00'),
+    finishedAt: new Date('2024-01-23T11:04:00'),
+    status: 'успешно',
+    triggeredBy: { id: 1, username: 'testuser' },
+    duration: 240000,
+    results: [
+      {
+        testCaseId: 2,
+        status: 'успешно',
+        startedAt: new Date('2024-01-23T11:00:00'),
+        finishedAt: new Date('2024-01-23T11:02:00'),
+        duration: 120000
+      },
+      {
+        testCaseId: 3,
+        status: 'успешно',
+        startedAt: new Date('2024-01-23T11:02:00'),
+        finishedAt: new Date('2024-01-23T11:04:00'),
+        duration: 120000
+      }
+    ]
+  },
+  {
+    id: 104,
+    testPlanId: 4,
+    name: 'Мобильное регрессионное тестирование',
+    startedAt: new Date('2024-01-22T15:00:00'),
+    finishedAt: new Date('2024-01-22T15:06:00'),
+    status: 'успешно',
+    triggeredBy: { id: 1, username: 'testuser' },
+    duration: 360000,
+    results: [
+      {
+        testCaseId: 2,
+        status: 'успешно',
+        startedAt: new Date('2024-01-22T15:00:00'),
+        finishedAt: new Date('2024-01-22T15:03:00'),
+        duration: 180000
+      },
+      {
+        testCaseId: 3,
+        status: 'успешно',
+        startedAt: new Date('2024-01-22T15:03:00'),
+        finishedAt: new Date('2024-01-22T15:06:00'),
+        duration: 180000
+      }
+    ]
+  },
+  {
+    id: 105,
+    testPlanId: 5,
+    name: 'Функциональное тестирование',
+    startedAt: new Date('2024-01-21T13:00:00'),
+    finishedAt: new Date('2024-01-21T13:07:00'),
+    status: 'с_ошибками',
+    triggeredBy: { id: 2, username: 'demo' },
+    duration: 420000,
+    results: [
+      {
+        testCaseId: 5,
+        status: 'с_ошибками',
+        startedAt: new Date('2024-01-21T13:00:00'),
+        finishedAt: new Date('2024-01-21T13:04:00'),
+        duration: 240000,
+        error: 'Ошибка при выполнении скрипта тест-кейса'
+      },
+      {
+        testCaseId: 6,
+        status: 'успешно',
+        startedAt: new Date('2024-01-21T13:04:00'),
+        finishedAt: new Date('2024-01-21T13:07:00'),
+        duration: 180000
+      }
+    ]
+  }
+]

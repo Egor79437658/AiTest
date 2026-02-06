@@ -36,12 +36,21 @@ export interface TestCaseInTestPlan {
 export interface TestPlanRun {
   id: number
   testPlanId: number
+  name: string
   startedAt: Date
   finishedAt?: Date
   status: TestPlanRunStatus
   triggeredBy: { id: number; username: string }
   duration?: number
   results: TestCaseRunResult[]
+}
+
+export interface TestPlanRunShort {
+  id: number
+  name: string
+  startedAt: Date
+  status: TestPlanRunStatus
+  duration?: number
 }
 
 export interface TestCaseRunResult {

@@ -1,4 +1,4 @@
-import { TestPlanRun } from './testPlan'
+import { TestPlanRunShort } from './testPlan'
 
 export interface ProjectMinimal {
   id: number
@@ -33,7 +33,7 @@ export interface Project {
   testCases: {id: number}[]
   scripts: {id: number}[]
   testPlans: {id: number}[]
-  recentTestPlanRuns: TestPlanRun[]
+  recentTestPlanRuns: TestPlanRunShort[]
   createdAt: Date
   updatedAt: Date
   datapool: DataPoolItem[]

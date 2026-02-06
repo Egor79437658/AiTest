@@ -11,6 +11,7 @@ import {
   TestPlanRun,
   TestPlanUpdateData,
   User,
+  TestPlanRunShort,
 } from '@interfaces/'
 import { MOCK_CODE } from '@constants/'
 import {
@@ -312,7 +313,7 @@ class MockApiService {
     return [...project.users]
   }
 
-  async getRecentTestPlanRuns(projectId: number): Promise<TestPlanRun[]> {
+  async getRecentTestPlanRuns(projectId: number): Promise<TestPlanRunShort[]> {
     await delay(300)
 
     const project = mockProjects.find((p) => p.id === projectId)
@@ -681,9 +682,11 @@ class MockApiService {
 
   async runTestPlan(projectId: number, testPlanId: number): Promise<TestPlanRun> {
     await delay(2000)
+    const planIndex = MOCK_TEST_PLANS.findIndex((p: TestPlan) => p.id === testPlanId)
     const newRun: TestPlanRun = {
       id: Date.now(),
       testPlanId,
+      name: MOCK_TEST_PLANS[planIndex].name,
       startedAt: new Date(),
       finishedAt: new Date(Date.now() + 30000),
       status: 'успешно',
@@ -693,7 +696,6 @@ class MockApiService {
     }
     MOCK_TEST_PLAN_RUNS.push(newRun)
     
-    const planIndex = MOCK_TEST_PLANS.findIndex((p: TestPlan) => p.id === testPlanId)
     if (planIndex !== -1) {
       MOCK_TEST_PLANS[planIndex] = {
         ...MOCK_TEST_PLANS[planIndex],
@@ -743,7 +745,7 @@ class MockApiService {
     const sorted = allRuns.sort((a: TestPlanRun, b: TestPlanRun) => b.startedAt.getTime() - a.startedAt.getTime())
     return sorted.slice(0, limit)
   }
-  
+
 }
 
 export const mockApiService = new MockApiService()
