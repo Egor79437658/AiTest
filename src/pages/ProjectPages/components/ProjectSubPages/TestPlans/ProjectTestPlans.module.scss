@@ -1,0 +1,149 @@
+@use '@styles/_variables.scss' as vars;
+
+.pageContainer {
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.headerSection {
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+
+  h1 {
+    font-family: 'Bounded';
+    margin-bottom: 10px;
+    color: vars.$darkColor;
+  }
+
+  .projectInfo {
+    color: #6c757d;
+    font-size: 14px;
+
+    strong {
+      color: vars.$darkColor;
+    }
+  }
+}
+
+.errorContainer {
+  text-align: center;
+  padding: 40px;
+  max-width: 600px;
+  margin: 40px auto;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+
+  h3 {
+    color: #721c24;
+    margin-bottom: 15px;
+  }
+
+  p {
+    color: #721c24;
+  }
+
+  .backLink {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: vars.$darkColor;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: vars.$lightBlueColor;
+    }
+  }
+}
+
+.loadingContainer {
+  text-align: center;
+  padding: 60px 20px;
+
+  .loadingSpinner {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid vars.$lightBlueColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+  }
+
+  p {
+    color: #6c757d;
+    font-size: 16px;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 800px) {
+  .pageContainer {
+    padding: 10px;
+  }
+
+  .headerSection {
+    margin-bottom: 20px;
+
+    h1 {
+      font-size: 20px;
+    }
+
+    .projectInfo {
+      font-size: 12px;
+    }
+  }
+}
+
+.pageFooter {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @media (max-width: 800px) {
+    flex-direction: column;
+
+    button {
+      margin-bottom: 10px;
+    }
+  }
+}
+
+.actionButton {
+  padding: 12px 24px;
+  background-color: vars.$darkColor;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+
+  margin: auto;
+
+  transition: background-color 0.2s;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+
+  &:hover:not(:disabled) {
+    background-color: vars.$lightBlueColor;
+  }
+
+  &:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+  }
+  &:active {
+    box-shadow: inset 5px 5px 5px black;
+  }
+}

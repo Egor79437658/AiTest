@@ -7,12 +7,16 @@ import {
   TestCase,
   TestCaseFormData,
   TestCaseUpdateData,
+  TestPlan,
   TestPlanRun,
+  TestPlanUpdateData,
   User,
 } from '@interfaces/'
 import { MOCK_CODE } from '@constants/'
 import {
   MOCK_PASSWORD,
+  MOCK_TEST_PLANS,
+  MOCK_TEST_PLAN_RUNS,
   mockProjects,
   mockProjectsHistory,
   mockTestCases,
@@ -24,6 +28,8 @@ import { UpdateProfileData, UpdateSettingsData } from '../api/users'
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 class MockApiService {
+  private testPlanIdCounter = 100
+
   private findUserByEmail(email: string): User | undefined {
     return mockUsers.find((u) => u.profileData.email === email)
   }
@@ -348,6 +354,7 @@ class MockApiService {
       recentTestPlanRuns: [],
       createdAt: new Date(),
       updatedAt: new Date(),
+      datapool: [],
       createdBy: user.id,
     }
 
@@ -615,6 +622,128 @@ class MockApiService {
       ].testCases.filter((tc) => !testCaseIds.includes(tc.id))
     }
   }
+
+
+  async getAllTestPlans(projectId: number): Promise<TestPlan[]> {
+    await delay(500)
+    return MOCK_TEST_PLANS.filter((plan: TestPlan) => plan.projectId === projectId)
+  }
+
+  async getTestPlan(projectId: number, testPlanId: number): Promise<TestPlan> {
+    await delay(500)
+    const plan = MOCK_TEST_PLANS.find((p: TestPlan) => p.id === testPlanId && p.projectId === projectId)
+    if (!plan) throw new Error('Test plan not found')
+    return plan
+  }
+
+  async createTestPlan(projectId: number, data: Omit<TestPlanUpdateData, 'id'>): Promise<TestPlan> {
+    await delay(800)
+    this.testPlanIdCounter++
+    const newPlan: TestPlan = {
+      ...data,
+      id: this.testPlanIdCounter,
+      projectId,
+      testCaseCount: data.testCases?.length || 0,
+      owner: { id: mockUsers[0].id, username: mockUsers[0].profileData.username },
+      createdAt: new Date(),
+      lastRunAt: undefined,
+      duration: 0,
+      lastRunStatus: 'не_запускался',
+      status: data.status || 'active',
+      testCases: data.testCases || []
+    } as TestPlan
+    MOCK_TEST_PLANS.push(newPlan)
+    return newPlan
+  }
+
+  async updateTestPlan(projectId: number, testPlanId: number, updates: TestPlanUpdateData): Promise<TestPlan> {
+    await delay(800)
+    const index = MOCK_TEST_PLANS.findIndex((p: TestPlan) => p.id === testPlanId && p.projectId === projectId)
+    if (index === -1) throw new Error('Test plan not found')
+    
+    const updatedPlan = {
+      ...MOCK_TEST_PLANS[index],
+      ...updates,
+      testCaseCount: updates.testCases?.length || MOCK_TEST_PLANS[index].testCaseCount
+    }
+    
+    MOCK_TEST_PLANS[index] = updatedPlan
+    return updatedPlan
+  }
+
+  async deleteTestPlan(projectId: number, testPlanId: number): Promise<void> {
+    await delay(500)
+    const index = MOCK_TEST_PLANS.findIndex((p: TestPlan) => p.id === testPlanId && p.projectId === projectId)
+    if (index !== -1) {
+      MOCK_TEST_PLANS.splice(index, 1)
+    }
+  }
+
+  async runTestPlan(projectId: number, testPlanId: number): Promise<TestPlanRun> {
+    await delay(2000)
+    const newRun: TestPlanRun = {
+      id: Date.now(),
+      testPlanId,
+      startedAt: new Date(),
+      finishedAt: new Date(Date.now() + 30000),
+      status: 'успешно',
+      triggeredBy: { id: mockUsers[0].id, username: mockUsers[0].profileData.username },
+      duration: 30000,
+      results: []
+    }
+    MOCK_TEST_PLAN_RUNS.push(newRun)
+    
+    const planIndex = MOCK_TEST_PLANS.findIndex((p: TestPlan) => p.id === testPlanId)
+    if (planIndex !== -1) {
+      MOCK_TEST_PLANS[planIndex] = {
+        ...MOCK_TEST_PLANS[planIndex],
+        lastRunAt: new Date(),
+        lastRunStatus: 'успешно'
+      }
+    }
+    
+    return newRun
+  }
+
+  async cloneTestPlan(projectId: number, testPlanId: number): Promise<TestPlan> {
+    await delay(800)
+    const original = MOCK_TEST_PLANS.find((p: TestPlan) => p.id === testPlanId && p.projectId === projectId)
+    if (!original) throw new Error('Test plan not found')
+    
+    const versionParts = original.version.split('.')
+    if (versionParts.length === 3) {
+      versionParts[2] = (parseInt(versionParts[2]) + 1).toString()
+    }
+    const newVersion = versionParts.join('.')
+    
+    this.testPlanIdCounter++
+    
+    const clonedPlan: TestPlan = {
+      ...original,
+      id: this.testPlanIdCounter,
+      name: `${original.name} (копия)`,
+      version: newVersion,
+      createdAt: new Date(),
+      lastRunStatus: 'не_запускался',
+      lastRunAt: undefined
+    }
+    
+    MOCK_TEST_PLANS.push(clonedPlan)
+    return clonedPlan
+  }
+
+  async getTestPlanRuns(projectId: number, testPlanId: number): Promise<TestPlanRun[]> {
+    await delay(500)
+    return MOCK_TEST_PLAN_RUNS.filter((run: TestPlanRun) => run.testPlanId === testPlanId)
+  }
+
+  async getRecentTestPlanRunsForPlan(projectId: number, testPlanId: number, limit: number = 3): Promise<TestPlanRun[]> {
+    await delay(300)
+    const allRuns = MOCK_TEST_PLAN_RUNS.filter((run: TestPlanRun) => run.testPlanId === testPlanId)
+    const sorted = allRuns.sort((a: TestPlanRun, b: TestPlanRun) => b.startedAt.getTime() - a.startedAt.getTime())
+    return sorted.slice(0, limit)
+  }
+  
 }
 
 export const mockApiService = new MockApiService()

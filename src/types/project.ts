@@ -1,3 +1,5 @@
+import { TestPlanRun } from './testPlan'
+
 export interface ProjectMinimal {
   id: number
   name: string
@@ -12,13 +14,6 @@ export interface ProjectUser {
   email: string
   role: 0 | 1 | 2 | 3 | 4 | 5
   permissions: string
-}
-
-export interface TestPlanRun {
-  id: number
-  name: string
-  lastRunDate: Date
-  status: 'успешно' | 'с ошибками'
 }
 
 export interface testPlan {

@@ -5,6 +5,7 @@ import {
   SidebarProvider,
   ProjectProvider,
   TestCaseProvider,
+  TestPlanProvider,
 } from '@contexts/'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { PAGE_ENDPOINTS } from '@constants/'
@@ -29,12 +30,16 @@ import {
   ProjectScripts,
   ProjectSettings,
   ProjectTestCases,
-  ProjectTestPlan,
   ProjectTestPlanRuns,
+  ProjectTestPlans,
   RedactTestCase,
   ViewTestCase,
   HistoryTestCase,
   TestCasesOutlet,
+  TestPlanDetails,
+  RedactTestPlan,
+  TestPlanRunHistory,
+  TestPlanRunDetails,
 } from './pages/ProjectPages/components/ProjectSubPages'
 import { Toaster } from 'sonner'
 
@@ -96,10 +101,32 @@ const router = createBrowserRouter([
                   },
                 ],
               },
+              // *****
               {
-                path: `${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}`,
-                element: <ProjectTestPlan />,
+                path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}`,
+                element: <ProjectTestPlans />,
               },
+              {
+                path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}/new`,
+                element: <RedactTestPlan />,
+              },
+              {
+                path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}/:testPlanId`,
+                element: <TestPlanDetails />,
+              },
+              {
+                path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}/:testPlanId/edit`,
+                element: <RedactTestPlan />,
+              },
+              {
+                path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}/:testPlanId/runs`,
+                element: <TestPlanRunHistory />,
+              },
+              {
+                path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}/:testPlanId/runs/:runId`,
+                element: <TestPlanRunDetails />,
+              },
+              // *****
               {
                 path: `${PAGE_ENDPOINTS.PROJECT_PARTS.SCRIPT}`,
                 element: <ProjectScripts />,
@@ -161,8 +188,10 @@ function App() {
         <ProjectProvider>
           <SidebarProvider>
             <TestCaseProvider>
-              <RouterProvider router={router} />
-              <Toaster />
+              <TestPlanProvider>
+                <RouterProvider router={router} />
+                <Toaster />
+              </TestPlanProvider>
             </TestCaseProvider>
           </SidebarProvider>
         </ProjectProvider>
