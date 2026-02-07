@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import styles from './Breadcrumbs.module.scss'
+import styles from './BreadCrumbs.module.scss'
 
 export interface BreadcrumbItem {
   text: string

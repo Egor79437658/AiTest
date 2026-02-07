@@ -85,7 +85,6 @@ export const StepsEditor: React.FC<StepsEditorProps> = ({
 
   const handleRemoveStep = useCallback(
     (index: number) => {
-      console.log('a')
       const newSteps = steps.filter((_, i) => i !== index)
       onChange(newSteps)
 
@@ -413,7 +412,6 @@ export const StepsEditor: React.FC<StepsEditorProps> = ({
                     ) {
                       filtered.push(newVal)
                     }
-                    console.log(filtered)
                     return filtered
                   }, [] as TestCase[])
                   .map((el) =>

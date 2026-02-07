@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
 import styles from './HistoryTestCase.module.scss'
+import { SyncLoader } from 'react-spinners'
 
 export const HistoryTestCase: React.FC = () => {
   const { project } = useProject()
@@ -13,7 +14,7 @@ export const HistoryTestCase: React.FC = () => {
 
   useEffect(() => {
     loadHistory(project?.id || -1, parseInt(testCaseId || ''))
-  }, [project, testCaseId])
+  }, [project, testCaseId, loadHistory])
 
   const columns: TableColumn[] = [
     {

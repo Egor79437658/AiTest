@@ -350,7 +350,7 @@ export const RedactTestPlan: React.FC = () => {
                   className={styles.input}
                   type="text"
                   placeholder={isCreatingNew ? "1.0.0" : "000.000.000"}
-                  disabled={!isCreatingNew}
+                  disabled={true}
                 />
               )}
             />

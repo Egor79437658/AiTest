@@ -1,16 +1,12 @@
 // src/contexts/TestCaseProvider.tsx
-import { MOCK_MODE } from '@constants/'
 import {
   TestCase,
   TestCaseFormData,
-  TestCaseHistoryRecord,
   TestCaseUpdateData,
 } from '@interfaces/'
 import { useTestCaseStore } from '@stores/'
 import React, { useCallback } from 'react'
-import { testCaseApi } from '../../api/'
 import { useTestCaseActions } from '../../pages/ProjectPages/components/ProjectSubPages/TestCases/hooks/useTestCaseActions'
-import { mockApiService } from '../../services/mockApiService'
 import { TestCaseContext, TestCaseContextType } from './TestCaseContext'
 
 interface TestCaseProviderProps {
@@ -308,7 +304,7 @@ export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
         console.error(`некорректное значение id проекта ${projectId}`)
         throw new Error(`некорректное значение id проекта ${projectId}`)
       }
-
+      
       if (isNaN(testCaseId) || !isFinite(testCaseId)) {
         setError('некорректное значение id тест-кейса')
         console.error(`некорректное значение id тест-кейса ${testCaseId}`)
@@ -317,7 +313,8 @@ export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
       setLoading(true)
       setError(null)
       try {
-        setTestHistory(await getTestCaseHistory(projectId, testCaseId))
+        const records = await getTestCaseHistory(projectId, testCaseId)
+        setTestHistory(records)
       } catch (error) {
         console.error('Failed to load history:', error)
         setError('Не удалось загрзить историю изменения тест-кейса')
@@ -326,7 +323,7 @@ export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
         setLoading(false)
       }
     },
-    [history, setTestHistory, setError, setLoading]
+    [setTestHistory, setError, setLoading, getTestCaseHistory]
   )
   const value: TestCaseContextType = {
     // Состояние

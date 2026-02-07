@@ -98,7 +98,6 @@ export const useTestCaseActions = () => {
     async (projectId: number, caseId: number): Promise<TestCaseHistoryRecord[]> => {
       try {
         let records: TestCaseHistoryRecord[]
-
         if (MOCK_MODE) {
           records = await mockApiService.getHistoryChange(caseId)
         } else {

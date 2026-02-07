@@ -101,32 +101,36 @@ const router = createBrowserRouter([
                   },
                 ],
               },
-              // *****
               {
-                path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}`,
-                element: <ProjectTestPlans />,
+                path: `${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}`,
+                children: [
+                  {
+                    index: true,
+                    element: <ProjectTestPlans />,
+                  },
+                  {
+                    path: `new`,
+                    element: <RedactTestPlan />,
+                  },
+                  {
+                    path: `:testPlanId`,
+                    element: <TestPlanDetails />,
+                  },
+                  {
+                    path: `:testPlanId/edit`,
+                    element: <RedactTestPlan />,
+                  },
+                  {
+                    path: `:testPlanId/runs`,
+                    element: <TestPlanRunHistory />,
+                  },
+                  {
+                    path: `:testPlanId/runs/:runId`,
+                    element: <TestPlanRunDetails />,
+                  },
+                ]
+
               },
-              {
-                path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}/new`,
-                element: <RedactTestPlan />,
-              },
-              {
-                path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}/:testPlanId`,
-                element: <TestPlanDetails />,
-              },
-              {
-                path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}/:testPlanId/edit`,
-                element: <RedactTestPlan />,
-              },
-              {
-                path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}/:testPlanId/runs`,
-                element: <TestPlanRunHistory />,
-              },
-              {
-                path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}/:testPlanId/runs/:runId`,
-                element: <TestPlanRunDetails />,
-              },
-              // *****
               {
                 path: `${PAGE_ENDPOINTS.PROJECT_PARTS.SCRIPT}`,
                 element: <ProjectScripts />,
