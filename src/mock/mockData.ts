@@ -199,7 +199,6 @@ export const mockProjects: Project[] = [
         permissions: 'Полные',
       },
     ],
-
     testPlans: [{ id: 1 }, { id: 2 }],
     testCases: [{ id: 1 }],
     scripts: [{ id: 1 }],

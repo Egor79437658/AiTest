@@ -19,12 +19,10 @@ import {
   ProjectContainer,
   SettingsTab,
   ViewProfileTab,
-  ProjectOutlet,
 } from './pages'
 
 import './index.css'
 import {
-  CreateTestCase,
   ProjectAutoTesting,
   ProjectReports,
   ProjectScripts,
