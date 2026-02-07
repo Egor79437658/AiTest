@@ -5,12 +5,14 @@ import { useProject, useTestPlan } from '@contexts/'
 import { useHeaderStore } from '@stores/'
 import { TestPlanRun } from '@interfaces/'
 import styles from './TestPlanRunDetails.module.scss'
+import { Breadcrumbs } from '@components/'
 
 const TestPlanRunDetails: React.FC = () => {
   const { project } = useProject()
   const { testPlanId, runId } = useParams<{ testPlanId: string, runId: string }>()
   const { 
     testPlanRuns,
+    allTestPlans,
     isLoading 
   } = useTestPlan()
   const { setHeaderContent } = useHeaderStore()
@@ -22,54 +24,53 @@ const TestPlanRunDetails: React.FC = () => {
   useEffect(() => {
     if (project && testPlanId && runId && testPlanRuns) {
       const run = testPlanRuns.find(r => r.id === parseInt(runId))
+      const planName = allTestPlans.find(plan => plan.id === parseInt(testPlanId))?.name || ""
       setRunDetails(run || null)
-      
-      setHeaderContent(
-        <div>
-          <Link to="/">ЯМП&nbsp;</Link>
-          &mdash;&nbsp;{' '}
-          <Link
-            to={
-              window.location.href.split(
-                '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-              )[0]
-            }
-          >
-            {project.name}&nbsp;
-          </Link>{' '}
-          &mdash;&nbsp;{' '}
-          <Link
-            to={
-              window.location.href.split(
-                '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-              )[0] + '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-            }
-          >
-            Тест-планы&nbsp;
-          </Link>{' '}
-          &mdash;&nbsp;{' '}
-          <Link
-            to={
-              window.location.href.split(
-                '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-              )[0] + '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN + '/' + testPlanId
-            }
-          >
-            Тест-план {testPlanId}&nbsp;
-          </Link>{' '}
-          &mdash;&nbsp;{' '}
-          <Link
-            to={
-              window.location.href.split(
-                '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-              )[0] + '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN + '/' + testPlanId + '/runs'
-            }
-          >
-            Журнал запусков&nbsp;
-          </Link>{' '}
-          &mdash;&nbsp; Запуск {runId}
-        </div>
-      )
+            setHeaderContent(
+              <Breadcrumbs
+                items={[
+                  {
+                    text: project?.name || '',
+                    link: window.location.pathname.split(
+                      '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
+                    )[0],
+                  },
+                  {
+                    text: 'Тест-планы',
+                    link:
+                      window.location.href.split(
+                        '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
+                      )[0] +
+                      '/' +
+                      PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN,
+                  },
+                  {
+                    text: planName,
+                    link:
+                      window.location.href.split(
+                        '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
+                      )[0] +
+                      '/' +
+                      PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN +
+                      '/' +
+                      testPlanId,
+                  },
+                  {
+                    text: 'Журнал запусков',
+                    link:
+                      window.location.href.split(
+                        '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
+                      )[0] +
+                      '/' +
+                      PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN +
+                      '/' +
+                      testPlanId +
+                      '/runs',
+                  },
+                  {text: `Запуск ${runId}`}
+                ]}
+              />
+            )
     }
   }, [project, testPlanId, runId, testPlanRuns, setHeaderContent])
 

@@ -6,6 +6,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import styles from './RedactTestPlan.module.scss'
 import { Controller, useForm } from 'react-hook-form'
+import { Breadcrumbs } from '@components/'
 
 interface TestPlanForm {
   name: string
@@ -51,32 +52,31 @@ export const RedactTestPlan: React.FC = () => {
       })
       
       setHeaderContent(
-        <div>
-          <Link to="/">ЯМП&nbsp;</Link>
-          &mdash;&nbsp;{' '}
-          <Link
-            to={
-              window.location.href.split(
+        <Breadcrumbs
+          items={[
+            {
+              text: project?.name || '',
+              link: window.location.pathname.split(
                 '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-              )[0]
-            }
-          >
-            {project?.name}&nbsp;
-          </Link>{' '}
-          &mdash;&nbsp;{' '}
-          <Link
-            to={
-              window.location.href.split(
-                '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-              )[0] +
-              '/' +
-              PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-            }
-          >
-            Тест-планы&nbsp;
-          </Link>{' '}
-          &mdash;&nbsp; Создание тест-плана
-        </div>
+              )[0],
+            },
+            {
+              text: 'Тест-планы',
+              link:
+                window.location.href.split(
+                  '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
+                )[0] +
+                '/' +
+                PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN,
+            },
+            {
+              text:
+                parsedTestPlanId === -1
+                  ? 'Создание тест-плана'
+                  : 'Редактирование тест-плана',
+            },
+          ]}
+        />
       )
     } else {
       setIsCreatingNew(false)

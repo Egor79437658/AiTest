@@ -14,7 +14,8 @@ import {
   PlusIcon,
   ChevronRightIcon,
   PlayIcon,      
-  CloneIcon,     
+  CloneIcon,
+  Breadcrumbs,     
 } from '@components/'
 
 const TestPlanDetails: React.FC = () => {
@@ -62,30 +63,28 @@ const TestPlanDetails: React.FC = () => {
   useEffect(() => {
     if (project && localTestPlan) {
       setHeaderContent(
-        <div>
-          <Link to="/">ЯМП&nbsp;</Link>
-          &mdash;&nbsp;{' '}
-          <Link
-            to={
-              window.location.href.split(
+        <Breadcrumbs
+          items={[
+            {
+              text: project?.name || '',
+              link: window.location.pathname.split(
                 '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-              )[0]
-            }
-          >
-            {project.name}&nbsp;
-          </Link>{' '}
-          &mdash;&nbsp;{' '}
-          <Link
-            to={
-              window.location.href.split(
-                '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-              )[0] + '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-            }
-          >
-            Тест-планы&nbsp;
-          </Link>{' '}
-          &mdash;&nbsp; {localTestPlan.name}
-        </div>
+              )[0],
+            },
+            {
+              text: 'Тест-планы',
+              link:
+                window.location.href.split(
+                  '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
+                )[0] +
+                '/' +
+                PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN,
+            },
+            {
+              text: localTestPlan.name
+            },
+          ]}
+        />
       )
     }
   }, [project, localTestPlan, setHeaderContent])

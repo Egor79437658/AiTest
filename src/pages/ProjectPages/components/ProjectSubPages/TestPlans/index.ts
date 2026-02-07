@@ -1,5 +1,5 @@
 export * from './ProjectTestPlans'
-export * from './ProjectTestPlanTable'
+export * from './components/ProjectTestPlanTable'
 export * from './RedactTestPlan'
 export { default as TestPlanDetails } from './TestPlanDetails'
 export { default as TestPlanRunHistory } from './TestPlanRunHistory'

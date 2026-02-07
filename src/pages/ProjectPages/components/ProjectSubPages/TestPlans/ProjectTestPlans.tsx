@@ -3,8 +3,9 @@ import { PAGE_ENDPOINTS } from '@constants/'
 import { useProject, useTestPlan } from '@contexts/'
 import { useHeaderStore } from '@stores/'
 import { Link, useNavigate } from 'react-router-dom'
-import { ProjectTestPlanTable } from './ProjectTestPlanTable'
+import { ProjectTestPlanTable } from './components/'
 import styles from './ProjectTestPlans.module.scss'
+import { Breadcrumbs } from '@components/'
 
 export const ProjectTestPlans: React.FC = () => {
   const { project } = useProject()
@@ -117,20 +118,17 @@ export const ProjectTestPlans: React.FC = () => {
 
   useEffect(() => {
     setHeaderContent(
-      <div>
-        <Link to="/">ЯМП&nbsp;</Link>
-        &mdash;&nbsp;{' '}
-        <Link
-          to={
-            window.location.pathname.split(
+      <Breadcrumbs
+        items={[
+          {
+            text: project?.name || '',
+            link: window.location.pathname.split(
               '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-            )[0]
-          }
-        >
-          {project?.name}&nbsp;
-        </Link>{' '}
-        &mdash;&nbsp; Тест-планы
-      </div>
+            )[0],
+          },
+          { text: 'Тест-планы' },
+        ]}
+      />
     )
   }, [project, setHeaderContent])
 
