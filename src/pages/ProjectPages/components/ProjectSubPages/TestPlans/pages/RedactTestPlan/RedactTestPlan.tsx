@@ -6,6 +6,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import styles from './RedactTestPlan.module.scss'
 import { Controller, useForm } from 'react-hook-form'
+import { Breadcrumbs } from '@components/'
 
 interface TestPlanForm {
   name: string
@@ -41,6 +42,33 @@ export const RedactTestPlan: React.FC = () => {
   useEffect(() => {
     const parsedTestPlanId = parseInt(testPlanId || '-1')
     
+    setHeaderContent(
+      <Breadcrumbs
+        items={[
+          {
+            text: project?.name || '',
+            link: window.location.pathname.split(
+              '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
+            )[0],
+          },
+          {
+            text: 'Тест-планы',
+            link:
+              window.location.href.split(
+                '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
+              )[0] +
+              '/' +
+              PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN,
+          },
+          {
+            text:
+              parsedTestPlanId === -1
+                ? 'Создание тест-плана'
+                : 'Редактирование тест-плана',
+          },
+        ]}
+      />
+    )
     if (parsedTestPlanId === -1) {
       setIsCreatingNew(true)
       reset({
@@ -50,34 +78,6 @@ export const RedactTestPlan: React.FC = () => {
         testCases: [],
       })
       
-      setHeaderContent(
-        <div>
-          <Link to="/">ЯМП&nbsp;</Link>
-          &mdash;&nbsp;{' '}
-          <Link
-            to={
-              window.location.href.split(
-                '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-              )[0]
-            }
-          >
-            {project?.name}&nbsp;
-          </Link>{' '}
-          &mdash;&nbsp;{' '}
-          <Link
-            to={
-              window.location.href.split(
-                '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-              )[0] +
-              '/' +
-              PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-            }
-          >
-            Тест-планы&nbsp;
-          </Link>{' '}
-          &mdash;&nbsp; Создание тест-плана
-        </div>
-      )
     } else {
       setIsCreatingNew(false)
       const data = testPlans.find((el) => el.id === parsedTestPlanId)
@@ -90,34 +90,6 @@ export const RedactTestPlan: React.FC = () => {
           testCases: data.testCases,
         })
 
-        setHeaderContent(
-          <div>
-            <Link to="/">ЯМП&nbsp;</Link>
-            &mdash;&nbsp;{' '}
-            <Link
-              to={
-                window.location.href.split(
-                  '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-                )[0]
-              }
-            >
-              {project?.name}&nbsp;
-            </Link>{' '}
-            &mdash;&nbsp;{' '}
-            <Link
-              to={
-                window.location.href.split(
-                  '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-                )[0] +
-                '/' +
-                PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-              }
-            >
-              Тест-планы&nbsp;
-            </Link>{' '}
-            &mdash;&nbsp; {data.name}
-          </div>
-        )
       }
     }
   }, [testPlanId, testPlans, project, setHeaderContent, reset])

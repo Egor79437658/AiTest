@@ -5,12 +5,14 @@ import { useProject, useTestPlan } from '@contexts/'
 import { useHeaderStore } from '@stores/'
 import { TestPlanRun } from '@interfaces/'
 import styles from './TestPlanRunHistory.module.scss'
+import { Breadcrumbs } from '@components/'
 
-const TestPlanRunHistory: React.FC = () => {
+export const TestPlanRunHistory: React.FC = () => {
   const { project } = useProject()
   const { testPlanId } = useParams<{ testPlanId: string }>()
   const { 
     testPlanRuns, 
+    allTestPlans,
     loadTestPlanRuns,
     isLoading 
   } = useTestPlan()
@@ -30,42 +32,43 @@ const TestPlanRunHistory: React.FC = () => {
       const projectId = project.id
       const testPlanIdNum = parseInt(testPlanId)
       loadTestPlanRuns(projectId, testPlanIdNum)
-      
+      const planName =
+        allTestPlans.find((plan) => plan.id === parseInt(testPlanId))
+          ?.name || ''
       setHeaderContent(
-        <div>
-          <Link to="/">ЯМП&nbsp;</Link>
-          &mdash;&nbsp;{' '}
-          <Link
-            to={
-              window.location.href.split(
+        <Breadcrumbs
+          items={[
+            {
+              text: project?.name || '',
+              link: window.location.pathname.split(
                 '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-              )[0]
-            }
-          >
-            {project.name}&nbsp;
-          </Link>{' '}
-          &mdash;&nbsp;{' '}
-          <Link
-            to={
-              window.location.href.split(
-                '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-              )[0] + '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-            }
-          >
-            Тест-планы&nbsp;
-          </Link>{' '}
-          &mdash;&nbsp;{' '}
-          <Link
-            to={
-              window.location.href.split(
-                '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
-              )[0] + '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN + '/' + testPlanId
-            }
-          >
-            Тест-план {testPlanId}&nbsp;
-          </Link>{' '}
-          &mdash;&nbsp; Журнал запусков
-        </div>
+              )[0],
+            },
+            {
+              text: 'Тест-планы',
+              link:
+                window.location.href.split(
+                  '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
+                )[0] +
+                '/' +
+                PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN,
+            },
+            {
+              text: planName,
+              link:
+                window.location.href.split(
+                  '/' + PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN
+                )[0] +
+                '/' +
+                PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN +
+                '/' +
+                testPlanId,
+            },
+            {
+              text: 'Журнал запусков',
+            },
+          ]}
+        />
       )
     }
   }, [project, testPlanId, setHeaderContent, loadTestPlanRuns])
@@ -387,5 +390,3 @@ const TestPlanRunHistory: React.FC = () => {
     </div>
   )
 }
-
-export default TestPlanRunHistory
