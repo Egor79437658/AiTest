@@ -31,6 +31,19 @@ export const ProjectTestPlans: React.FC = () => {
     }
   }
 
+
+
+
+  useEffect(() => {
+    if (project) {
+      try {
+        loadAllTestPlans(project.id)
+      } catch (e: any) {
+        console.log('failed to load test-plans:', e)
+      }
+    }
+  }, [project, loadAllTestPlans])
+
   const handleDelete = async (ids: number[]) => {
     console.log('Тест-планы для удаления:', ids)
     

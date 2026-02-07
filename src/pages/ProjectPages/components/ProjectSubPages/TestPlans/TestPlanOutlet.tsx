@@ -10,6 +10,7 @@ export const TestPlanOutlet: React.FC = () => {
   useEffect(() => {
     if (!projectId) throw new Error('no project id was provided')
     const targetProjectId = parseInt(projectId)
+  console.log("Ef")
     try {
       loadAllTestPlans(targetProjectId)
     } catch (error) {
