@@ -1,13 +1,17 @@
 import {
   ProfileData,
   Project,
+  TestCaseHistoryRecord,
   ProjectMinimal,
   ProjectUser,
   TestCase,
+  TestCaseFormData,
+  TestCaseUpdateData,
   TestPlan,
   TestPlanRun,
   TestPlanUpdateData,
   User,
+  TestPlanRunShort,
 } from '@interfaces/'
 import { MOCK_CODE } from '@constants/'
 import {
@@ -15,11 +19,12 @@ import {
   MOCK_TEST_PLANS,
   MOCK_TEST_PLAN_RUNS,
   mockProjects,
+  mockProjectsHistory,
   mockTestCases,
   mockTokens,
   mockUsers,
 } from '../mock/mockData'
-import { UpdateProfileData, UpdateSettingsData } from '../types/user'
+import { UpdateProfileData, UpdateSettingsData } from '../api/users'
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -238,7 +243,7 @@ class MockApiService {
       ...mockUsers[userIndex],
       profileData: {
         ...mockUsers[userIndex].profileData,
-        ...profileData,
+        ...profileData.profileData,
       },
     }
 
@@ -256,12 +261,22 @@ class MockApiService {
       ...mockUsers[userIndex],
       settingsData: {
         ...mockUsers[userIndex].settingsData,
-        ...settingsData,
+        ...settingsData.settingsData,
       },
     }
 
     mockUsers[userIndex] = updatedUser
     return updatedUser
+  }
+
+  async deleteMyAccount() {
+    await delay(800)
+    const userId = parseInt(localStorage.getItem('mock_user_id') || '', 10)
+    mockUsers.splice(
+      mockUsers.findIndex((el) => el.id === userId),
+      1
+    )
+    return { status: 200, message: '' }
   }
 
   async logout() {
@@ -298,7 +313,7 @@ class MockApiService {
     return [...project.users]
   }
 
-  async getRecentTestPlanRuns(projectId: number): Promise<Array<{ id: number; name: string; lastRunDate: Date; status: 'успешно' | 'с ошибками' }>> {
+  async getRecentTestPlanRuns(projectId: number): Promise<TestPlanRunShort[]> {
     await delay(300)
 
     const project = mockProjects.find((p) => p.id === projectId)
@@ -340,6 +355,7 @@ class MockApiService {
       recentTestPlanRuns: [],
       createdAt: new Date(),
       updatedAt: new Date(),
+      datapool: [],
       createdBy: user.id,
     }
 
@@ -376,6 +392,37 @@ class MockApiService {
     return structuredClone(updatedProject)
   }
 
+
+  async deleteProject(projectId: number): Promise<void> {
+    await delay(500)
+
+    const projectIndex = mockProjects.findIndex((p) => p.id === projectId)
+
+    if (projectIndex === -1) {
+      throw new Error('Project not found')
+    }
+
+  
+    mockProjects.splice(projectIndex, 1)
+
+ 
+    mockUsers.forEach(user => {
+      user.projectData = user.projectData.filter(
+        project => project.id !== projectId
+      )
+    })
+
+    
+    localStorage.removeItem(`project_${projectId}_datapool`)
+
+    console.log(`Project ${projectId} deleted successfully from mock data`)
+ }
+ async getHistoryChange(testCaseId: number): Promise<TestCaseHistoryRecord[]> {
+    await delay(800)
+    return mockProjectsHistory.filter(el => el.id === testCaseId)
+
+  }
+
   async getTestCases(id: number): Promise<TestCase[]> {
     const project = await this.getProject(id)
     return mockTestCases.filter((el) =>
@@ -395,7 +442,7 @@ class MockApiService {
   async updateTestCase(
     projectId: number,
     testCaseId: number,
-    updates: Partial<TestCase>
+    updates: TestCaseUpdateData
   ): Promise<TestCase> {
     await delay(500)
     const index = mockTestCases.findIndex((el) => el.id === testCaseId)
@@ -406,6 +453,7 @@ class MockApiService {
     const updated = {
       ...mockTestCases[index],
       ...updates,
+      lastModified: new Date(),
     }
 
     mockTestCases[index] = updated
@@ -417,7 +465,7 @@ class MockApiService {
     await delay(800)
 
     const userId = parseInt(localStorage.getItem('mock_user_id') || '', 10)
-    
+
     if (!userId) {
       throw new Error('User not found')
     }
@@ -428,6 +476,154 @@ class MockApiService {
 
     return { success: true }
   }
+
+  async createTestCase(
+    projectId: number,
+    data: TestCaseFormData
+  ): Promise<TestCase> {
+    await delay(800)
+
+    const user = await this.getCurrentUser()
+    const project = await this.getProject(projectId)
+
+    const newTestCase: TestCase = {
+      id: Math.max(...mockTestCases.map((tc) => tc.id)) + 1,
+      idt: `TC-${String(Math.max(...mockTestCases.map((tc) => tc.id)) + 1).padStart(3, '0')}`,
+      flag: true,
+      name: data.name,
+      description: data.description || '',
+      positive: data.positive,
+      version: data.version,
+      status: data.status,
+      priority: data.priority ?? 1, // По умолчанию Нормальный
+      isAutoTest: data.isAutoTest || false,
+      isLoadTest: data.isLoadTest || false,
+      owner: {
+        id: user.id,
+        username: user.profileData.username,
+        fullName: `${user.profileData.lastName} ${user.profileData.firstName}`,
+      },
+      project: data.project || project.name,
+      scriptIds: [],
+      precondition: data.precondition || '',
+      relatedTestCases: [],
+      tags: data.tags || [],
+      steps: data.steps || [],
+      testData: data.testData || [],
+      attachments: data.attachments || [],
+      comments: [],
+      usedInTestPlans: false,
+      testPlans: [],
+      creationDate: new Date(),
+      lastModified: new Date(),
+    }
+
+    mockTestCases.push(newTestCase)
+
+    const projectIndex = mockProjects.findIndex((p) => p.id === projectId)
+    if (projectIndex !== -1) {
+      mockProjects[projectIndex].testCases.push({ id: newTestCase.id })
+    }
+
+    return structuredClone(newTestCase)
+  }
+
+  async searchTestCases(filters: {
+    projectId?: number
+    status?: number
+    priority?: number
+    tags?: string[]
+    searchText?: string
+    isAutoTest?: boolean
+    isLoadTest?: boolean
+  }): Promise<TestCase[]> {
+    await delay(400)
+
+    let filtered = [...mockTestCases]
+
+    if (filters.projectId) {
+      const project = mockProjects.find((p) => p.id === filters.projectId)
+      if (project) {
+        const projectTestCaseIds = new Set(project.testCases.map((tc) => tc.id))
+        filtered = filtered.filter((tc) => projectTestCaseIds.has(tc.id))
+      }
+    }
+
+    if (filters.status !== undefined) {
+      filtered = filtered.filter((tc) => tc.status === filters.status)
+    }
+
+    if (filters.priority !== undefined) {
+      filtered = filtered.filter((tc) => tc.priority === filters.priority)
+    }
+
+    if (filters.tags && filters.tags.length > 0) {
+      filtered = filtered.filter(
+        (tc) => tc.tags && filters.tags!.some((tag) => tc.tags!.includes(tag))
+      )
+    }
+
+    if (filters.searchText) {
+      const searchLower = filters.searchText.toLowerCase()
+      filtered = filtered.filter(
+        (tc) =>
+          tc.name.toLowerCase().includes(searchLower) ||
+          (tc.description &&
+            tc.description.toLowerCase().includes(searchLower)) ||
+          (tc.idt && tc.idt.toLowerCase().includes(searchLower)) ||
+          (tc.tags &&
+            tc.tags.some((tag) => tag.toLowerCase().includes(searchLower)))
+      )
+    }
+
+    if (filters.isAutoTest !== undefined) {
+      filtered = filtered.filter((tc) => tc.isAutoTest === filters.isAutoTest)
+    }
+
+    if (filters.isLoadTest !== undefined) {
+      filtered = filtered.filter((tc) => tc.isLoadTest === filters.isLoadTest)
+    }
+
+    return filtered.map((tc) => structuredClone(tc))
+  }
+
+  // Метод для получения тест-кейса с полными деталями
+  async getTestCaseWithDetails(testCaseId: number): Promise<TestCase> {
+    await delay(300)
+
+    const testCase = mockTestCases.find((tc) => tc.id === testCaseId)
+    if (!testCase) {
+      throw new Error('Test case not found')
+    }
+
+    return structuredClone(testCase)
+  }
+
+  async deleteTestCases(
+    projectId: number,
+    testCaseIds: number[]
+  ): Promise<void> {
+    await delay(500)
+
+    const initialLength = mockTestCases.length
+    for (let i = mockTestCases.length - 1; i >= 0; i--) {
+      if (testCaseIds.includes(mockTestCases[i].id)) {
+        mockTestCases.splice(i, 1)
+      }
+    }
+
+    if (mockTestCases.length === initialLength) {
+      throw new Error('No test cases were deleted')
+    }
+
+    const projectIndex = mockProjects.findIndex((p) => p.id === projectId)
+    if (projectIndex !== -1) {
+      mockProjects[projectIndex].testCases = mockProjects[
+        projectIndex
+      ].testCases.filter((tc) => !testCaseIds.includes(tc.id))
+    }
+  }
+
 
   async getAllTestPlans(projectId: number): Promise<TestPlan[]> {
     await delay(500)
@@ -486,9 +682,11 @@ class MockApiService {
 
   async runTestPlan(projectId: number, testPlanId: number): Promise<TestPlanRun> {
     await delay(2000)
+    const planIndex = MOCK_TEST_PLANS.findIndex((p: TestPlan) => p.id === testPlanId)
     const newRun: TestPlanRun = {
       id: Date.now(),
       testPlanId,
+      name: MOCK_TEST_PLANS[planIndex].name,
       startedAt: new Date(),
       finishedAt: new Date(Date.now() + 30000),
       status: 'успешно',
@@ -498,7 +696,6 @@ class MockApiService {
     }
     MOCK_TEST_PLAN_RUNS.push(newRun)
     
-    const planIndex = MOCK_TEST_PLANS.findIndex((p: TestPlan) => p.id === testPlanId)
     if (planIndex !== -1) {
       MOCK_TEST_PLANS[planIndex] = {
         ...MOCK_TEST_PLANS[planIndex],
@@ -548,6 +745,7 @@ class MockApiService {
     const sorted = allRuns.sort((a: TestPlanRun, b: TestPlanRun) => b.startedAt.getTime() - a.startedAt.getTime())
     return sorted.slice(0, limit)
   }
+
 }
 
 export const mockApiService = new MockApiService()

@@ -5,7 +5,7 @@ import {
   SidebarProvider,
   ProjectProvider,
   TestCaseProvider,
-  TestPlanProvider
+  TestPlanProvider,
 } from '@contexts/'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { PAGE_ENDPOINTS } from '@constants/'
@@ -19,18 +19,23 @@ import {
   ProjectContainer,
   SettingsTab,
   ViewProfileTab,
+  ProjectOutlet,
 } from './pages'
 
 import './index.css'
 import {
+  CreateTestCase,
   ProjectAutoTesting,
   ProjectReports,
   ProjectScripts,
   ProjectSettings,
   ProjectTestCases,
-  ProjectTestPlans,
   ProjectTestPlanRuns,
+  ProjectTestPlans,
   RedactTestCase,
+  ViewTestCase,
+  HistoryTestCase,
+  TestCasesOutlet,
   TestPlanDetails,
   RedactTestPlan,
   TestPlanRunHistory,
@@ -64,59 +69,89 @@ const router = createBrowserRouter([
           },
           {
             path: `${PAGE_ENDPOINTS.PROJECT_ID}`,
-            element: <ProjectContainer />,
-          },
-          {
-            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}`,
-            element: <ProjectTestCases />,
-          },
-          {
-            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}/${PAGE_ENDPOINTS.TEST_CASE_ID}`,
-            element: <RedactTestCase />,
-          },
-          {
-            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}`,
-            element: <ProjectTestPlans />,
-          },
-          {
-            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}/new`,
-            element: <RedactTestPlan />,
-          },
-          {
-            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}/:testPlanId`,
-            element: <TestPlanDetails />,
-          },
-          {
-            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}/:testPlanId/edit`,
-            element: <RedactTestPlan />,
-          },
-          {
-            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}/:testPlanId/runs`,
-            element: <TestPlanRunHistory />,
-          },
-          {
-            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}/:testPlanId/runs/:runId`,
-            element: <TestPlanRunDetails />,
-          },
-          {
-            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.SCRIPT}`,
-            element: <ProjectScripts />,
-          },
-          {
-            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.AUTO_TEST}`,
-            element: <ProjectAutoTesting />,
-          },
-          {
-            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.REPORTS}`,
-            element: <ProjectReports />,
-          },
-          {
-            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.SETTINGS}`,
-            element: <ProjectSettings />,
-          },
-          {
-            path: `${PAGE_ENDPOINTS.PROJECT_ID}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN_RUNS}`,
-            element: <ProjectTestPlanRuns />,
+            element: <ProjectOutlet />,
+            children: [
+              {
+                index: true,
+                element: <ProjectContainer />,
+              },
+              {
+                path: `${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}`,
+                element: <TestCasesOutlet />,
+                children: [
+                  {
+                    index: true,
+                    element: <ProjectTestCases />,
+                  },
+                  {
+                    path: 'new',
+                    element: <CreateTestCase />,
+                  },
+                  {
+                    path: `${PAGE_ENDPOINTS.TEST_CASE_ID}`,
+                    element: <RedactTestCase />,
+                  },
+                  {
+                    path: `${PAGE_ENDPOINTS.TEST_CASE_ID}/view`,
+                    element: <ViewTestCase />,
+                  },
+                  {
+                    path: `${PAGE_ENDPOINTS.TEST_CASE_ID}/${PAGE_ENDPOINTS.HISTORY}`,
+                    element: <HistoryTestCase />,
+                  },
+                ],
+              },
+              {
+                path: `${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}`,
+                children: [
+                  {
+                    index: true,
+                    element: <ProjectTestPlans />,
+                  },
+                  {
+                    path: `new`,
+                    element: <RedactTestPlan />,
+                  },
+                  {
+                    path: `${PAGE_ENDPOINTS.TEST_PLAN_ID}`,
+                    element: <TestPlanDetails />,
+                  },
+                  {
+                    path: `${PAGE_ENDPOINTS.TEST_PLAN_ID}/edit`,
+                    element: <RedactTestPlan />,
+                  },
+                  {
+                    path: `${PAGE_ENDPOINTS.TEST_PLAN_ID}/runs`,
+                    element: <TestPlanRunHistory />,
+                  },
+                  {
+                    path: `${PAGE_ENDPOINTS.TEST_PLAN_ID}/runs/${PAGE_ENDPOINTS.RUN_ID}`,
+                    element: <TestPlanRunDetails />,
+                  },
+                ]
+
+              },
+              {
+                path: `${PAGE_ENDPOINTS.PROJECT_PARTS.SCRIPT}`,
+                element: <ProjectScripts />,
+              },
+              {
+                path: `${PAGE_ENDPOINTS.PROJECT_PARTS.AUTO_TEST}`,
+                element: <ProjectAutoTesting />,
+              },
+              {
+                path: `${PAGE_ENDPOINTS.PROJECT_PARTS.REPORTS}`,
+                element: <ProjectReports />,
+              },
+              {
+                path: `${PAGE_ENDPOINTS.PROJECT_PARTS.SETTINGS}`,
+                element: <ProjectSettings />,
+              },
+              // {
+              //   path: `${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN_RUNS}`,
+              //   element: <ProjectTestPlanRuns />,
+              // },
+            ],
           },
         ],
       },

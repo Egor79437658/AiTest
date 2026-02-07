@@ -1,3 +1,5 @@
+import { TestPlanRunShort } from './testPlan'
+
 export interface ProjectMinimal {
   id: number
   name: string
@@ -17,12 +19,9 @@ export interface ProjectUser {
 export interface testPlan {
   id: number
 }
-
 export interface script {
   id: number
 }
-
-import { TestPlanRun as TestPlanRunFromTestPlan } from './testPlan'
 
 export interface Project {
   id: number
@@ -34,25 +33,33 @@ export interface Project {
   testCases: {id: number}[]
   scripts: {id: number}[]
   testPlans: {id: number}[]
-  recentTestPlanRuns: Array<{
-    id: number
-    name: string
-    lastRunDate: Date
-    status: 'успешно' | 'с ошибками'
-  }> 
+  recentTestPlanRuns: TestPlanRunShort[]
   createdAt: Date
   updatedAt: Date
+  datapool: DataPoolItem[]
   createdBy: number
+}
+
+export interface DataPoolItem {
+  id: number;
+  key: string;
+  value: string;
 }
 
 export interface ProjectContextType {
   project: Project | null
-  projects: ProjectMinimal[]
   isLoading: boolean
   error: string | null
   loadProject: (projectId: number) => Promise<void>
-  loadShortProjects: () => Promise<void>
   updateProject: (updates: Partial<Project>) => Promise<void>
   clearProject: () => void
   clearError: () => void
+  deleteProject: () => Promise<void>
+}
+
+export interface TestCaseHistoryRecord {
+  date: Date
+  field: string
+  oldVal: string
+  newVal: string
 }

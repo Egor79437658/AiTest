@@ -136,12 +136,13 @@ export const mockProjects: Project[] = [
     scripts: [{ id: 3 }],
     datapool: [],
     recentTestPlanRuns: [
-      {
-        id: 4,
-        name: 'Мобильное регрессионное тестирование',
-        lastRunDate: new Date('2023-12-26T10:00:00'),
-        status: 'успешно',
-      },
+  {
+    id: 101,
+    name: 'Регрессионное тестирование',
+    startedAt: new Date('2024-01-24T14:00:00'),
+    status: 'с_ошибками',
+    duration: 270000,
+  },
     ],
     createdAt: new Date('2023-12-25T10:00:00'),
     updatedAt: new Date('2023-12-25T10:00:00'),
@@ -169,12 +170,13 @@ export const mockProjects: Project[] = [
     scripts: [{ id: 2 }],
     datapool: [],
     recentTestPlanRuns: [
-      {
-        id: 3,
-        name: 'UI тестирование',
-        lastRunDate: new Date('2023-12-26T10:00:00'),
-        status: 'успешно',
-      },
+  {
+    id: 101,
+    name: 'Регрессионное тестирование',
+    startedAt: new Date('2024-01-24T14:00:00'),
+    status: 'с_ошибками',
+    duration: 270000,
+  },
     ],
     createdAt: new Date('2023-12-26T10:00:00'),
     updatedAt: new Date('2023-12-26T10:00:00'),
@@ -197,23 +199,26 @@ export const mockProjects: Project[] = [
         permissions: 'Полные',
       },
     ],
+
     testPlans: [{ id: 1 }, { id: 2 }],
     testCases: [{ id: 1 }],
     scripts: [{ id: 1 }],
     datapool: [],
     recentTestPlanRuns: [
-      {
-        id: 1,
-        name: 'Регрессионное тестирование',
-        lastRunDate: new Date('2023-12-26T10:00:00'),
-        status: 'успешно',
-      },
-      {
-        id: 2,
-        name: 'Smoke тестирование',
-        lastRunDate: new Date('2023-12-26T10:00:00'),
-        status: 'с ошибками',
-      },
+  {
+    id: 103,
+    name: 'UI тестирование',
+    startedAt: new Date('2024-01-23T11:00:00'),
+    status: 'успешно',
+    duration: 240000,
+  },
+  {
+    id: 104,
+    name: 'Мобильное регрессионное тестирование',
+    startedAt: new Date('2024-01-22T15:00:00'),
+    status: 'успешно',
+    duration: 360000,
+  },
     ],
     createdAt: new Date('2023-12-26T10:00:00'),
     updatedAt: new Date('2023-12-26T10:00:00'),
@@ -241,12 +246,13 @@ export const mockProjects: Project[] = [
     testCases: [{ id: 5 }, { id: 6 }],
     scripts: [{ id: 5 }],
     recentTestPlanRuns: [
-      {
-        id: 5,
-        name: 'Мобильное регрессионное тестирование',
-        lastRunDate: new Date('2023-12-26T10:00:00'),
-        status: 'с ошибками',
-      },
+  {
+    id: 105,
+    name: 'Функциональное тестирование',
+    startedAt: new Date('2024-01-21T13:00:00'),
+    status: 'с_ошибками',
+    duration: 420000,
+  }
     ],
     createdAt: new Date('2023-12-26T10:00:00'),
     updatedAt: new Date('2023-12-26T10:00:00'),
@@ -1103,6 +1109,7 @@ export const MOCK_TEST_PLAN_RUNS: TestPlanRun[] = [
   {
     id: 100,
     testPlanId: 1,
+    name: 'Регрессионное тестирование',
     startedAt: new Date('2024-01-25T10:00:00'),
     finishedAt: new Date('2024-01-25T10:05:00'),
     status: 'успешно',
@@ -1135,6 +1142,7 @@ export const MOCK_TEST_PLAN_RUNS: TestPlanRun[] = [
   {
     id: 101,
     testPlanId: 1,
+    name: 'Регрессионное тестирование',
     startedAt: new Date('2024-01-24T14:00:00'),
     finishedAt: new Date('2024-01-24T14:04:30'),
     status: 'с_ошибками',
@@ -1168,6 +1176,7 @@ export const MOCK_TEST_PLAN_RUNS: TestPlanRun[] = [
   {
     id: 102,
     testPlanId: 2,
+    name: 'Smoke тестирование',
     startedAt: new Date('2024-01-24T09:00:00'),
     finishedAt: new Date('2024-01-24T09:03:00'),
     status: 'с_ошибками',
@@ -1194,6 +1203,7 @@ export const MOCK_TEST_PLAN_RUNS: TestPlanRun[] = [
   {
     id: 103,
     testPlanId: 3,
+    name: 'UI тестирование',
     startedAt: new Date('2024-01-23T11:00:00'),
     finishedAt: new Date('2024-01-23T11:04:00'),
     status: 'успешно',
@@ -1219,6 +1229,7 @@ export const MOCK_TEST_PLAN_RUNS: TestPlanRun[] = [
   {
     id: 104,
     testPlanId: 4,
+    name: 'Мобильное регрессионное тестирование',
     startedAt: new Date('2024-01-22T15:00:00'),
     finishedAt: new Date('2024-01-22T15:06:00'),
     status: 'успешно',
@@ -1244,6 +1255,7 @@ export const MOCK_TEST_PLAN_RUNS: TestPlanRun[] = [
   {
     id: 105,
     testPlanId: 5,
+    name: 'Функциональное тестирование',
     startedAt: new Date('2024-01-21T13:00:00'),
     finishedAt: new Date('2024-01-21T13:07:00'),
     status: 'с_ошибками',

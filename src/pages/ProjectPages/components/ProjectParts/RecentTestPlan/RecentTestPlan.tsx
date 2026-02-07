@@ -1,9 +1,9 @@
 import React from 'react'
 import styles from './RecentTestPlan.module.scss'
-import { TestPlanRun } from '@interfaces/'
+import { TestPlanRun, TestPlanRunShort } from '@interfaces/'
 
 interface RecentTestPlanProps {
-  runs: TestPlanRun[]
+  runs: TestPlanRunShort[]
 }
 
 export const RecentTestPlan: React.FC<RecentTestPlanProps> = ({ runs }) => {
@@ -32,7 +32,7 @@ export const RecentTestPlan: React.FC<RecentTestPlanProps> = ({ runs }) => {
             {runs.map((run) => (
               <tr key={run.id}>
                 <td>{run.name}</td>
-                <td>{run.lastRunDate.toISOString()}</td>
+                <td>{run.startedAt.toISOString()}</td>
                 <td>
                   <span
                     className={`${styles.statusBadge} ${
