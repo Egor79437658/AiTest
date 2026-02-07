@@ -273,13 +273,13 @@ export const TestPlanDetails: React.FC = () => {
                       <td>{run.triggeredBy?.username || 'Неизвестно'}</td>
                       <td>{formatDuration(run.duration)}</td>
                       <td>
-                        <button
-                          className={styles.iconButton}
-                          onClick={() => navigate(`runs/${run.id}`)}
+                        <Link
+                          className={`${styles.iconButton} ${styles.viewButton}`}
+                          to={`runs/${run.id}`}
                           title="Подробнее"
                         >
                           <EyeIcon />
-                        </button>
+                        </Link>
                       </td>
                     </tr>
                   ))}
@@ -316,16 +316,13 @@ export const TestPlanDetails: React.FC = () => {
                       </span>
                     </div>
                   </div>
-                  <button
+                  <Link
                     className={`${styles.iconButton} ${styles.viewButton}`}
-                    onClick={() => 
-                      testCase.testCase?.id && 
-                      navigate(`${window.location.pathname.split('/test-plans')[0]}/test-cases/${testCase.testCase.id}`)
-                    }
+                    to={`${window.location.pathname.split(PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN)[0]}/${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_CASE}/${testCase.testCase.id}`}
                     title="Просмотреть тест-кейс"
                   >
                     <EyeIcon />
-                  </button>
+                  </Link>
                 </div>
               ))}
             </div>

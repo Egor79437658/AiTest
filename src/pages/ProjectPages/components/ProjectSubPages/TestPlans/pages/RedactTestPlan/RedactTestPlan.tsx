@@ -1,6 +1,6 @@
 import { PAGE_ENDPOINTS } from '@constants/'
-import { useProject, useTestPlan } from '@contexts/'
-import { TestPlan, TestPlanUpdateData, TestCaseInTestPlan } from '@interfaces/'
+import { useProject, useTestCase, useTestPlan } from '@contexts/'
+import { TestPlan, TestPlanUpdateData, TestCaseInTestPlan, TestCase } from '@interfaces/'
 import { useHeaderStore } from '@stores/'
 import React, { Fragment, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
@@ -18,6 +18,7 @@ interface TestPlanForm {
 export const RedactTestPlan: React.FC = () => {
   const { project } = useProject()
   const { allTestPlans: testPlans, updateTestPlan, createTestPlan } = useTestPlan()
+  const {allTestCases, loadAllTestCases} = useTestCase()
   const { setHeaderContent } = useHeaderStore()
   const { projectId, testPlanId } = useParams<{ projectId: string; testPlanId?: string }>()
   const [testPlan, setTestPlan] = useState<TestPlan | null>(null)
@@ -95,17 +96,21 @@ export const RedactTestPlan: React.FC = () => {
   }, [testPlanId, testPlans, project, setHeaderContent, reset])
 
   useEffect(() => {
-    if (project) {
-      const mockTestCases: TestCaseInTestPlan['testCase'][] = [
-        { id: 1, name: 'Тест-кейс 1', version: '1.0.0' },
-        { id: 2, name: 'Тест-кейс 2', version: '1.0.0' },
-        { id: 3, name: 'Тест-кейс 3', version: '1.1.0' },
-        { id: 4, name: 'Тест-кейс 4', version: '1.0.0' },
-        { id: 5, name: 'Тест-кейс 5', version: '1.2.0' },
-      ]
-      setAvailableTestCases(mockTestCases)
-    }
-  }, [project])
+    loadAllTestCases(parseInt(projectId || ''))
+  }, [projectId])
+
+  useEffect(
+    () =>
+      setAvailableTestCases(
+        allTestCases.reduce((filtered, newVal) => {
+          if (!filtered.some((prevCase) => prevCase.id === newVal.id)) {
+            filtered.push(newVal)
+          }
+          return filtered
+        }, [] as TestCase[])
+      ),
+    [allTestCases]
+  )
 
   const handleSave = async (data: TestPlanForm) => {
     if (!project) return

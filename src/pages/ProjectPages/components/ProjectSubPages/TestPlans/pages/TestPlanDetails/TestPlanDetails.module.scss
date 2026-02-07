@@ -264,9 +264,6 @@
     fill: currentColor; 
   }
 
-  &:hover {
-    background-color: #f0f7ff;
-  }
 }
 
 .runsTable {
@@ -440,10 +437,6 @@
     fill: currentColor; 
   }
 
-  &:hover {
-    background-color: #f0f0f0;
-    color: vars.$darkColor;
-  }
 }
 
 .viewButton {
