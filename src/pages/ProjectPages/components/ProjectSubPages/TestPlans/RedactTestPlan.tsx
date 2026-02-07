@@ -2,7 +2,7 @@ import { PAGE_ENDPOINTS } from '@constants/'
 import { useProject, useTestPlan } from '@contexts/'
 import { TestPlan, TestPlanUpdateData, TestCaseInTestPlan } from '@interfaces/'
 import { useHeaderStore } from '@stores/'
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import styles from './RedactTestPlan.module.scss'
 import { Controller, useForm } from 'react-hook-form'
@@ -22,6 +22,7 @@ export const RedactTestPlan: React.FC = () => {
   const [testPlan, setTestPlan] = useState<TestPlan | null>(null)
   const [isCreatingNew, setIsCreatingNew] = useState(false)
   const [showAddTestCaseModal, setShowAddTestCaseModal] = useState(false)
+  const [hideAddedTestCases, setHideAddedTestCases] = useState(false)
   const [availableTestCases, setAvailableTestCases] = useState<TestCaseInTestPlan['testCase'][]>([])
 
   const {
@@ -483,40 +484,53 @@ export const RedactTestPlan: React.FC = () => {
             <div className={styles.modalContent}>
               <div className={styles.modalFilter}>
                 <label className={styles.checkboxLabel}>
-                  <input type="checkbox" />
+                  <input type="checkbox" 
+                     onChange={(e) => setHideAddedTestCases(e.target.checked)}
+                  />
                   <span>Показать только неиспользуемые в данном тест-плане</span>
                 </label>
               </div>
               <div className={styles.testCasesModalList}>
-                {availableTestCases.map((testCase) => (
-                  <div key={testCase.id} className={styles.testCaseModalItem}>
-                    <label className={styles.checkboxLabel}>
-                      <input
-                        type="checkbox"
-                        checked={testCasesInPlan.some(tc => tc.testCase.id === testCase.id)}
-                        onChange={(e) => handleSelectTestCase(testCase.id, e.target.checked)}
-                      />
-                      <span className={styles.testCaseModalName}>
-                        {testCase.name}
+                {availableTestCases.map((testCase) => {
+                  const isPresent = testCasesInPlan.some(tc => tc.testCase.id === testCase.id)
+                  if(hideAddedTestCases && isPresent) return < Fragment key={testCase.id}></Fragment>
+                  return (
+                    <div key={testCase.id} className={styles.testCaseModalItem}>
+                      <label className={styles.checkboxLabel}>
+                        <input
+                          type="checkbox"
+                          checked={isPresent}
+                          onChange={(e) => handleSelectTestCase(testCase.id, e.target.checked)}
+                        />
+                        <span className={styles.testCaseModalName}>
+                          {testCase.name}
+                        </span>
+                      </label>
+                      <span className={styles.testCaseModalVersion}>
+                        Версия: {testCase.version}
                       </span>
-                    </label>
-                    <span className={styles.testCaseModalVersion}>
-                      Версия: {testCase.version}
-                    </span>
-                  </div>
-                ))}
+                    </div>
+                  )
+                }
+                )}
               </div>
             </div>
             <div className={styles.modalFooter}>
               <button
                 className={`${styles.actionButton} ${styles.cancelButton}`}
-                onClick={() => setShowAddTestCaseModal(false)}
+                onClick={() => {
+                  setHideAddedTestCases(false)
+                  setShowAddTestCaseModal(false)
+                }}
               >
                 Отмена
               </button>
               <button
                 className={`${styles.actionButton} ${styles.primaryButton}`}
-                onClick={() => setShowAddTestCaseModal(false)}
+                onClick={() => {
+                  setHideAddedTestCases(false)
+                  setShowAddTestCaseModal(false)
+                }}
               >
                 Готово
               </button>

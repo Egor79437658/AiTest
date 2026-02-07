@@ -113,19 +113,19 @@ const router = createBrowserRouter([
                     element: <RedactTestPlan />,
                   },
                   {
-                    path: `:testPlanId`,
+                    path: `${PAGE_ENDPOINTS.TEST_PLAN_ID}`,
                     element: <TestPlanDetails />,
                   },
                   {
-                    path: `:testPlanId/edit`,
+                    path: `${PAGE_ENDPOINTS.TEST_PLAN_ID}/edit`,
                     element: <RedactTestPlan />,
                   },
                   {
-                    path: `:testPlanId/runs`,
+                    path: `${PAGE_ENDPOINTS.TEST_PLAN_ID}/runs`,
                     element: <TestPlanRunHistory />,
                   },
                   {
-                    path: `:testPlanId/runs/:runId`,
+                    path: `${PAGE_ENDPOINTS.TEST_PLAN_ID}/runs/${PAGE_ENDPOINTS.RUN_ID}`,
                     element: <TestPlanRunDetails />,
                   },
                 ]
@@ -147,10 +147,10 @@ const router = createBrowserRouter([
                 path: `${PAGE_ENDPOINTS.PROJECT_PARTS.SETTINGS}`,
                 element: <ProjectSettings />,
               },
-              {
-                path: `${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN_RUNS}`,
-                element: <ProjectTestPlanRuns />,
-              },
+              // {
+              //   path: `${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN_RUNS}`,
+              //   element: <ProjectTestPlanRuns />,
+              // },
             ],
           },
         ],
