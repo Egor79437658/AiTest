@@ -18,7 +18,7 @@ import {
   Breadcrumbs,     
 } from '@components/'
 
-const TestPlanDetails: React.FC = () => {
+export const TestPlanDetails: React.FC = () => {
   const { project } = useProject()
   const { testPlanId } = useParams<{ testPlanId: string }>()
   const { 
@@ -339,5 +339,3 @@ const TestPlanDetails: React.FC = () => {
     </div>
   )
 }
-
-export default TestPlanDetails

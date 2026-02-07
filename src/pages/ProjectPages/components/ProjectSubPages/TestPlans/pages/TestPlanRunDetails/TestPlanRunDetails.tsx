@@ -7,7 +7,7 @@ import { TestPlanRun } from '@interfaces/'
 import styles from './TestPlanRunDetails.module.scss'
 import { Breadcrumbs } from '@components/'
 
-const TestPlanRunDetails: React.FC = () => {
+export const TestPlanRunDetails: React.FC = () => {
   const { project } = useProject()
   const { testPlanId, runId } = useParams<{ testPlanId: string, runId: string }>()
   const { 
@@ -420,5 +420,3 @@ const TestPlanRunDetails: React.FC = () => {
     </div>
   )
 }
-
-export default TestPlanRunDetails

@@ -40,6 +40,7 @@ import {
   RedactTestPlan,
   TestPlanRunHistory,
   TestPlanRunDetails,
+  TestPlanOutlet,
 } from './pages/ProjectPages/components/ProjectSubPages'
 import { Toaster } from 'sonner'
 
@@ -103,6 +104,7 @@ const router = createBrowserRouter([
               },
               {
                 path: `${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}`,
+                element: <TestPlanOutlet/>,
                 children: [
                   {
                     index: true,

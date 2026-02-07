@@ -1,6 +1,2 @@
-export * from './ProjectTestPlans'
-export * from './components/ProjectTestPlanTable'
-export * from './RedactTestPlan'
-export { default as TestPlanDetails } from './TestPlanDetails'
-export { default as TestPlanRunHistory } from './TestPlanRunHistory'
-export { default as TestPlanRunDetails } from './TestPlanRunDetails'
+export * from "./pages"
+export * from  './TestPlanOutlet'
