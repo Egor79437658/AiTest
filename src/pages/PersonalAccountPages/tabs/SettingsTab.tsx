@@ -50,20 +50,9 @@ export const SettingsTab: React.FC = () => {
       data.jobPosition = !!data.jobPosition
       user.settingsData = data
       try {
-        const res = await updateUserSettings(user)
-        if (res.status !== 200) {
-          setMessageContent(
-            <>
-              При сохранении произошла ошибка!
-              <br />
-              {res.message || ''}
-            </>
-          )
-          setTempClass(stylesSettings.showError)
-        } else {
-          if (messageDiv.current) {
-            messageDiv.current.classList.remove(stylesSettings.showError)
-          }
+        await updateUserSettings(user)
+        if (messageDiv.current) {
+          messageDiv.current.classList.remove(stylesSettings.showError)
         }
       } catch (e: any) {
         setMessageContent(

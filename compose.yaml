@@ -1,0 +1,16 @@
+networks:
+  app-network:
+    name: app-network
+
+services:
+  front_app:
+    build: ./
+    container_name: front_app
+    restart: unless-stopped
+    environment:
+      - VITE_BACKEND_ADDRESS=/api
+      - VITE_DEV_MODE=true # true - не делает обращения к серверу. иначе обращается на VITE_BACKEND_ADDRESS
+    ports:
+      - "80:80"
+    networks:
+      - app-network
