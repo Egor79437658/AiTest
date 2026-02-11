@@ -1,23 +1,19 @@
 {
   "lockfileVersion": 1,
-  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "aitest",
       "dependencies": {
         "@developer-hub/liquid-glass": "^1.2.3",
-        "bun": "^1.3.4",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
         "react-hook-form": "^7.66.1",
         "react-icons": "^5.5.0",
         "react-router-dom": "^7.9.5",
-        "react-spinner": "^0.2.7",
         "react-spinners": "^0.17.0",
         "sass": "^1.94.0",
         "sonner": "^2.0.7",
         "swiper": "^12.0.3",
-        "yarn": "^1.22.22",
         "zustand": "^5.0.8",
       },
       "devDependencies": {
@@ -26,6 +22,7 @@
         "@types/react": "^19.2.2",
         "@types/react-dom": "^19.2.2",
         "@vitejs/plugin-react-swc": "^4.2.1",
+        "bun": "^1.3.4",
         "eslint": "^9.39.1",
         "eslint-plugin-react-hooks": "^5.2.0",
         "eslint-plugin-react-refresh": "^0.4.24",
@@ -34,6 +31,7 @@
         "typescript": "~5.9.3",
         "typescript-eslint": "^8.46.3",
         "vite": "^7.2.2",
+        "yarn": "^1.22.22",
       },
     },
   },
@@ -461,8 +459,6 @@
     "react-router": ["react-router@7.9.6", "", { "dependencies": { "cookie": "^1.0.1", "set-cookie-parser": "^2.6.0" }, "peerDependencies": { "react": ">=18", "react-dom": ">=18" }, "optionalPeers": ["react-dom"] }, "sha512-Y1tUp8clYRXpfPITyuifmSoE2vncSME18uVLgaqyxh9H35JWpIfzHo+9y3Fzh5odk/jxPW29IgLgzcdwxGqyNA=="],
 
     "react-router-dom": ["react-router-dom@7.9.6", "", { "dependencies": { "react-router": "7.9.6" }, "peerDependencies": { "react": ">=18", "react-dom": ">=18" } }, "sha512-2MkC2XSXq6HjGcihnx1s0DBWQETI4mlis4Ux7YTLvP67xnGxCvq+BcCQSO81qQHVUTM1V53tl4iVVaY5sReCOA=="],
-
-    "react-spinner": ["react-spinner@0.2.7", "", { "peerDependencies": { "react": ">=0.12.1" } }, "sha512-9bIDWGIumXpM7xcas/qpikRZp7AGP1uehgxwTTj/5DL6SwWHMTLfuioYgX7bdeMgOiVEMvOgLyXU3fYKQc16IA=="],
 
     "react-spinners": ["react-spinners@0.17.0", "", { "peerDependencies": { "react": "^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react-dom": "^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-L/8HTylaBmIWwQzIjMq+0vyaRXuoAevzWoD35wKpNTxxtYXWZp+xtgkfD7Y4WItuX0YvdxMPU79+7VhhmbmuTQ=="],
 

@@ -1,3 +1,21 @@
+# Как запускать:
+## В докере
+
+Посмотреть compose.yaml. В нем указать **VITE_DEV_MODE=true** если нужна работа без сервера, 
+иначе указать **VITE_BACKEND_ADDRESS** - базовый адрес API (e.g. http://192.168.0.1:8000)
+
+Затем в терминале выполнить команду **doker compose up -d**
+
+## Для разработки
+
+Создать .env и скопировать в него содержимое .env.example. В нем указать **VITE_DEV_MODE=true** если нужна работа без сервера, 
+иначе указать **VITE_BACKEND_ADDRESS** - базовый адрес API (e.g. http://192.168.0.1:8000)
+
+Затем в терминале выполнить команду **npm install**. Запускать при помощи **npm run dev**
+
+
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
