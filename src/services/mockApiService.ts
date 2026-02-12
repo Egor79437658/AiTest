@@ -746,6 +746,13 @@ class MockApiService {
     return sorted.slice(0, limit)
   }
 
+  async sendExcelFile(data: FormData) {
+    await delay(500)
+    console.log(data.get("fileName"))
+    console.log(JSON.parse(data.get("columnMap") as string))
+    console.log(data.get("file"))
+  }
+
 }
 
 export const mockApiService = new MockApiService()

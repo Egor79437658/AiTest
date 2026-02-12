@@ -7,6 +7,9 @@
 }
 
 .headerSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 30px;
   padding: 20px;
   background: white;
@@ -364,6 +367,9 @@
   color: #a0aec0;
   text-align: center;
   line-height: 1.4;
+}
+
+.excelBtn {
 }
 
 @media (max-width: 800px) {

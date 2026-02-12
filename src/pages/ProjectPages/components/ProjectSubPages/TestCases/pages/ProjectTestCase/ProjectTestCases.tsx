@@ -7,7 +7,7 @@ import { ProjectTestCaseTable } from '../../components/ProjectTestCaseTable/Proj
 import styles from './ProjectTestCases.module.scss'
 import { Breadcrumbs, QuestionDialog } from '@components/'
 import { TestCase, TestCaseStatus } from '@interfaces/'
-import { MassOperationsTab } from '../../components'
+import { MassOperationsTab, LoadFromExcelBtn } from '../../components'
 
 export const ProjectTestCases: React.FC = () => {
   const { project } = useProject()
@@ -175,11 +175,17 @@ export const ProjectTestCases: React.FC = () => {
   return (
     <div className={styles.pageContainer}>
       <div className={styles.headerSection}>
+        <div>
         <h1>Тест-кейсы проекта</h1>
         <p className={styles.projectInfo}>
           Проект: <strong>{project?.name}</strong> | Всего тест-кейсов:{' '}
           <strong>{testCases.length}</strong>
         </p>
+        </div>
+        <LoadFromExcelBtn
+         projectId={project?.id || -1}
+         className={styles.excelBtn}
+         />
       </div>
 
       {/* Вкладки */}

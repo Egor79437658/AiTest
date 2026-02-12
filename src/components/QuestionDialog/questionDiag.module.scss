@@ -1,4 +1,4 @@
-@use '@styles/_variables.scss' as vars;
+@use "@styles/_variables.scss" as vars;
 
 .questionDiag form {
   top: 20px;
@@ -6,7 +6,7 @@
 
 .questionDiagDiv {
   min-height: 80px;
-  width: 400px;
+  min-width: 400px;
   padding: 10px;
   padding-top: 15px;
   background-color: white;
@@ -18,14 +18,14 @@
   animation: diagAppear 0.5s;
 }
 
-@keyframes diagAppear{
-    0% {
-      opacity: 0;
-      transform: translateY(-100%);
-    }
-    100%{
-      opacity: 1;
-    }
+@keyframes diagAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .questionDiagDiv > div {
@@ -33,42 +33,48 @@
   margin-top: 20px;
 }
 
-.buttonsDiv button {
-  padding: 5px 15px;
-  width: 80px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  gap: 6px;
-  text-align: center;
-  transition: background-color 0.2s ease-in-out;
-}
+.buttonsDiv {
+  display: flex;
+  justify-content: end;
 
-.buttonsDiv button:first-child {
-  margin-left: 220px;
-  margin-right: 10px;
-  background-color: vars.$mainBlueColor;
-  color: white;
-}
+  button {
+    padding: 5px 15px;
+    min-width: 80px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    gap: 6px;
+    text-align: center;
+    transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
 
-.buttonsDiv button:last-child {
-  background-color: #d0e7ff;
-  color: black;
-}
+    &:hover {
+      transform: translateY(-1px);
+    }
 
-.buttonsDiv button:first-child:hover,
-.buttonsDiv button:first-child:focus {
-  background-color: vars.$darkBlueColor;
-}
-.buttonsDiv button:last-child:hover,
-.buttonsDiv button:last-child:focus {
-  background-color: #cbdbf0;
-}
+    &:first-child {
+      margin-right: 10px;
+      background-color: vars.$mainBlueColor;
+      color: white;
+      &:hover,
+      &:focus {
+        background-color: vars.$darkBlueColor;
+      }
+      &:active {
+        box-shadow: inset 3px 3px 5px rgb(0, 0, 0);
+      }
+    }
 
-.buttonsDiv button:first-child:active {
-  box-shadow: inset 3px 3px 5px rgb(0, 0, 0);
-}
-
-.buttonsDiv button:last-child:active {
-  box-shadow: inset 3px 3px 5px rgba(0, 0, 0, 0.6);
+    &:last-child {
+      background-color: #d0e7ff;
+      color: black;
+      margin-right: 10px;
+      &:hover,
+      &:focus {
+        background-color: #cbdbf0;
+      }
+      &:active {
+        box-shadow: inset 3px 3px 5px rgba(0, 0, 0, 0.6);
+      }
+    }
+  }
 }

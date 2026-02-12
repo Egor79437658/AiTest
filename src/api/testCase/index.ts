@@ -36,6 +36,14 @@ class TestCaseApi {
     )
     return response
   }
+
+  async sendExcelFile(data: FormData, projectId: number): Promise<void> {
+    const response = await apiClient.post<void>(
+       `${API_URL.PROJECTS}/${projectId}/${API_URL.TEST_CASES}/excelFile`, data
+       
+    )
+    return response
+  }
 }
 
 export const testCaseApi = new TestCaseApi()
