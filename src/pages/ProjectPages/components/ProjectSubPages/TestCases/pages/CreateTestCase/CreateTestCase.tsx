@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Controller, useForm } from 'react-hook-form'
 import { useProject, useTestCase, useUser } from '@contexts/'
 import { useHeaderStore } from '@stores/'
@@ -8,6 +8,7 @@ import {
   TestCaseFormData,
   testCaseStatusMap,
   testCasePriorityMap,
+  TestCase,
 } from '@interfaces/'
 import styles from './CreateTestCase.module.scss'
 import {
@@ -20,7 +21,7 @@ import { Breadcrumbs, QuestionDialog } from '@components/'
 
 export const CreateTestCase: React.FC = () => {
   const { project } = useProject()
-  const { createTestCase, isLoading: isCreating } = useTestCase()
+  const { createTestCase, isLoading: isCreating, allTestCases } = useTestCase()
   const { user: currentUser } = useUser()
   const { setHeaderContent } = useHeaderStore()
   const navigate = useNavigate()
@@ -30,6 +31,7 @@ export const CreateTestCase: React.FC = () => {
   const [showStopCreatingDiag, setShowStopCreatingDiag] = useState(false)
   const [showDeleteStepDiag, setShowDeleteStepDiag] = useState(false)
   const [deleteStepFunc, setDeleteStepFunc] = useState<() => void>(() => {})
+  const { testCaseId } = useParams<{ testCaseId: string }>()
   const {
     control,
     handleSubmit,
@@ -46,7 +48,7 @@ export const CreateTestCase: React.FC = () => {
       priority: 1, // Нормальный по умолчанию
       isAutoTest: false,
       isLoadTest: false,
-      precondition: '',
+      precondition: -1,
       tags: [],
       steps: [],
       testData: [],
@@ -334,6 +336,46 @@ export const CreateTestCase: React.FC = () => {
                 readOnly
                 disabled
               />
+              <label htmlFor="precondition">
+                Предусловие
+                <span className={styles.fieldHint}>
+                  Необходимо ли выполнение другого тк
+                </span>
+              </label>
+              <Controller
+                name="precondition"
+                control={control}
+                render={({ field }) => (
+                  <select
+                    {...field}
+                    className={styles.select}
+                    value={field.value?.toString() || '-1'}
+                    onChange={(e) =>
+                      field.onChange(parseInt(e.target.value, 10))
+                    }
+                  >
+                    <option value={-1}>нет</option>
+                    {allTestCases
+                      .reduce((filtered, newVal) => {
+                        if (
+                          !filtered.some(
+                            (prevCase) => prevCase.id === newVal.id
+                          )
+                        ) {
+                          filtered.push(newVal)
+                        }
+                        return filtered
+                      }, [] as TestCase[])
+                      .map((el) =>
+                        el.id === parseInt(testCaseId || '') ? (
+                          <></>
+                        ) : (
+                          <option value={el.id}>{el.name}</option>
+                        )
+                      )}
+                  </select>
+                )}
+              />
             </div>
 
             <div className={styles.formGroup}>
@@ -459,31 +501,6 @@ export const CreateTestCase: React.FC = () => {
           </div>
         </div>
 
-        {/* Предусловия */}
-        <div className={styles.section}>
-          <h3>Предусловия</h3>
-          <div className={styles.formGroup}>
-            <label htmlFor="precondition">
-              Предварительные действия
-              <span className={styles.fieldHint}>
-                Что должно быть выполнено перед началом тестирования
-              </span>
-            </label>
-            <Controller
-              name="precondition"
-              control={control}
-              render={({ field }) => (
-                <textarea
-                  {...field}
-                  className={styles.textarea}
-                  placeholder="Опишите предусловия для выполнения тест-кейса..."
-                  rows={4}
-                />
-              )}
-            />
-          </div>
-        </div>
-
         {/* Шаги тест-кейса */}
         <div className={styles.section}>
           <h3>Шаги тест-кейса *</h3>
@@ -559,7 +576,7 @@ export const CreateTestCase: React.FC = () => {
         </div>
 
         {/* Подсказки для заполнения */}
-        <div className={styles.section}>
+        {/* <div className={styles.section}>
           <h3>Рекомендации по заполнению</h3>
           <div className={styles.guidelines}>
             <div className={styles.guidelineItem}>
@@ -592,7 +609,7 @@ export const CreateTestCase: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Кнопки внизу формы */}
         <div className={styles.formActionsBottom}>

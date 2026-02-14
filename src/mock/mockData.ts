@@ -243,7 +243,7 @@ export const mockProjects: Project[] = [
       },
     ],
     testPlans: [{ id: 5 }],
-    testCases: [{ id: 5 }, { id: 6 }],
+    testCases: [{ id: 5 }, { id: 6 }, {id: 7}, {id: 8}],
     scripts: [{ id: 5 }],
     recentTestPlanRuns: [
   {
@@ -280,7 +280,7 @@ export const mockTestCases: TestCase[] = [
     },
     project: 'Автоматизация тестирования Web приложения',
     scriptIds: [{ id: 1, name: 'тест-скрипт 1' }],
-    precondition: '{x == 0}',
+    precondition: -1,
     relatedTestCases: [{ id: 1, name: 'тест-кейс 1' }],
     tags: ['функциональность', 'UI', 'базовый'],
     steps: [
@@ -345,7 +345,7 @@ export const mockTestCases: TestCase[] = [
     },
     project: 'Мобильное приложение iOS',
     scriptIds: [{ id: 2, name: 'тест-скрипт 2' }],
-    precondition: '{x == 0}',
+    precondition: -1,
     relatedTestCases: [{ id: 2, name: 'тест-кейс 2' }],
     tags: ['мобильный', 'iOS', 'расширенный'],
     steps: [
@@ -389,7 +389,7 @@ export const mockTestCases: TestCase[] = [
     },
     project: 'Личный проект',
     scriptIds: [{ id: 3, name: 'тест-скрипт 3' }],
-    precondition: '{x == 0}',
+    precondition: -1,
     relatedTestCases: [{ id: 3, name: 'тест-кейс 3' }],
     tags: ['API', 'интеграция', 'автоматизация'],
     steps: [
@@ -436,6 +436,50 @@ export const mockTestCases: TestCase[] = [
     lastModified: new Date('2023-12-28T14:30:00'),
   },
   {
+    id: 8,
+    idt: 'TC-008',
+    flag: true,
+    name: 'тест-кейс 8',
+    description: 'Проверка функционала архивации',
+    positive: true,
+    version: '000.000.000',
+    status: 2 as TestCaseStatus,
+    priority: 1 as TestCasePriority,
+    isAutoTest: false,
+    isLoadTest: false,
+    owner: {
+      id: 2,
+      username: 'demo',
+      fullName: 'Петров Петр Петрович',
+    },
+    project: 'Тестовый стенд',
+    scriptIds: [{ id: 8, name: 'тест-скрипт 8' }],
+    precondition: 6,
+    relatedTestCases: [],
+    tags: ['архивация', 'данные'],
+    steps: [
+      {
+        precondition: 'pre 1',
+        testCaseId: -1,
+        action: 'act 1',
+        result: 'res1',
+        testData: [],
+        elementLocation: '',
+        elementName: '',
+        formName: '',
+      },
+    ],
+    testData: [],
+    attachments: [],
+    comments: [],
+    usedInTestPlans: true,
+    testPlans: [
+      { id: 5, name: 'тест-план 5', date: new Date('2023-12-26T10:00:00') },
+    ],
+    creationDate: new Date('2023-12-26T10:00:00'),
+    lastModified: new Date('2023-12-26T10:00:00'),
+  },
+  {
     id: 5,
     idt: 'TC-005',
     flag: true,
@@ -454,8 +498,8 @@ export const mockTestCases: TestCase[] = [
     },
     project: 'Тестовый стенд',
     scriptIds: [{ id: 5, name: 'тест-скрипт 5' }],
-    precondition: '{x == 0}',
-    relatedTestCases: [{ id: 6, name: 'тест-кейс 6' }],
+    precondition: -1,
+    relatedTestCases: [],
     tags: ['архивация', 'данные'],
     steps: [
       {
@@ -514,8 +558,74 @@ export const mockTestCases: TestCase[] = [
     },
     project: 'Тестовый стенд',
     scriptIds: [{ id: 5, name: 'тест-скрипт 5' }],
-    precondition: '{x == 1}',
-    relatedTestCases: [{ id: 6, name: 'тест-кейс 6' }],
+    precondition: 7,
+    relatedTestCases: [],
+    tags: ['архивация', 'данные', 'обновление'],
+    steps: [
+      {
+        precondition: 'pre 1',
+        testCaseId: -1,
+        action: 'act 1',
+        result: 'res1',
+        testData: [],
+        elementLocation: '',
+        elementName: '',
+        formName: '',
+      },
+      {
+        precondition: 'pre 2',
+        testCaseId: 6,
+        action: 'act 2',
+        result: 'res2',
+        testData: [
+          {
+            name: 'Путь к архиву',
+            value: '/data/archive.zip',
+            type: 'parameter' as const,
+          },
+        ],
+        elementLocation: '',
+        elementName: '',
+        formName: '',
+      },
+    ],
+    testData: [
+      {
+        name: 'Путь к архиву',
+        value: '/data/archive.zip',
+        type: 'parameter' as const,
+      },
+    ],
+    attachments: [],
+    comments: [],
+    usedInTestPlans: true,
+    testPlans: [
+      { id: 5, name: 'тест-план 5', date: new Date('2023-12-26T10:00:00') },
+    ],
+    creationDate: new Date('2023-12-27T10:00:00'),
+    lastModified: new Date('2023-12-27T10:00:00'),
+  },
+  {
+    id: 7,
+    idt: 'TC-007',
+    flag: true,
+    name: 'тест-кейс 7',
+    description: 'Тест кейс 7 описание',
+    positive: true,
+    version: '000.000.001',
+    status: 1 as TestCaseStatus,
+    priority: 1 as TestCasePriority,
+    isAutoTest: false,
+    isLoadTest: false,
+    owner: {
+      id: 2,
+      username: 'demo',
+      fullName: 'Петров Петр Петрович',
+    },
+    project: 'Тестовый стенд',
+    scriptIds: [{ id: 7, name: 'тест-скрипт 7' }],
+    precondition: 5,
+    relatedTestCases: [],
     tags: ['архивация', 'данные', 'обновление'],
     steps: [
       {
@@ -580,8 +690,8 @@ export const mockTestCases: TestCase[] = [
     },
     project: 'Тестовый стенд',
     scriptIds: [{ id: 6, name: 'тест-скрипт 6' }],
-    precondition: '{x == 1}',
-    relatedTestCases: [{ id: 5, name: 'тест-кейс 6' }],
+    precondition: -1,
+    relatedTestCases: [{ id: 5, name: 'тест-кейс 5' }, { id: 7, name: 'тест-кейс 7' }],
     tags: ['архивация', 'данные', 'обновление'],
     steps: [
       {
@@ -630,7 +740,7 @@ export const mockTestCases: TestCase[] = [
     },
     project: 'Мобильное приложение iOS',
     scriptIds: [{ id: 100, name: 'payment_script' }],
-    precondition: 'Пользователь авторизован, товар в корзине',
+    precondition: -1,
     relatedTestCases: [],
     tags: ['оплата', 'карта', 'финансы', 'мобильный'],
     steps: [
@@ -714,7 +824,7 @@ export const mockTestCases: TestCase[] = [
     },
     project: 'Автоматизация тестирования Web приложения',
     scriptIds: [{ id: 101, name: 'search_load_test' }],
-    precondition: 'База данных содержит не менее 1000 записей',
+    precondition: -1,
     relatedTestCases: [{ id: 9, name: 'Проверка поиска товаров' }],
     tags: ['поиск', 'фильтры', 'производительность', 'нагрузка'],
     steps: [
@@ -980,15 +1090,9 @@ export const MOCK_TEST_PLANS: TestPlan[] = [
     description: 'Полное функциональное тестирование всех модулей',
     testCases: [
       {
-        id: 10,
-        testPlanId: 5,
-        order: 1,
-        testCase: { id: 5, name: 'тест-кейс 5', version: '000.000.001' }
-      },
-      {
         id: 11,
         testPlanId: 5,
-        order: 2,
+        order: 1,
         testCase: { id: 6, name: 'тест-кейс 6', version: '000.000.000' }
       }
     ]

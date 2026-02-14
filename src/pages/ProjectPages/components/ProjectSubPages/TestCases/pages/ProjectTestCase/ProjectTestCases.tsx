@@ -29,6 +29,13 @@ export const ProjectTestCases: React.FC = () => {
   const [newTCPositive, setNewTCPositive] = useState(0)
   const [newTCNegative, setNewTCNegative] = useState(0)
 
+  const filteredCases = testCases.reduce((filtered, newVal) => {
+    if (!filtered.some((prevCase) => prevCase.id === newVal.id)) {
+      filtered.push(newVal)
+    }
+    return filtered
+  }, [] as TestCase[])
+
   const handleRefactor = (ids: number[]) => {
     setRefactorIds(ids)
     setShowRefactorDialog(true)
@@ -123,19 +130,19 @@ export const ProjectTestCases: React.FC = () => {
   }, [project, setHeaderContent])
 
   useEffect(() => {
-    setTotalTCPositive(testCases.filter((el) => el.positive).length)
+    setTotalTCPositive(filteredCases.filter((el) => el.positive).length)
     setNewTCPositive(
-      testCases.filter(
+      filteredCases.filter(
         (el) => el.positive && !project?.testCases.some((tc) => tc.id === el.id)
       ).length
     )
     setNewTCNegative(
-      testCases.filter(
+      filteredCases.filter(
         (el) =>
           !el.positive && !project?.testCases.some((tc) => tc.id === el.id)
       ).length
     )
-  }, [testCases])
+  }, [filteredCases])
 
   const getProjectBaseUrl = () => {
     const path = window.location.pathname
@@ -166,11 +173,6 @@ export const ProjectTestCases: React.FC = () => {
     )
   }
 
-  // Рассчитываем количество новых ТК (заглушка)
-  const newTestCasesCount = Math.max(
-    0,
-    testCases.length - (project?.testCases?.length || 0)
-  )
 
   return (
     <div className={styles.pageContainer}>
@@ -179,7 +181,7 @@ export const ProjectTestCases: React.FC = () => {
         <h1>Тест-кейсы проекта</h1>
         <p className={styles.projectInfo}>
           Проект: <strong>{project?.name}</strong> | Всего тест-кейсов:{' '}
-          <strong>{testCases.length}</strong>
+          <strong>{filteredCases.length}</strong>
         </p>
         </div>
         <LoadFromExcelBtn
@@ -218,7 +220,7 @@ export const ProjectTestCases: React.FC = () => {
           ) : (
             <MassOperationsTab
               totalTCPositive={totalTCPositive}
-              totalTCNegative={testCases.length - totalTCPositive}
+              totalTCNegative={filteredCases.length - totalTCPositive}
               newTCPositive={newTCPositive}
               newTCNegative={newTCNegative}
               onGenerateAll={handleGenerateAll}

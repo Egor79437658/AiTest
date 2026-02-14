@@ -31,7 +31,7 @@ interface TestCaseFormData {
   priority: 0 | 1 | 2
   isAutoTest: boolean
   isLoadTest: boolean
-  precondition: string
+  precondition: number
   project?: string
 
   tags: string[]
@@ -87,7 +87,7 @@ export const RedactTestCase: React.FC = () => {
       priority: 1, // Нормальный по умолчанию
       isAutoTest: false,
       isLoadTest: false,
-      precondition: '',
+      precondition: -1,
       project: '',
       tags: [],
       steps: [],
@@ -117,7 +117,7 @@ export const RedactTestCase: React.FC = () => {
               priority: 1,
               isAutoTest: false,
               isLoadTest: false,
-              precondition: '',
+              precondition: -1,
               project: project.name,
               tags: [],
               steps: [],
@@ -142,7 +142,7 @@ export const RedactTestCase: React.FC = () => {
               priority: data.priority,
               isAutoTest: data.isAutoTest,
               isLoadTest: data.isLoadTest,
-              precondition: data.precondition || '',
+              precondition: data.precondition || -1,
               project: data.project || project?.name || '',
               tags: data.tags || [],
               steps: data.steps || [],
@@ -465,6 +465,46 @@ export const RedactTestCase: React.FC = () => {
                   />
                 )}
               />
+              <label htmlFor="precondition">
+                Предусловие
+                <span className={styles.fieldHint}>
+                  Необходимо ли выполнение другого тк
+                </span>
+              </label>
+              <Controller
+                name="precondition"
+                control={control}
+                render={({ field }) => (
+                  <select
+                    {...field}
+                    className={styles.select}
+                    value={field.value?.toString() || '-1'}
+                    onChange={(e) =>
+                      field.onChange(parseInt(e.target.value, 10))
+                    } 
+                  >
+                    <option value={-1}>нет</option>
+                    {testCases
+                      .reduce((filtered, newVal) => {
+                        if (
+                          !filtered.some(
+                            (prevCase) => prevCase.id === newVal.id
+                          )
+                        ) {
+                          filtered.push(newVal)
+                        }
+                        return filtered
+                      }, [] as TestCase[])
+                      .map((el) =>
+                        el.id === parseInt(testCaseId || '') ? (
+                          <></>
+                        ) : (
+                          <option value={el.id}>{el.name}</option>
+                        )
+                      )}
+                  </select>
+                )}
+              />
             </div>
 
             <div className={styles.formGroup}>
@@ -583,31 +623,6 @@ export const RedactTestCase: React.FC = () => {
                   tags={field.value}
                   onChange={field.onChange}
                   placeholder="Введите тег (например: авторизация, UI, API)"
-                />
-              )}
-            />
-          </div>
-        </div>
-
-        {/* Предусловия */}
-        <div className={styles.section}>
-          <h3>Предусловия</h3>
-          <div className={styles.formGroup}>
-            <label htmlFor="precondition">
-              Предварительные действия
-              <span className={styles.fieldHint}>
-                Что должно быть выполнено перед началом тестирования
-              </span>
-            </label>
-            <Controller
-              name="precondition"
-              control={control}
-              render={({ field }) => (
-                <textarea
-                  {...field}
-                  className={styles.textarea}
-                  placeholder="Опишите предусловия для выполнения тест-кейса..."
-                  rows={4}
                 />
               )}
             />

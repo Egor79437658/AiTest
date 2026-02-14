@@ -115,8 +115,8 @@ export const MassOperationsTab: React.FC<MassOperationsTabProps> = ({
         <div className={styles.operationCard}>
           <h3>Рефакторинг всех тест-кейсов</h3>
           <p>
-            Оптимизирует и улучшит структуру всех существующих тест-кейсов
-            проекта.
+            Пересматривает проект и создает тест-кейсы по 
+            новому/изменившемуся функционалу
           </p>
           <div className={styles.stats}>
             <span className={styles.statItem}>
