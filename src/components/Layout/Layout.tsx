@@ -9,7 +9,7 @@ import { SyncLoader } from 'react-spinners'
 
 export const Layout: React.FC = () => {
   const { isOpen, toggleSidebar } = useSidebar()
-  const { initializeUser, isLoading, error } = useUser()
+  const { initializeUser, isInitializing, error } = useUser()
   const pageRef = useRef<HTMLDivElement>(null)
   const { setHeight } = useDiealogHeightStore()
 
@@ -49,7 +49,7 @@ export const Layout: React.FC = () => {
     }
   }, [])
 
-  if (isLoading) {
+  if (isInitializing) {
     return (
       <div
         style={{

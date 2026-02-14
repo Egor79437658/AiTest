@@ -4,7 +4,7 @@ import { Outlet, useParams } from 'react-router-dom'
 import { SyncLoader } from 'react-spinners'
 
 export const TestCasesOutlet: React.FC = () => {
-  const { loadAllTestCases, isLoading, error } = useTestCase()
+  const { loadAllTestCases, isInitializing, error } = useTestCase()
   const { projectId } = useParams<{ projectId: string }>()
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export const TestCasesOutlet: React.FC = () => {
     }
   }, [projectId, loadAllTestCases])
 
-  if (isLoading) {
+  if (isInitializing) {
     return (
       <div
         style={{

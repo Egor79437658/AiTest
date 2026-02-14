@@ -13,11 +13,12 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   const { user, setUser, updateUser, setLoading, setError, clearUser } =
     useUserStore()
   const { accessToken } = useAuthStore()
+  const [isInitializing, setIsInitializing] = useState(false)
 
   const initializeUser = async () => {
       if (accessToken) {
         try {
-          setLoading(true)
+          setIsInitializing(true)
           let userData
 
           if (MOCK_MODE) {
@@ -31,7 +32,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
           console.error('Failed to load user data:', error)
           setError('Не удалось загрузить данные пользователя')
         } finally {
-          setLoading(false)
+          setIsInitializing(false)
         }
       } else {
         if (user) {
@@ -203,6 +204,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     user: user,
     isLoading: useUserStore.getState().isLoading,
     error: useUserStore.getState().error,
+    isInitializing,
     refreshUser,
     updateUserProfile,
     updateUserSettings,

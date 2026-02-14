@@ -8,6 +8,7 @@ export interface TestCaseContextType {
   testCase: TestCase | null
   allTestCases: TestCase[]
   isLoading: boolean
+  isInitializing: boolean
   error: string | null
   history: TestCaseHistoryRecord[]
 

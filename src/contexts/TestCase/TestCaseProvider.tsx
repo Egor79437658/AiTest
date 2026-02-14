@@ -1,7 +1,7 @@
 // src/contexts/TestCaseProvider.tsx
 import { TestCase, TestCaseFormData, TestCaseUpdateData } from '@interfaces/'
 import { useTestCaseStore } from '@stores/'
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useTestCaseActions } from '../../pages/ProjectPages/components/ProjectSubPages/TestCases/hooks/useTestCaseActions'
 import { TestCaseContext, TestCaseContextType } from './TestCaseContext'
 
@@ -50,6 +50,8 @@ export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
     postExcelTestCases
   } = useTestCaseActions()
 
+  const [isInitializing, setIsInitializing] = useState(false)
+
   const loadAllTestCases = useCallback(
     async (projectId: number): Promise<TestCase[]> => {
       if (isNaN(projectId) || !isFinite(projectId)) {
@@ -57,7 +59,7 @@ export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
         console.error(`некорректное значение id проекта ${projectId}`)
         throw new Error(`некорректное значение id проекта ${projectId}`)
       }
-      setLoading(true)
+      setIsInitializing(true)
       setError(null)
 
       try {
@@ -74,10 +76,10 @@ export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
         onError?.('loadAllTestCases', error as Error)
         throw error
       } finally {
-        setLoading(false)
+        setIsInitializing(false)
       }
     },
-    [setLoading, setError, setAllTestCases, loadTestCases, onSuccess, onError]
+    [setIsInitializing, setError, setAllTestCases, loadTestCases, onSuccess, onError]
   )
 
   const updateTestCaseHandler = useCallback(
@@ -360,6 +362,7 @@ export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
     testCase,
     allTestCases,
     isLoading,
+    isInitializing,
     error,
     history: history,
 

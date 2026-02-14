@@ -20,6 +20,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
   } = useProjectStore()
 
   const {refreshUser} = useUser()
+  const [isInitializing, setIsInitializing] = useState(false)
 
   const loadProject = useCallback(
     async (projectId: number): Promise<void> => {
@@ -29,7 +30,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
         throw new Error(`некорректное значение id проекта ${projectId}`)
       }
       try {
-        setLoading(true)
+        setIsInitializing(true)
         setError(null)
 
         let projectData: Project
@@ -50,10 +51,10 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
         setError('Не удалось загрузить данные проекта')
         throw error
       } finally {
-        setLoading(false)
+        setIsInitializing(false)
       }
     },
-    [setLoading, setError, setProject]
+    [setIsInitializing, setError, setProject]
   )
 
   const updateProjectData = useCallback(
@@ -127,6 +128,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
     project: project,
     isLoading: useProjectStore.getState().isLoading,
     error: useProjectStore.getState().error,
+    isInitializing,
     loadProject,
     updateProject: updateProjectData,
     clearProject: clearCurrentProject,

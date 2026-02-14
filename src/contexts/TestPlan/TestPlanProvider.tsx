@@ -1,6 +1,6 @@
 import { MOCK_MODE } from '@constants/'
 import { TestPlan, TestPlanUpdateData, TestPlanRun } from '@interfaces/'
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { testPlanApi } from '../../api/' // 
 import { mockApiService } from '../../services/mockApiService'
 import { useTestPlanStore } from '../../stores/testPlanStore'
@@ -25,6 +25,9 @@ export const TestPlanProvider: React.FC<{ children: React.ReactNode }> = ({
     setTestPlanRuns,
     updateTestPlan,
   } = useTestPlanStore()
+
+
+  const [isInitializing, setIsInitializing] = useState(false)
 
   const updatePlan = useCallback(async (projectId: number, testPlanId: number, updates: TestPlanUpdateData) => {
     setLoading(true)
@@ -52,7 +55,7 @@ export const TestPlanProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [setLoading, setError, setAllTestPlans, updateTestPlan])
 
   const loadAllTestPlans = useCallback(async (projectId: number) => {
-    setLoading(true)
+    setIsInitializing(true)
     try {
       let plans: TestPlan[]
 
@@ -68,9 +71,9 @@ export const TestPlanProvider: React.FC<{ children: React.ReactNode }> = ({
       setError('Не удалось загрузить данные тест-планов')
       throw error
     } finally {
-      setLoading(false)
+      setIsInitializing(false)
     }
-  }, [setLoading, setError, setAllTestPlans])
+  }, [setIsInitializing, setError, setAllTestPlans])
 
   const loadTestPlan = useCallback(async (projectId: number, testPlanId: number) => {
     setLoading(true)
@@ -206,6 +209,7 @@ export const TestPlanProvider: React.FC<{ children: React.ReactNode }> = ({
     allTestPlans,
     testPlanRuns,
     isLoading,
+    isInitializing,
     error,
     setTestPlan,
     loadAllTestPlans,

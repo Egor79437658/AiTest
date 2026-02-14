@@ -104,7 +104,7 @@ const router = createBrowserRouter([
               },
               {
                 path: `${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}`,
-                // element: <TestPlanOutlet/>,
+                element: <TestPlanOutlet/>,
                 children: [
                   {
                     index: true,
