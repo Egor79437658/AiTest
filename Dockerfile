@@ -1,22 +1,39 @@
-FROM node:22.17.0-alpine as builder
+FROM node:24.13.0-alpine as builder
 WORKDIR /front
 
-RUN echo "VITE_BACKEND_ADDRESS=___VITE_BACKEND_ADDRESS___" > .env && \
-    echo "VITE_DEV_MODE=___VITE_DEV_MODE___" >> .env
+RUN printf '%s\n'                                      \
+    'VITE_BACKEND_ADDRESS=___VITE_BACKEND_ADDRESS___'  \
+    'VITE_DEV_MODE=___VITE_DEV_MODE___'                \
+    > .env
 
 COPY package*.json ./
 RUN npm install
 COPY . .
 RUN npm run buildDangerous
 
-FROM nginx:1.29.4-alpine
+FROM nginx:1.29.5-alpine
+
+RUN printf '%s\n'                               \
+    'server {'                                  \
+    '    listen 80;'                            \
+    '    server_name localhost;'                \
+    '    root /usr/share/nginx/html;'           \
+    '    index index.html;'                     \
+    '    location / {'                          \
+    '        try_files $uri $uri/ /index.html;' \
+    '    }'                                     \
+    '}'                                         \
+    > /etc/nginx/conf.d/default.conf
+
 COPY --from=builder /front/dist /usr/share/nginx/html
 
-RUN echo '#!/bin/sh' > /entrypoint.sh && \
-    echo 'sed -i "s|___VITE_BACKEND_ADDRESS___|${VITE_BACKEND_ADDRESS}|g" /usr/share/nginx/html/assets/*.js' >> /entrypoint.sh && \
-    echo 'sed -i "s|___VITE_DEV_MODE___|${VITE_DEV_MODE}|g" /usr/share/nginx/html/assets/*.js' >> /entrypoint.sh && \
-    echo 'echo "ffff"' >> /entrypoint.sh && \
-    echo 'exec "$@"' >> /entrypoint.sh && \
+RUN printf '%s\n'                                                                                       \
+    '#!/bin/sh'                                                                                         \
+    'sed -i "s|___VITE_BACKEND_ADDRESS___|${VITE_BACKEND_ADDRESS}|g" /usr/share/nginx/html/assets/*.js' \
+    'sed -i "s|___VITE_DEV_MODE___|${VITE_DEV_MODE}|g" /usr/share/nginx/html/assets/*.js'               \
+    'echo "ffff"'                                                                                       \
+    'exec "$@"'                                                                                         \
+    > /entrypoint.sh && \
     chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
