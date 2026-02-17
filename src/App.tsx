@@ -6,6 +6,7 @@ import {
   ProjectProvider,
   TestCaseProvider,
   TestPlanProvider,
+  ScriptProvider,
 } from '@contexts/'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { PAGE_ENDPOINTS } from '@constants/'
@@ -27,10 +28,8 @@ import {
   CreateTestCase,
   ProjectAutoTesting,
   ProjectReports,
-  ProjectScripts,
   ProjectSettings,
   ProjectTestCases,
-  ProjectTestPlanRuns,
   ProjectTestPlans,
   RedactTestCase,
   ViewTestCase,
@@ -40,9 +39,13 @@ import {
   RedactTestPlan,
   TestPlanRunHistory,
   TestPlanRunDetails,
-  TestPlanOutlet,
+  ScriptOutlet,
+  ProjectScripts,
+  RedactScript,
+  ViewScript,
 } from './pages/ProjectPages/components/ProjectSubPages'
 import { Toaster } from 'sonner'
+import { ScriptRunHistory } from './pages/ProjectPages/components/ProjectSubPages/Scripts/ScriptRunHistory'
 
 const router = createBrowserRouter([
   {
@@ -130,12 +133,33 @@ const router = createBrowserRouter([
                     path: `${PAGE_ENDPOINTS.TEST_PLAN_ID}/runs/${PAGE_ENDPOINTS.RUN_ID}`,
                     element: <TestPlanRunDetails />,
                   },
-                ]
-
+                ],
               },
               {
                 path: `${PAGE_ENDPOINTS.PROJECT_PARTS.SCRIPT}`,
-                element: <ProjectScripts />,
+                // element: <ScriptOutlet />,
+                children: [
+                  {
+                    index: true,
+                    element: <ProjectScripts />,
+                  },
+                  // {
+                  //   path: 'new',
+                  //   element: <Create />,
+                  // },
+                  {
+                    path: `${PAGE_ENDPOINTS.SCRIPT_ID}/edit`,
+                    element: <RedactScript />,
+                  },
+                  {
+                    path: `${PAGE_ENDPOINTS.SCRIPT_ID}/view`,
+                    element: <ViewScript />,
+                  },
+                  {
+                    path: `${PAGE_ENDPOINTS.SCRIPT_ID}/${PAGE_ENDPOINTS.HISTORY}`,
+                    element: <ScriptRunHistory />,
+                  },
+                ],
               },
               {
                 path: `${PAGE_ENDPOINTS.PROJECT_PARTS.AUTO_TEST}`,
@@ -195,8 +219,10 @@ function App() {
           <SidebarProvider>
             <TestCaseProvider>
               <TestPlanProvider>
-                <RouterProvider router={router} />
-                <Toaster />
+                <ScriptProvider>
+                  <RouterProvider router={router} />
+                  <Toaster />
+                </ScriptProvider>
               </TestPlanProvider>
             </TestCaseProvider>
           </SidebarProvider>

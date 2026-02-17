@@ -12,6 +12,9 @@ import {
   TestPlanUpdateData,
   User,
   TestPlanRunShort,
+  ScriptRun,
+  ScriptUpdateData,
+  Script,
 } from '@interfaces/'
 import { MOCK_CODE } from '@constants/'
 import {
@@ -20,6 +23,8 @@ import {
   MOCK_TEST_PLAN_RUNS,
   mockProjects,
   mockProjectsHistory,
+  mockScriptRuns,
+  mockScripts,
   mockTestCases,
   mockTokens,
   mockUsers,
@@ -392,7 +397,6 @@ class MockApiService {
     return structuredClone(updatedProject)
   }
 
-
   async deleteProject(projectId: number): Promise<void> {
     await delay(500)
 
@@ -402,25 +406,21 @@ class MockApiService {
       throw new Error('Project not found')
     }
 
-  
     mockProjects.splice(projectIndex, 1)
 
- 
-    mockUsers.forEach(user => {
+    mockUsers.forEach((user) => {
       user.projectData = user.projectData.filter(
-        project => project.id !== projectId
+        (project) => project.id !== projectId
       )
     })
 
-    
     localStorage.removeItem(`project_${projectId}_datapool`)
 
     console.log(`Project ${projectId} deleted successfully from mock data`)
- }
- async getHistoryChange(testCaseId: number): Promise<TestCaseHistoryRecord[]> {
+  }
+  async getHistoryChange(testCaseId: number): Promise<TestCaseHistoryRecord[]> {
     await delay(800)
-    return mockProjectsHistory.filter(el => el.id === testCaseId)
-
+    return mockProjectsHistory.filter((el) => el.id === testCaseId)
   }
 
   async getTestCases(id: number): Promise<TestCase[]> {
@@ -624,20 +624,26 @@ class MockApiService {
     }
   }
 
-
   async getAllTestPlans(projectId: number): Promise<TestPlan[]> {
     await delay(500)
-    return MOCK_TEST_PLANS.filter((plan: TestPlan) => plan.projectId === projectId)
+    return MOCK_TEST_PLANS.filter(
+      (plan: TestPlan) => plan.projectId === projectId
+    )
   }
 
   async getTestPlan(projectId: number, testPlanId: number): Promise<TestPlan> {
     await delay(500)
-    const plan = MOCK_TEST_PLANS.find((p: TestPlan) => p.id === testPlanId && p.projectId === projectId)
+    const plan = MOCK_TEST_PLANS.find(
+      (p: TestPlan) => p.id === testPlanId && p.projectId === projectId
+    )
     if (!plan) throw new Error('Test plan not found')
     return plan
   }
 
-  async createTestPlan(projectId: number, data: Omit<TestPlanUpdateData, 'id'>): Promise<TestPlan> {
+  async createTestPlan(
+    projectId: number,
+    data: Omit<TestPlanUpdateData, 'id'>
+  ): Promise<TestPlan> {
     await delay(800)
     this.testPlanIdCounter++
     const newPlan: TestPlan = {
@@ -645,44 +651,61 @@ class MockApiService {
       id: this.testPlanIdCounter,
       projectId,
       testCaseCount: data.testCases?.length || 0,
-      owner: { id: mockUsers[0].id, username: mockUsers[0].profileData.username },
+      owner: {
+        id: mockUsers[0].id,
+        username: mockUsers[0].profileData.username,
+      },
       createdAt: new Date(),
       lastRunAt: undefined,
       duration: 0,
       lastRunStatus: 'не_запускался',
       status: data.status || 'active',
-      testCases: data.testCases || []
+      testCases: data.testCases || [],
     } as TestPlan
     MOCK_TEST_PLANS.push(newPlan)
     return newPlan
   }
 
-  async updateTestPlan(projectId: number, testPlanId: number, updates: TestPlanUpdateData): Promise<TestPlan> {
+  async updateTestPlan(
+    projectId: number,
+    testPlanId: number,
+    updates: TestPlanUpdateData
+  ): Promise<TestPlan> {
     await delay(800)
-    const index = MOCK_TEST_PLANS.findIndex((p: TestPlan) => p.id === testPlanId && p.projectId === projectId)
+    const index = MOCK_TEST_PLANS.findIndex(
+      (p: TestPlan) => p.id === testPlanId && p.projectId === projectId
+    )
     if (index === -1) throw new Error('Test plan not found')
-    
+
     const updatedPlan = {
       ...MOCK_TEST_PLANS[index],
       ...updates,
-      testCaseCount: updates.testCases?.length || MOCK_TEST_PLANS[index].testCaseCount
+      testCaseCount:
+        updates.testCases?.length || MOCK_TEST_PLANS[index].testCaseCount,
     }
-    
+
     MOCK_TEST_PLANS[index] = updatedPlan
     return updatedPlan
   }
 
   async deleteTestPlan(projectId: number, testPlanId: number): Promise<void> {
     await delay(500)
-    const index = MOCK_TEST_PLANS.findIndex((p: TestPlan) => p.id === testPlanId && p.projectId === projectId)
+    const index = MOCK_TEST_PLANS.findIndex(
+      (p: TestPlan) => p.id === testPlanId && p.projectId === projectId
+    )
     if (index !== -1) {
       MOCK_TEST_PLANS.splice(index, 1)
     }
   }
 
-  async runTestPlan(projectId: number, testPlanId: number): Promise<TestPlanRun> {
+  async runTestPlan(
+    projectId: number,
+    testPlanId: number
+  ): Promise<TestPlanRun> {
     await delay(2000)
-    const planIndex = MOCK_TEST_PLANS.findIndex((p: TestPlan) => p.id === testPlanId)
+    const planIndex = MOCK_TEST_PLANS.findIndex(
+      (p: TestPlan) => p.id === testPlanId
+    )
     const newRun: TestPlanRun = {
       id: Date.now(),
       testPlanId,
@@ -690,36 +713,44 @@ class MockApiService {
       startedAt: new Date(),
       finishedAt: new Date(Date.now() + 30000),
       status: 'успешно',
-      triggeredBy: { id: mockUsers[0].id, username: mockUsers[0].profileData.username },
+      triggeredBy: {
+        id: mockUsers[0].id,
+        username: mockUsers[0].profileData.username,
+      },
       duration: 30000,
-      results: []
+      results: [],
     }
     MOCK_TEST_PLAN_RUNS.push(newRun)
-    
+
     if (planIndex !== -1) {
       MOCK_TEST_PLANS[planIndex] = {
         ...MOCK_TEST_PLANS[planIndex],
         lastRunAt: new Date(),
-        lastRunStatus: 'успешно'
+        lastRunStatus: 'успешно',
       }
     }
-    
+
     return newRun
   }
 
-  async cloneTestPlan(projectId: number, testPlanId: number): Promise<TestPlan> {
+  async cloneTestPlan(
+    projectId: number,
+    testPlanId: number
+  ): Promise<TestPlan> {
     await delay(800)
-    const original = MOCK_TEST_PLANS.find((p: TestPlan) => p.id === testPlanId && p.projectId === projectId)
+    const original = MOCK_TEST_PLANS.find(
+      (p: TestPlan) => p.id === testPlanId && p.projectId === projectId
+    )
     if (!original) throw new Error('Test plan not found')
-    
+
     const versionParts = original.version.split('.')
     if (versionParts.length === 3) {
       versionParts[2] = (parseInt(versionParts[2]) + 1).toString()
     }
     const newVersion = versionParts.join('.')
-    
+
     this.testPlanIdCounter++
-    
+
     const clonedPlan: TestPlan = {
       ...original,
       id: this.testPlanIdCounter,
@@ -727,25 +758,212 @@ class MockApiService {
       version: newVersion,
       createdAt: new Date(),
       lastRunStatus: 'не_запускался',
-      lastRunAt: undefined
+      lastRunAt: undefined,
     }
-    
+
     MOCK_TEST_PLANS.push(clonedPlan)
     return clonedPlan
   }
 
-  async getTestPlanRuns(projectId: number, testPlanId: number): Promise<TestPlanRun[]> {
+  async getTestPlanRuns(
+    projectId: number,
+    testPlanId: number
+  ): Promise<TestPlanRun[]> {
     await delay(500)
-    return MOCK_TEST_PLAN_RUNS.filter((run: TestPlanRun) => run.testPlanId === testPlanId)
+    return MOCK_TEST_PLAN_RUNS.filter(
+      (run: TestPlanRun) => run.testPlanId === testPlanId
+    )
   }
 
-  async getRecentTestPlanRunsForPlan(projectId: number, testPlanId: number, limit: number = 3): Promise<TestPlanRun[]> {
+  async getRecentTestPlanRunsForPlan(
+    projectId: number,
+    testPlanId: number,
+    limit: number = 3
+  ): Promise<TestPlanRun[]> {
     await delay(300)
-    const allRuns = MOCK_TEST_PLAN_RUNS.filter((run: TestPlanRun) => run.testPlanId === testPlanId)
-    const sorted = allRuns.sort((a: TestPlanRun, b: TestPlanRun) => b.startedAt.getTime() - a.startedAt.getTime())
+    const allRuns = MOCK_TEST_PLAN_RUNS.filter(
+      (run: TestPlanRun) => run.testPlanId === testPlanId
+    )
+    const sorted = allRuns.sort(
+      (a: TestPlanRun, b: TestPlanRun) =>
+        b.startedAt.getTime() - a.startedAt.getTime()
+    )
     return sorted.slice(0, limit)
   }
 
+  async getScripts(projectId: number): Promise<Script[]> {
+    await delay(500)
+    const project = await this.getProject(projectId)
+    const projectScriptIds = new Set(project.scripts.map((s) => s.id))
+    return mockScripts.filter((script) => projectScriptIds.has(script.id))
+  }
+
+  async getScript(projectId: number, scriptId: number): Promise<Script> {
+    await delay(300)
+    const script = mockScripts.find((s) => s.id === scriptId)
+    if (!script) throw new Error('Script not found')
+    const project = await this.getProject(projectId)
+    if (!project.scripts.some((s) => s.id === scriptId)) {
+      throw new Error('Script does not belong to this project')
+    }
+    return structuredClone(script)
+  }
+
+  async createScript(
+    projectId: number,
+    data: ScriptUpdateData
+  ): Promise<Script> {
+    await delay(800)
+    const user = await this.getCurrentUser()
+    const project = await this.getProject(projectId)
+
+    const newId = Math.max(...mockScripts.map((s) => s.id), 0) + 1
+    const newScript: Script = {
+      id: newId,
+      name: data.name || 'Новый скрипт',
+      version: data.version || '001.000.000',
+      testCaseId: data.testCaseId || 0,
+      precondition: data.precondition,
+      createdAt: new Date(),
+      status: data.status ?? 2,
+      owner: { id: user.id, username: user.profileData.username },
+      code: data.code || '',
+    }
+    mockScripts.push(newScript)
+
+    const projectIndex = mockProjects.findIndex((p) => p.id === projectId)
+    if (projectIndex !== -1) {
+      mockProjects[projectIndex].scripts.push({ id: newId })
+    }
+
+    return structuredClone(newScript)
+  }
+
+  async updateScript(
+    projectId: number,
+    scriptId: number,
+    updates: ScriptUpdateData
+  ): Promise<Script> {
+    await delay(500)
+    const index = mockScripts.findIndex((s) => s.id === scriptId)
+    if (index === -1) throw new Error('Script not found')
+
+    const updated = {
+      ...mockScripts[index],
+      ...updates,
+    }
+    mockScripts[index] = updated
+    return structuredClone(updated)
+  }
+
+  async deleteScript(projectId: number, scriptId: number): Promise<void> {
+    await delay(500)
+    const scriptIndex = mockScripts.findIndex((s) => s.id === scriptId)
+    if (scriptIndex === -1) throw new Error('Script not found')
+
+    mockScripts.splice(scriptIndex, 1)
+
+    for (let i = mockScriptRuns.length - 1; i >= 0; i--) {
+      if (mockScriptRuns[i].scriptId === scriptId) {
+        mockScriptRuns.splice(i, 1)
+      }
+    }
+
+    const projectIndex = mockProjects.findIndex((p) => p.id === projectId)
+    if (projectIndex !== -1) {
+      mockProjects[projectIndex].scripts = mockProjects[
+        projectIndex
+      ].scripts.filter((s) => s.id !== scriptId)
+    }
+  }
+
+  async getScriptRuns(
+    projectId: number,
+    scriptId: number
+  ): Promise<ScriptRun[]> {
+    await delay(400)
+    const runs = mockScriptRuns.filter((run) => run.scriptId === scriptId)
+    return runs.map((r) => structuredClone(r))
+  }
+
+  async runScript(projectId: number, scriptId: number): Promise<ScriptRun> {
+    await delay(2000)
+    const user = await this.getCurrentUser()
+    const script = await this.getScript(projectId, scriptId)
+
+    const newRunId = Math.max(...mockScriptRuns.map((r) => r.id), 0) + 1
+    const startedAt = new Date()
+    const finishedAt = new Date(startedAt.getTime() + 30000) // +30 сек
+    const duration = 30000
+    const statuses: Array<ScriptRun['status']> = ['успешно', 'с_ошибками']
+    const status = statuses[Math.floor(Math.random() * statuses.length)]
+
+    const newRun: ScriptRun = {
+      id: newRunId,
+      scriptId,
+      startedAt,
+      finishedAt,
+      status,
+      triggeredBy: { id: user.id, username: user.profileData.username },
+      duration,
+      logs:
+        status === 'успешно' ? 'Скрипт выполнен успешно' : 'Ошибка выполнения',
+      error: status === 'с_ошибками' ? 'Имитация ошибки' : undefined,
+    }
+
+    mockScriptRuns.push(newRun)
+
+    const scriptIndex = mockScripts.findIndex((s) => s.id === scriptId)
+    if (scriptIndex !== -1) {
+      mockScripts[scriptIndex].lastRunAt = finishedAt
+      mockScripts[scriptIndex].lastRunStatus = status
+      mockScripts[scriptIndex].duration = duration
+    }
+
+    return structuredClone(newRun)
+  }
+
+  async archiveScripts(projectId: number, scriptIds: number[]): Promise<void> {
+    await delay(500)
+    scriptIds.forEach((id) => {
+      const script = mockScripts.find((s) => s.id === id)
+      if (script) script.status = 0
+    })
+  }
+
+  async generateAllScripts(
+    projectId: number,
+    includeNegative: boolean
+  ): Promise<void> {
+    await delay(1000)
+    console.log('Генерация всех скриптов', { projectId, includeNegative })
+  }
+
+  async generateNewScripts(
+    projectId: number,
+    includeNegative: boolean
+  ): Promise<void> {
+    await delay(800)
+    console.log('Генерация новых скриптов', { projectId, includeNegative })
+  }
+
+  async refactorAllScripts(projectId: number): Promise<void> {
+    await delay(1200)
+    console.log('Рефакторинг всех активных скриптов')
+  }
+
+  async refactorScript(
+    projectId: number,
+    scriptIds: number[],
+    includeNegative: boolean
+  ): Promise<void> {
+    await delay(900)
+    console.log('Рефакторинг выбранных скриптов', {
+      projectId,
+      scriptIds,
+      includeNegative,
+    })
+  }
 }
 
 export const mockApiService = new MockApiService()

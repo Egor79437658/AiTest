@@ -132,7 +132,7 @@ export const mockProjects: Project[] = [
     ],
     testPlans: [{ id: 4 }],
     testCases: [{ id: 3 }],
-    scripts: [{ id: 3 }],
+    scripts: [{ id: 1 }, { id: 2 }, { id: 4 }],
     datapool: [],
     recentTestPlanRuns: [
       {
@@ -166,7 +166,7 @@ export const mockProjects: Project[] = [
     ],
     testPlans: [{ id: 3 }],
     testCases: [{ id: 2 }],
-    scripts: [{ id: 2 }],
+    scripts: [{ id: 3 }],
     datapool: [],
     recentTestPlanRuns: [
       {
@@ -201,7 +201,7 @@ export const mockProjects: Project[] = [
 
     testPlans: [{ id: 1 }, { id: 2 }],
     testCases: [{ id: 1 }],
-    scripts: [{ id: 1 }],
+    scripts: [{ id: 5 }],
     datapool: [],
     recentTestPlanRuns: [
       {
@@ -243,7 +243,7 @@ export const mockProjects: Project[] = [
     ],
     testPlans: [{ id: 5 }],
     testCases: [{ id: 5 }, { id: 6 }],
-    scripts: [{ id: 5 }],
+    scripts: [],
     recentTestPlanRuns: [
       {
         id: 105,
@@ -1317,5 +1317,126 @@ export const MOCK_TEST_PLAN_RUNS: TestPlanRun[] = [
         duration: 180000,
       },
     ],
+  },
+]
+
+export const mockScripts: Script[] = [
+  {
+    id: 1,
+    name: 'АТ_Авторизация пользователя',
+    version: '001.000.000',
+    testCaseId: 7,
+    precondition: 'Пользователь не авторизован',
+    createdAt: new Date('2024-01-20T10:00:00'),
+    status: 1, // активный
+    lastRunAt: new Date('2024-01-25T14:30:00'),
+    lastRunStatus: 'успешно',
+    duration: 45000,
+    owner: { id: 1, username: 'testuser' },
+    code: '// Код скрипта авторизации\nconsole.log("Авторизация");',
+  },
+  {
+    id: 2,
+    name: 'АТ_Проверка корзины покупок',
+    version: '001.000.002',
+    testCaseId: 8,
+    precondition: 'Товар добавлен в корзину',
+    createdAt: new Date('2024-01-21T11:00:00'),
+    status: 1,
+    lastRunAt: new Date('2024-01-24T16:20:00'),
+    lastRunStatus: 'с_ошибками',
+    duration: 120000,
+    owner: { id: 1, username: 'testuser' },
+    code: '// Код скрипта корзины\n',
+  },
+  {
+    id: 3,
+    name: 'АТ_Проверка поиска товаров',
+    version: '001.000.000',
+    testCaseId: 9,
+    precondition: 'База данных заполнена',
+    createdAt: new Date('2024-01-22T09:30:00'),
+    status: 2, // черновик
+    owner: { id: 2, username: 'demo' },
+    code: '// Код поиска\n',
+  },
+  {
+    id: 4,
+    name: 'АТ_Оплата заказа',
+    version: '002.000.001',
+    testCaseId: 100,
+    precondition: 'Корзина не пуста',
+    createdAt: new Date('2024-01-23T14:15:00'),
+    status: 1,
+    lastRunAt: new Date('2024-01-26T10:05:00'),
+    lastRunStatus: 'успешно',
+    duration: 60000,
+    owner: { id: 1, username: 'testuser' },
+    code: '// Оплата\n',
+  },
+  {
+    id: 5,
+    name: 'АТ_Фильтрация поиска',
+    version: '001.000.003',
+    testCaseId: 101,
+    precondition: 'Открыта страница поиска',
+    createdAt: new Date('2024-01-24T08:00:00'),
+    status: 1,
+    lastRunAt: new Date('2024-01-27T12:30:00'),
+    lastRunStatus: 'успешно',
+    duration: 85000,
+    owner: { id: 2, username: 'demo' },
+    code: '// Фильтры\n',
+  },
+]
+
+// Моковые запуски скриптов
+export const mockScriptRuns: ScriptRun[] = [
+  {
+    id: 1001,
+    scriptId: 1,
+    startedAt: new Date('2024-01-25T14:30:00'),
+    finishedAt: new Date('2024-01-25T14:30:45'),
+    status: 'успешно',
+    triggeredBy: { id: 1, username: 'testuser' },
+    duration: 45000,
+    logs: '[INFO] Авторизация выполнена',
+  },
+  {
+    id: 1002,
+    scriptId: 1,
+    startedAt: new Date('2024-01-24T09:15:00'),
+    finishedAt: new Date('2024-01-24T09:15:30'),
+    status: 'успешно',
+    triggeredBy: { id: 2, username: 'demo' },
+    duration: 30000,
+  },
+  {
+    id: 1003,
+    scriptId: 2,
+    startedAt: new Date('2024-01-24T16:20:00'),
+    finishedAt: new Date('2024-01-24T16:22:00'),
+    status: 'с_ошибками',
+    triggeredBy: { id: 1, username: 'testuser' },
+    duration: 120000,
+    error: 'Товар не добавился в корзину',
+  },
+  {
+    id: 1004,
+    scriptId: 4,
+    startedAt: new Date('2024-01-26T10:05:00'),
+    finishedAt: new Date('2024-01-26T10:06:00'),
+    status: 'успешно',
+    triggeredBy: { id: 1, username: 'testuser' },
+    duration: 60000,
+  },
+  {
+    id: 1005,
+    scriptId: 5,
+    startedAt: new Date('2024-01-27T12:30:00'),
+    finishedAt: new Date('2024-01-27T12:31:25'),
+    status: 'успешно',
+    triggeredBy: { id: 2, username: 'demo' },
+    duration: 85000,
   },
 ]
