@@ -2,6 +2,12 @@ import React, { useRef } from 'react'
 import { Attachment } from '@interfaces/'
 import styles from './AttachmentsManager.module.scss'
 import { toast } from 'sonner'
+import imageIcon from '/icons/image.svg'
+import documentIcon from '/icons/document.svg'
+import statsIcon from '/icons/stats.svg'
+import attachmentIcon from '/icons/attachment.png'
+import eyeIcon from '/icons/eye.svg'
+import downloadIcon from '/icons/arrowDown.svg'
 
 interface AttachmentsManagerProps {
   attachments: Attachment[]
@@ -85,12 +91,16 @@ export const AttachmentsManager: React.FC<AttachmentsManagerProps> = ({
   }
 
   const getFileIcon = (type: string): string => {
-    if (type.startsWith('image/')) return '🖼️'
-    if (type.includes('pdf')) return '📄'
-    if (type.includes('spreadsheet') || type.includes('excel')) return '📊'
-    if (type.includes('word') || type.includes('document')) return '📝'
-    if (type.includes('text')) return '📋'
-    return '📎'
+    if (type.startsWith('image/')) return imageIcon
+    if (
+      type.includes('pdf') ||
+      type.includes('word') ||
+      type.includes('document') ||
+      type.includes('text')
+    )
+      return documentIcon
+    if (type.includes('spreadsheet') || type.includes('excel')) return statsIcon
+    return attachmentIcon
   }
 
   return (
@@ -112,7 +122,7 @@ export const AttachmentsManager: React.FC<AttachmentsManagerProps> = ({
             className={styles.uploadButton}
             title="Загрузить файлы"
           >
-            📁 Загрузить файлы
+            Загрузить файлы
           </label>
           <div className={styles.hint}>
             Макс. размер: {formatFileSize(maxFileSize)}
@@ -132,9 +142,10 @@ export const AttachmentsManager: React.FC<AttachmentsManagerProps> = ({
           {attachments.map((attachment, index) => (
             <div key={index} className={styles.attachmentItem}>
               <div className={styles.attachmentInfo}>
-                <span className={styles.fileIcon}>
-                  {getFileIcon(attachment.type)}
-                </span>
+                <img
+                  src={getFileIcon(attachment.type)}
+                  className={styles.fileIcon}
+                />
                 <div className={styles.fileDetails}>
                   <div className={styles.fileName}>
                     {attachment.name}
@@ -160,7 +171,7 @@ export const AttachmentsManager: React.FC<AttachmentsManagerProps> = ({
                   className={styles.viewButton}
                   title="Просмотреть"
                 >
-                  👁️
+                  <img className={styles.viewIcon} src={eyeIcon} alt="" />
                 </a>
                 <a
                   href={attachment.url}
@@ -168,7 +179,7 @@ export const AttachmentsManager: React.FC<AttachmentsManagerProps> = ({
                   className={styles.downloadButton}
                   title="Скачать"
                 >
-                  ⬇️
+                  <img className={styles.viewIcon} src={downloadIcon} alt="" />
                 </a>
                 <button
                   type="button"

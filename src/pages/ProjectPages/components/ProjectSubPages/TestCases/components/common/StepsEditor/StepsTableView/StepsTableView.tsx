@@ -1,6 +1,13 @@
 import React from 'react'
 import { TestCaseStep } from '@interfaces/'
+import formIcon from '/icons/document.svg'
 import styles from './StepsTableView.module.scss'
+import statsIcon from '/icons/stats.svg'
+import settingsIcon from '/icons/settings.svg'
+import pinIcon from '/icons/pin.svg'
+import inputIcon from '/icons/info.svg'
+import checkIcon from '/icons/check.svg'
+import warningIcon from '/icons/warning.svg'
 
 interface StepsTableViewProps {
   steps: TestCaseStep[]
@@ -39,22 +46,24 @@ export const StepsTableView: React.FC<StepsTableViewProps> = ({
   }
 
   const getUIIcon = (step: TestCaseStep): string => {
-    if (step.elementName) return '🎯'
-    if (step.elementLocation) return '📍'
-    if (step.formName) return '📋'
+    if (step.elementName) return inputIcon
+    if (step.elementLocation) return pinIcon
+    if (step.formName) return formIcon
     return ''
   }
 
   const getDataIcon = (step: TestCaseStep): string => {
-    if (step.testData.length) return '📊'
-    if (step.precondition) return '⚙️'
+    if (step.testData.length) return statsIcon
+    if (step.precondition) return settingsIcon
     return ''
   }
 
   if (steps.length === 0) {
     return (
       <div className={styles.emptyState}>
-        <div className={styles.emptyIcon}>📋</div>
+        <div className={styles.emptyIcon}>
+          <img className={styles.icon} src={formIcon} alt="" />
+        </div>
         <p>Нет шагов для отображения</p>
       </div>
     )
@@ -66,11 +75,11 @@ export const StepsTableView: React.FC<StepsTableViewProps> = ({
         <h5>Просмотр всех шагов ({steps.length})</h5>
         <div className={styles.stats}>
           <span className={styles.statItem}>
-            <span className={styles.statComplete}>✓</span>
+            <img className={styles.icon} src={checkIcon} />
             Заполнено: {steps.filter((s) => isStepComplete(s)).length}
           </span>
           <span className={styles.statItem}>
-            <span className={styles.statIncomplete}>⚠️</span>
+            <img className={styles.icon} src={warningIcon} />
             Незаполнено: {steps.filter((s) => !isStepComplete(s)).length}
           </span>
         </div>
@@ -136,51 +145,42 @@ export const StepsTableView: React.FC<StepsTableViewProps> = ({
                 <td className={styles.colUI}>
                   <div className={styles.uiIcons}>
                     {getUIIcon(step) && (
-                      <span
-                        className={styles.uiIcon}
+                      <img
+                        src={getUIIcon(step)}
+                        className={styles.icon}
                         title={`UI: ${step.elementName || step.elementLocation || step.formName}`}
-                      >
-                        {getUIIcon(step)}
-                      </span>
+                      />
                     )}
                     {step.formName && (
-                      <span
-                        className={styles.formIcon}
-                        title={`Форма: ${step.formName}`}
-                      >
-                        📋
-                      </span>
+                      <img className={styles.icon} src={formIcon} alt="" />
                     )}
                   </div>
                 </td>
                 <td className={styles.colData}>
                   <div className={styles.dataIcons}>
                     {getDataIcon(step) && (
-                      <span
-                        className={styles.dataIcon}
+                      <img
+                        className={styles.icon}
+                        src={getDataIcon(step)}
                         title="Этот объект содержит тестовые данные"
-                      >
-                        {getDataIcon(step)}
-                      </span>
+                      />
                     )}
                   </div>
                 </td>
                 <td className={styles.colStatus}>
                   <div className={styles.statusCell}>
                     {isStepComplete(step) ? (
-                      <span
-                        className={styles.statusComplete}
-                        title="Шаг полностью заполнен"
-                      >
-                        ✓
-                      </span>
+                      <img
+                        className={styles.icon}
+                        src={checkIcon}
+                        alt="Шаг полностью заполнен"
+                      />
                     ) : (
-                      <span
-                        className={styles.statusIncomplete}
-                        title="Шаг требует заполнения"
-                      >
-                        ⚠️
-                      </span>
+                      <img
+                        className={styles.icon}
+                        src={warningIcon}
+                        alt="Шаг требует заполнения"
+                      />
                     )}
                   </div>
                 </td>
