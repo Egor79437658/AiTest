@@ -1,8 +1,8 @@
 import type React from 'react'
 import styles from './styles/ProjectContainer.module.scss'
-import { useAuth, useProject, useUser } from '@contexts/'
-import { Link, useParams } from 'react-router-dom'
-import { useEffect, useRef, useState } from 'react'
+import { useAuth, useProject } from '@contexts/'
+import { Link } from 'react-router-dom'
+import { useEffect } from 'react'
 import { useHeaderStore, usePipelineStore } from '@stores/'
 import {
   ProjectOverview,
