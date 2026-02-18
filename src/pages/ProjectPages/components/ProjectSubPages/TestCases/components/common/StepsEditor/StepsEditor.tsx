@@ -8,6 +8,7 @@ import { Link, useParams } from 'react-router-dom'
 import { PAGE_ENDPOINTS } from '@constants/'
 import { toast } from 'sonner'
 import { useTestCaseDependencyChecker } from '@hooks/'
+import tableIcon from '/icons/stats.svg'
 
 interface StepsEditorProps {
   steps: TestCaseStep[]
@@ -382,7 +383,7 @@ export const StepsEditor: React.FC<StepsEditorProps> = ({
                 }
                 disabled={disabled}
               >
-                {tableViewVisible ? '📊 Скрыть таблицу' : '📊 Показать таблицу'}
+                {tableViewVisible ? 'Скрыть таблицу' : 'Показать таблицу'}
               </button>
             </div>
           )}
@@ -845,12 +846,11 @@ export const StepsEditor: React.FC<StepsEditorProps> = ({
                             </span>
                           )}
                           {hasTestData && (
-                            <span
-                              className={styles.indicator}
-                              title="Есть тестовые данные"
-                            >
-                              📊
-                            </span>
+                            <img
+                              className={styles.icon}
+                              src={tableIcon}
+                              alt="Есть тестовые данные"
+                            />
                           )}
                           {!isFilled && (
                             <span className={styles.warningIndicator}>⚠️</span>

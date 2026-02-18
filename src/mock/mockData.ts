@@ -1,6 +1,5 @@
 import {
   Project,
-  TestCaseHistoryRecord,
   TestCase,
   TestCasePriority,
   TestCaseStatus,
@@ -133,16 +132,16 @@ export const mockProjects: Project[] = [
     ],
     testPlans: [{ id: 4 }],
     testCases: [{ id: 3 }],
-    scripts: [{ id: 3 }],
+    scripts: [{ id: 1 }, { id: 2 }, { id: 4 }],
     datapool: [],
     recentTestPlanRuns: [
-  {
-    id: 101,
-    name: 'Регрессионное тестирование',
-    startedAt: new Date('2024-01-24T14:00:00'),
-    status: 'с_ошибками',
-    duration: 270000,
-  },
+      {
+        id: 101,
+        name: 'Регрессионное тестирование',
+        startedAt: new Date('2024-01-24T14:00:00'),
+        status: 'с_ошибками',
+        duration: 270000,
+      },
     ],
     createdAt: new Date('2023-12-25T10:00:00'),
     updatedAt: new Date('2023-12-25T10:00:00'),
@@ -167,16 +166,16 @@ export const mockProjects: Project[] = [
     ],
     testPlans: [{ id: 3 }],
     testCases: [{ id: 2 }],
-    scripts: [{ id: 2 }],
+    scripts: [{ id: 3 }],
     datapool: [],
     recentTestPlanRuns: [
-  {
-    id: 101,
-    name: 'Регрессионное тестирование',
-    startedAt: new Date('2024-01-24T14:00:00'),
-    status: 'с_ошибками',
-    duration: 270000,
-  },
+      {
+        id: 101,
+        name: 'Регрессионное тестирование',
+        startedAt: new Date('2024-01-24T14:00:00'),
+        status: 'с_ошибками',
+        duration: 270000,
+      },
     ],
     createdAt: new Date('2023-12-26T10:00:00'),
     updatedAt: new Date('2023-12-26T10:00:00'),
@@ -202,23 +201,23 @@ export const mockProjects: Project[] = [
 
     testPlans: [{ id: 1 }, { id: 2 }],
     testCases: [{ id: 1 }],
-    scripts: [{ id: 1 }],
+    scripts: [{ id: 5 }],
     datapool: [],
     recentTestPlanRuns: [
-  {
-    id: 103,
-    name: 'UI тестирование',
-    startedAt: new Date('2024-01-23T11:00:00'),
-    status: 'успешно',
-    duration: 240000,
-  },
-  {
-    id: 104,
-    name: 'Мобильное регрессионное тестирование',
-    startedAt: new Date('2024-01-22T15:00:00'),
-    status: 'успешно',
-    duration: 360000,
-  },
+      {
+        id: 103,
+        name: 'UI тестирование',
+        startedAt: new Date('2024-01-23T11:00:00'),
+        status: 'успешно',
+        duration: 240000,
+      },
+      {
+        id: 104,
+        name: 'Мобильное регрессионное тестирование',
+        startedAt: new Date('2024-01-22T15:00:00'),
+        status: 'успешно',
+        duration: 360000,
+      },
     ],
     createdAt: new Date('2023-12-26T10:00:00'),
     updatedAt: new Date('2023-12-26T10:00:00'),
@@ -246,13 +245,13 @@ export const mockProjects: Project[] = [
     testCases: [{ id: 5 }, { id: 6 }, {id: 7}, {id: 8}],
     scripts: [{ id: 5 }],
     recentTestPlanRuns: [
-  {
-    id: 105,
-    name: 'Функциональное тестирование',
-    startedAt: new Date('2024-01-21T13:00:00'),
-    status: 'с_ошибками',
-    duration: 420000,
-  }
+      {
+        id: 105,
+        name: 'Функциональное тестирование',
+        startedAt: new Date('2024-01-21T13:00:00'),
+        status: 'с_ошибками',
+        duration: 420000,
+      },
     ],
     createdAt: new Date('2023-12-26T10:00:00'),
     updatedAt: new Date('2023-12-26T10:00:00'),
@@ -975,21 +974,33 @@ export const MOCK_TEST_PLANS: TestPlan[] = [
         id: 1,
         testPlanId: 1,
         order: 1,
-        testCase: { id: 7, name: 'Авторизация пользователя', version: '001.002.001' }
+        testCase: {
+          id: 7,
+          name: 'Авторизация пользователя',
+          version: '001.002.001',
+        },
       },
       {
         id: 2,
         testPlanId: 1,
         order: 2,
-        testCase: { id: 8, name: 'Проверка корзины покупок', version: '002.001.000' }
+        testCase: {
+          id: 8,
+          name: 'Проверка корзины покупок',
+          version: '002.001.000',
+        },
       },
       {
         id: 3,
         testPlanId: 1,
         order: 3,
-        testCase: { id: 9, name: 'Проверка поиска товаров', version: '001.001.001' }
-      }
-    ]
+        testCase: {
+          id: 9,
+          name: 'Проверка поиска товаров',
+          version: '001.001.001',
+        },
+      },
+    ],
   },
   {
     id: 2,
@@ -1009,15 +1020,23 @@ export const MOCK_TEST_PLANS: TestPlan[] = [
         id: 4,
         testPlanId: 2,
         order: 1,
-        testCase: { id: 7, name: 'Авторизация пользователя', version: '001.002.001' }
+        testCase: {
+          id: 7,
+          name: 'Авторизация пользователя',
+          version: '001.002.001',
+        },
       },
       {
         id: 5,
         testPlanId: 2,
         order: 2,
-        testCase: { id: 8, name: 'Проверка корзины покупок', version: '002.001.000' }
-      }
-    ]
+        testCase: {
+          id: 8,
+          name: 'Проверка корзины покупок',
+          version: '002.001.000',
+        },
+      },
+    ],
   },
   {
     id: 3,
@@ -1037,15 +1056,15 @@ export const MOCK_TEST_PLANS: TestPlan[] = [
         id: 6,
         testPlanId: 3,
         order: 1,
-        testCase: { id: 2, name: 'тест-кейс 2', version: '001.000.100' }
+        testCase: { id: 2, name: 'тест-кейс 2', version: '001.000.100' },
       },
       {
         id: 7,
         testPlanId: 3,
         order: 2,
-        testCase: { id: 3, name: 'тест-кейс 3', version: '001.000.000' }
-      }
-    ]
+        testCase: { id: 3, name: 'тест-кейс 3', version: '001.000.000' },
+      },
+    ],
   },
   {
     id: 4,
@@ -1065,15 +1084,15 @@ export const MOCK_TEST_PLANS: TestPlan[] = [
         id: 8,
         testPlanId: 4,
         order: 1,
-        testCase: { id: 2, name: 'тест-кейс 2', version: '001.000.100' }
+        testCase: { id: 2, name: 'тест-кейс 2', version: '001.000.100' },
       },
       {
         id: 9,
         testPlanId: 4,
         order: 2,
-        testCase: { id: 3, name: 'тест-кейс 3', version: '001.000.000' }
-      }
-    ]
+        testCase: { id: 3, name: 'тест-кейс 3', version: '001.000.000' },
+      },
+    ],
   },
   {
     id: 5,
@@ -1090,12 +1109,18 @@ export const MOCK_TEST_PLANS: TestPlan[] = [
     description: 'Полное функциональное тестирование всех модулей',
     testCases: [
       {
-        id: 11,
+        id: 10,
         testPlanId: 5,
         order: 1,
-        testCase: { id: 6, name: 'тест-кейс 6', version: '000.000.000' }
-      }
-    ]
+        testCase: { id: 5, name: 'тест-кейс 5', version: '000.000.001' },
+      },
+      {
+        id: 11,
+        testPlanId: 5,
+        order: 2,
+        testCase: { id: 6, name: 'тест-кейс 6', version: '000.000.000' },
+      },
+    ],
   },
   {
     id: 6,
@@ -1115,9 +1140,13 @@ export const MOCK_TEST_PLANS: TestPlan[] = [
         id: 12,
         testPlanId: 6,
         order: 1,
-        testCase: { id: 7, name: 'Авторизация пользователя', version: '001.002.001' }
-      }
-    ]
+        testCase: {
+          id: 7,
+          name: 'Авторизация пользователя',
+          version: '001.002.001',
+        },
+      },
+    ],
   },
   {
     id: 7,
@@ -1137,9 +1166,13 @@ export const MOCK_TEST_PLANS: TestPlan[] = [
         id: 13,
         testPlanId: 7,
         order: 1,
-        testCase: { id: 8, name: 'Проверка корзины покупок', version: '002.001.000' }
-      }
-    ]
+        testCase: {
+          id: 8,
+          name: 'Проверка корзины покупок',
+          version: '002.001.000',
+        },
+      },
+    ],
   },
   {
     id: 8,
@@ -1159,9 +1192,13 @@ export const MOCK_TEST_PLANS: TestPlan[] = [
         id: 14,
         testPlanId: 8,
         order: 1,
-        testCase: { id: 8, name: 'Проверка корзины покупок', version: '002.001.000' }
-      }
-    ]
+        testCase: {
+          id: 8,
+          name: 'Проверка корзины покупок',
+          version: '002.001.000',
+        },
+      },
+    ],
   },
   {
     id: 9,
@@ -1181,9 +1218,13 @@ export const MOCK_TEST_PLANS: TestPlan[] = [
         id: 15,
         testPlanId: 9,
         order: 1,
-        testCase: { id: 9, name: 'Проверка поиска товаров', version: '001.001.001' }
-      }
-    ]
+        testCase: {
+          id: 9,
+          name: 'Проверка поиска товаров',
+          version: '001.001.001',
+        },
+      },
+    ],
   },
   {
     id: 10,
@@ -1203,10 +1244,14 @@ export const MOCK_TEST_PLANS: TestPlan[] = [
         id: 16,
         testPlanId: 10,
         order: 1,
-        testCase: { id: 9, name: 'Проверка поиска товаров', version: '001.001.001' }
-      }
-    ]
-  }
+        testCase: {
+          id: 9,
+          name: 'Проверка поиска товаров',
+          version: '001.001.001',
+        },
+      },
+    ],
+  },
 ]
 
 export const MOCK_TEST_PLAN_RUNS: TestPlanRun[] = [
@@ -1225,23 +1270,23 @@ export const MOCK_TEST_PLAN_RUNS: TestPlanRun[] = [
         status: 'успешно',
         startedAt: new Date('2024-01-25T10:00:00'),
         finishedAt: new Date('2024-01-25T10:01:00'),
-        duration: 60000
+        duration: 60000,
       },
       {
         testCaseId: 8,
         status: 'успешно',
         startedAt: new Date('2024-01-25T10:01:00'),
         finishedAt: new Date('2024-01-25T10:03:00'),
-        duration: 120000
+        duration: 120000,
       },
       {
         testCaseId: 9,
         status: 'успешно',
         startedAt: new Date('2024-01-25T10:03:00'),
         finishedAt: new Date('2024-01-25T10:05:00'),
-        duration: 120000
-      }
-    ]
+        duration: 120000,
+      },
+    ],
   },
   {
     id: 101,
@@ -1258,7 +1303,7 @@ export const MOCK_TEST_PLAN_RUNS: TestPlanRun[] = [
         status: 'успешно',
         startedAt: new Date('2024-01-24T14:00:00'),
         finishedAt: new Date('2024-01-24T14:01:00'),
-        duration: 60000
+        duration: 60000,
       },
       {
         testCaseId: 8,
@@ -1266,16 +1311,16 @@ export const MOCK_TEST_PLAN_RUNS: TestPlanRun[] = [
         startedAt: new Date('2024-01-24T14:01:00'),
         finishedAt: new Date('2024-01-24T14:03:00'),
         duration: 120000,
-        error: 'Таймаут при добавлении товара в корзину'
+        error: 'Таймаут при добавлении товара в корзину',
       },
       {
         testCaseId: 9,
         status: 'пропущен',
         startedAt: new Date('2024-01-24T14:03:00'),
         finishedAt: new Date('2024-01-24T14:03:30'),
-        duration: 30000
-      }
-    ]
+        duration: 30000,
+      },
+    ],
   },
   {
     id: 102,
@@ -1292,7 +1337,7 @@ export const MOCK_TEST_PLAN_RUNS: TestPlanRun[] = [
         status: 'успешно',
         startedAt: new Date('2024-01-24T09:00:00'),
         finishedAt: new Date('2024-01-24T09:01:00'),
-        duration: 60000
+        duration: 60000,
       },
       {
         testCaseId: 8,
@@ -1300,9 +1345,9 @@ export const MOCK_TEST_PLAN_RUNS: TestPlanRun[] = [
         startedAt: new Date('2024-01-24T09:01:00'),
         finishedAt: new Date('2024-01-24T09:03:00'),
         duration: 120000,
-        error: 'Не удалось проверить корзину покупок'
-      }
-    ]
+        error: 'Не удалось проверить корзину покупок',
+      },
+    ],
   },
   {
     id: 103,
@@ -1319,16 +1364,16 @@ export const MOCK_TEST_PLAN_RUNS: TestPlanRun[] = [
         status: 'успешно',
         startedAt: new Date('2024-01-23T11:00:00'),
         finishedAt: new Date('2024-01-23T11:02:00'),
-        duration: 120000
+        duration: 120000,
       },
       {
         testCaseId: 3,
         status: 'успешно',
         startedAt: new Date('2024-01-23T11:02:00'),
         finishedAt: new Date('2024-01-23T11:04:00'),
-        duration: 120000
-      }
-    ]
+        duration: 120000,
+      },
+    ],
   },
   {
     id: 104,
@@ -1345,16 +1390,16 @@ export const MOCK_TEST_PLAN_RUNS: TestPlanRun[] = [
         status: 'успешно',
         startedAt: new Date('2024-01-22T15:00:00'),
         finishedAt: new Date('2024-01-22T15:03:00'),
-        duration: 180000
+        duration: 180000,
       },
       {
         testCaseId: 3,
         status: 'успешно',
         startedAt: new Date('2024-01-22T15:03:00'),
         finishedAt: new Date('2024-01-22T15:06:00'),
-        duration: 180000
-      }
-    ]
+        duration: 180000,
+      },
+    ],
   },
   {
     id: 105,
@@ -1372,15 +1417,136 @@ export const MOCK_TEST_PLAN_RUNS: TestPlanRun[] = [
         startedAt: new Date('2024-01-21T13:00:00'),
         finishedAt: new Date('2024-01-21T13:04:00'),
         duration: 240000,
-        error: 'Ошибка при выполнении скрипта тест-кейса'
+        error: 'Ошибка при выполнении скрипта тест-кейса',
       },
       {
         testCaseId: 6,
         status: 'успешно',
         startedAt: new Date('2024-01-21T13:04:00'),
         finishedAt: new Date('2024-01-21T13:07:00'),
-        duration: 180000
-      }
-    ]
-  }
+        duration: 180000,
+      },
+    ],
+  },
+]
+
+export const mockScripts: Script[] = [
+  {
+    id: 1,
+    name: 'АТ_Авторизация пользователя',
+    version: '001.000.000',
+    testCaseId: 7,
+    precondition: 'Пользователь не авторизован',
+    createdAt: new Date('2024-01-20T10:00:00'),
+    status: 1, // активный
+    lastRunAt: new Date('2024-01-25T14:30:00'),
+    lastRunStatus: 'успешно',
+    duration: 45000,
+    owner: { id: 1, username: 'testuser' },
+    code: '// Код скрипта авторизации\nconsole.log("Авторизация");',
+  },
+  {
+    id: 2,
+    name: 'АТ_Проверка корзины покупок',
+    version: '001.000.002',
+    testCaseId: 8,
+    precondition: 'Товар добавлен в корзину',
+    createdAt: new Date('2024-01-21T11:00:00'),
+    status: 1,
+    lastRunAt: new Date('2024-01-24T16:20:00'),
+    lastRunStatus: 'с_ошибками',
+    duration: 120000,
+    owner: { id: 1, username: 'testuser' },
+    code: '// Код скрипта корзины\n',
+  },
+  {
+    id: 3,
+    name: 'АТ_Проверка поиска товаров',
+    version: '001.000.000',
+    testCaseId: 9,
+    precondition: 'База данных заполнена',
+    createdAt: new Date('2024-01-22T09:30:00'),
+    status: 2, // черновик
+    owner: { id: 2, username: 'demo' },
+    code: '// Код поиска\n',
+  },
+  {
+    id: 4,
+    name: 'АТ_Оплата заказа',
+    version: '002.000.001',
+    testCaseId: 100,
+    precondition: 'Корзина не пуста',
+    createdAt: new Date('2024-01-23T14:15:00'),
+    status: 1,
+    lastRunAt: new Date('2024-01-26T10:05:00'),
+    lastRunStatus: 'успешно',
+    duration: 60000,
+    owner: { id: 1, username: 'testuser' },
+    code: '// Оплата\n',
+  },
+  {
+    id: 5,
+    name: 'АТ_Фильтрация поиска',
+    version: '001.000.003',
+    testCaseId: 101,
+    precondition: 'Открыта страница поиска',
+    createdAt: new Date('2024-01-24T08:00:00'),
+    status: 1,
+    lastRunAt: new Date('2024-01-27T12:30:00'),
+    lastRunStatus: 'успешно',
+    duration: 85000,
+    owner: { id: 2, username: 'demo' },
+    code: '// Фильтры\n',
+  },
+]
+
+// Моковые запуски скриптов
+export const mockScriptRuns: ScriptRun[] = [
+  {
+    id: 1001,
+    scriptId: 1,
+    startedAt: new Date('2024-01-25T14:30:00'),
+    finishedAt: new Date('2024-01-25T14:30:45'),
+    status: 'успешно',
+    triggeredBy: { id: 1, username: 'testuser' },
+    duration: 45000,
+    logs: '[INFO] Авторизация выполнена',
+  },
+  {
+    id: 1002,
+    scriptId: 1,
+    startedAt: new Date('2024-01-24T09:15:00'),
+    finishedAt: new Date('2024-01-24T09:15:30'),
+    status: 'успешно',
+    triggeredBy: { id: 2, username: 'demo' },
+    duration: 30000,
+  },
+  {
+    id: 1003,
+    scriptId: 2,
+    startedAt: new Date('2024-01-24T16:20:00'),
+    finishedAt: new Date('2024-01-24T16:22:00'),
+    status: 'с_ошибками',
+    triggeredBy: { id: 1, username: 'testuser' },
+    duration: 120000,
+    error: 'Товар не добавился в корзину',
+  },
+  {
+    id: 1004,
+    scriptId: 4,
+    startedAt: new Date('2024-01-26T10:05:00'),
+    finishedAt: new Date('2024-01-26T10:06:00'),
+    status: 'успешно',
+    triggeredBy: { id: 1, username: 'testuser' },
+    duration: 60000,
+  },
+  {
+    id: 1005,
+    scriptId: 5,
+    startedAt: new Date('2024-01-27T12:30:00'),
+    finishedAt: new Date('2024-01-27T12:31:25'),
+    status: 'успешно',
+    triggeredBy: { id: 2, username: 'demo' },
+    duration: 85000,
+  },
 ]

@@ -113,7 +113,7 @@
 }
 
 .fileIcon {
-  font-size: 24px;
+  width: 32px;
   flex-shrink: 0;
 }
 
@@ -171,8 +171,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f8f9fa;
-  border: 1px solid #dee2e6;
   border-radius: 4px;
   font-size: 16px;
   text-decoration: none;
@@ -185,6 +183,10 @@
     border-color: vars.$lightBlueColor;
     color: vars.$lightBlueColor;
     transform: translateY(-1px);
+  }
+
+  .viewIcon {
+    width: 25px;
   }
 }
 

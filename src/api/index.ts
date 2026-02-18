@@ -76,6 +76,7 @@ export { enhancedApiClient as apiClient }
 export { authApi } from './auth'
 export { usersApi } from './users'
 export { projectsApi } from './projects'
-export {testCaseApi} from "./testCase"
-export { testPlanApi } from "./testPlan"
+export { testCaseApi } from './testCase'
+export { testPlanApi } from './testPlan'
 export type { LoginCredentials, RegisterData, AuthResponse } from './auth/types'
+export { mockApiService as scriptApi } from '../services/mockApiService'

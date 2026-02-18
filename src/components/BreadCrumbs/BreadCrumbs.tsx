@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import styles from './BreadCrumbs.module.scss'
 
@@ -20,6 +20,8 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
   homeLink = '/',
   maxVisibleItems = 2,
 }) => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+
   const renderBreadcrumb = (
     item: BreadcrumbItem,
     index: number,
@@ -47,18 +49,20 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
     )
   }
 
-  const getVisibleItems = () => {
-    if (items.length <= maxVisibleItems) {
-      return items
-    }
+  const totalItems = items.length
+  const showEllipsis = totalItems > maxVisibleItems
 
+  let visibleItems: (BreadcrumbItem | { text: string; link?: undefined })[] =
+    items
+  let hiddenItems: BreadcrumbItem[] = []
+
+  if (showEllipsis) {
     const firstItem = items[0]
-    const lastTwoItems = items.slice(-1)
-
-    return [firstItem, { text: '...', link: undefined }, ...lastTwoItems]
+    const lastItemsCount = Math.max(maxVisibleItems - 2)
+    const lastItems = items.slice(-lastItemsCount)
+    hiddenItems = items.slice(1, totalItems - lastItemsCount)
+    visibleItems = [firstItem, { text: '...', link: undefined }, ...lastItems]
   }
-
-  const visibleItems = getVisibleItems()
 
   return (
     <div className={styles.breadcrumbs}>
@@ -66,18 +70,57 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
 
       <span className={styles.separator}>▶</span>
 
-      {visibleItems.map((item, index) => (
-        <React.Fragment key={index}>
-          {renderBreadcrumb(
-            item,
-            index,
-            index === 0 || index === visibleItems.length - 1
-          )}
-          {index < visibleItems.length - 1 && (
-            <span className={styles.separator}>▶</span>
-          )}
-        </React.Fragment>
-      ))}
+      {visibleItems.map((item, index) => {
+        if (item.text === '...' && !item.link) {
+          return (
+            <React.Fragment key={index}>
+              <div
+                className={`${styles.breadcrumbItem} ${styles.collapsible} ${styles.ellipsisContainer}`}
+                onMouseEnter={() => setIsDropdownOpen(true)}
+                onMouseLeave={() => setIsDropdownOpen(false)}
+              >
+                <span className={styles.breadcrumbText}>...</span>
+                {isDropdownOpen && hiddenItems.length > 0 && (
+                  <div className={styles.dropdown}>
+                    {hiddenItems.map((hiddenItem, idx) => (
+                      <div key={idx} className={styles.dropdownItem}>
+                        {hiddenItem.link ? (
+                          <Link
+                            to={hiddenItem.link}
+                            className={styles.dropdownLink}
+                          >
+                            {hiddenItem.text}
+                          </Link>
+                        ) : (
+                          <span className={styles.dropdownText}>
+                            {hiddenItem.text}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {index < visibleItems.length - 1 && (
+                <span className={styles.separator}>▶</span>
+              )}
+            </React.Fragment>
+          )
+        }
+
+        return (
+          <React.Fragment key={index}>
+            {renderBreadcrumb(
+              item,
+              index,
+              index === 0 || index === visibleItems.length - 1
+            )}
+            {index < visibleItems.length - 1 && (
+              <span className={styles.separator}>▶</span>
+            )}
+          </React.Fragment>
+        )
+      })}
     </div>
   )
 }

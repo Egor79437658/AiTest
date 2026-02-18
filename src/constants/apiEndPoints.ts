@@ -5,4 +5,5 @@ export const API_URL = {
   PROJECTS: '/projects',
   TEST_CASES: '/test-cases',
   TEST_PLANS: '/test-plans',
+  SCRIPTS: '/scripts',
 }
