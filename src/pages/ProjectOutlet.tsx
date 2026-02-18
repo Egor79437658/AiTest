@@ -4,7 +4,7 @@ import { Outlet, useParams } from 'react-router-dom'
 import { SyncLoader } from 'react-spinners'
 
 export const ProjectOutlet: React.FC = () => {
-  const { loadProject, isLoading, error } = useProject()
+  const { loadProject, isInitializing, error } = useProject()
   const { projectId } = useParams<{ projectId: string }>()
   useEffect(() => {
     if (!projectId) throw new Error('no project id was provided')
@@ -17,7 +17,7 @@ export const ProjectOutlet: React.FC = () => {
     }
   }, [projectId, loadProject])
 
-  if (isLoading) {
+  if (isInitializing) {
     return (
       <div
         style={{

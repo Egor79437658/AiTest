@@ -49,6 +49,7 @@ export interface DataPoolItem {
 export interface ProjectContextType {
   project: Project | null
   isLoading: boolean
+  isInitializing: boolean
   error: string | null
   loadProject: (projectId: number) => Promise<void>
   updateProject: (updates: Partial<Project>) => Promise<void>

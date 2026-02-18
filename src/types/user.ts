@@ -137,6 +137,7 @@ export interface User {
 export interface UserContextType {
   user: User | null
   isLoading: boolean
+  isInitializing: boolean
   error: string | null
   refreshUser: () => Promise<void>
   updateUserProfile: (profileData: UpdateProfileData) => Promise<void>

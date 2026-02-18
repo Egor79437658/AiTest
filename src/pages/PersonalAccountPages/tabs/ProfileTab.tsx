@@ -551,7 +551,7 @@ export const ProfileTab: React.FC = () => {
         changeShowQuestion={setShowDiag}
         onYesClick={() => handleDialogResponse(true)}
         onNoClick={() => handleDialogResponse(false)}
-        closeOnCLick={false}
+        closeOnClick={false}
       >
         {dialogQuestion}
       </QuestionDialog>

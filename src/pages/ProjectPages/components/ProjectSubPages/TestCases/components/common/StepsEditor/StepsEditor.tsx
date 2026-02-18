@@ -7,6 +7,7 @@ import { useTestCase } from '@contexts/'
 import { Link, useParams } from 'react-router-dom'
 import { PAGE_ENDPOINTS } from '@constants/'
 import { toast } from 'sonner'
+import { useTestCaseDependencyChecker } from '@hooks/'
 import tableIcon from '/icons/stats.svg'
 
 interface StepsEditorProps {
@@ -29,6 +30,7 @@ export const StepsEditor: React.FC<StepsEditorProps> = ({
   showTableView = true,
 }) => {
   const { allTestCases } = useTestCase()
+  const { checkDependencies } = useTestCaseDependencyChecker()
   const [activeStep, setActiveStep] = useState<number>(0)
   const [isAddingStep, setIsAddingStep] = useState(false)
   const [tableViewVisible, setTableViewVisible] = useState(true)
@@ -87,6 +89,20 @@ export const StepsEditor: React.FC<StepsEditorProps> = ({
   const handleRemoveStep = useCallback(
     (index: number) => {
       const newSteps = steps.filter((_, i) => i !== index)
+      if (steps[index].testCaseId !== -1) {
+        try {
+          checkDependencies(
+            newSteps.map((el) => el.testCaseId),
+            true
+          )
+        } catch (e) {
+          console.error(e)
+          toast.error(`ошибка - "${e}"`, {
+            position: 'top-center',
+          })
+          throw e
+        }
+      }
       onChange(newSteps)
 
       if (index === activeStep) {
@@ -124,15 +140,65 @@ export const StepsEditor: React.FC<StepsEditorProps> = ({
       const updatedStep = {
         ...steps[index],
         testCaseId: value,
-        precondition: testCase.precondition,
+        precondition: `предусловие тест-кейса '${testCase.name}'`,
         action: `выполнить тест-кейс '${testCase.name}'`,
         result: `успешно пройден тест-кейс '${testCase.name}'`,
         testData: testCase.testData,
       }
 
-      const newSteps = [...steps]
-      newSteps[index] = updatedStep
-      onChange(newSteps)
+      const updatedSteps = [...steps]
+      updatedSteps[index] = updatedStep
+      const indexes = updatedSteps.map((el) => el.testCaseId)
+      try {
+        const newStepIds = checkDependencies(indexes)
+        const newSteps = []
+        let stepsIndex = 0
+        for (let i = 0; i < newStepIds.length; ++i) {
+          if (newStepIds[i] === updatedSteps[stepsIndex].testCaseId) {
+            newSteps.push(updatedSteps[stepsIndex])
+            ++stepsIndex
+          } else {
+            if (newStepIds[i] === -1) {
+              // по идее не должно быть true никогда
+              newSteps.push({
+                testCaseId: newStepIds[i],
+                precondition: '',
+                action: '',
+                result: '',
+                testData: [],
+                formName: '',
+                elementLocation: '',
+                elementName: '',
+              })
+            } else {
+              const testcase = allTestCases.find(
+                (el) => el.id === newStepIds[i]
+              )
+              if (!testcase)
+                throw new Error(`test case ${newStepIds[i]} not found`)
+
+              newSteps.push({
+                testCaseId: newStepIds[i],
+                precondition: `предусловие тест-кейса '${testcase.name}'`,
+                action: `выполнить тест-кейс '${testcase.name}'`,
+                result: `успешно пройден тест-кейс '${testcase.name}'`,
+                testData: [],
+                formName: '',
+                elementLocation: '',
+                elementName: '',
+              })
+            }
+          }
+        }
+
+        onChange(newSteps)
+      } catch (e) {
+        console.error(e)
+        toast.error(`ошибка - "${e}"`, {
+          position: 'top-center',
+        })
+        throw e
+      }
     } else {
       const updatedStep = {
         ...steps[index],
@@ -155,6 +221,21 @@ export const StepsEditor: React.FC<StepsEditorProps> = ({
     const newSteps = [...steps]
     const [movedStep] = newSteps.splice(fromIndex, 1)
     newSteps.splice(toIndex, 0, movedStep)
+    if (movedStep.testCaseId !== -1) {
+      try {
+        checkDependencies(
+          newSteps.map((el) => el.testCaseId),
+          true
+        )
+      } catch (e) {
+        console.error(e)
+        toast.error(`ошибка - "${e}"`, {
+          position: 'top-center',
+        })
+        throw e
+      }
+    }
+
     onChange(newSteps)
 
     if (fromIndex === activeStep) {
@@ -328,7 +409,6 @@ export const StepsEditor: React.FC<StepsEditorProps> = ({
 
   const renderActiveStepContent = () => {
     if (steps.length === 0) return null
-
     const step = steps[activeStep]
     const stepNumber = activeStep + 1
     const stepTestCaseId = step.testCaseId
@@ -507,7 +587,7 @@ export const StepsEditor: React.FC<StepsEditorProps> = ({
               placeholder="Опишите условия, которые должны быть выполнены перед этим шагом"
               className={styles.textarea}
               rows={2}
-              disabled={stepTestCaseId !== -1 || disabled}
+              disabled={disabled}
             />
           </div>
 

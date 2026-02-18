@@ -113,11 +113,40 @@ export const useTestCaseActions = () => {
     []
   )
 
+  const postExcelTestCases = useCallback(
+    async (
+      file: File,
+      fileName: string,
+      columnMap: { [key: string]: string },
+      projectId: number,
+    ) => {
+      try {
+        const formData = new FormData()
+        formData.append('file', file)
+        formData.append('fileName', fileName)
+        formData.append('columnMap', JSON.stringify(columnMap))
+
+        if (MOCK_MODE) {
+          await mockApiService.sendExcelFile(formData)
+        } else {
+           await testCaseApi.sendExcelFile(formData, projectId)
+        }
+
+        return
+      } catch (error) {
+        console.error('Failed to load test case history:', error)
+        throw new Error('Не удалось загрузить историю изменений')
+      }
+    },
+    []
+  )
+
   return {
     updateTestCase,
     loadTestCases,
     deleteTestCases,
     createTestCase,
     getTestCaseHistory,
+    postExcelTestCases
   }
 }

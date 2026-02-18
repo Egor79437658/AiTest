@@ -11,8 +11,8 @@ export const Dialog: FC<{
   changeShow: (val: boolean) => void;
   children?: ReactNode;
   className?: string;
-  closeOnCLick?: boolean;
-}> = ({ show, children, className = "", changeShow, closeOnCLick = true }) => {
+  closeOnClick?: boolean;
+}> = ({ show, children, className = "", changeShow, closeOnClick = true }) => {
   
   const {height} = useDiealogHeightStore()
   // const [height] = useAtom(dialogHeight);
@@ -32,7 +32,7 @@ export const Dialog: FC<{
       ref={ref}
       onClose={() => changeShow(false)}
       onClick={(e) => {
-        if (e.target === ref.current && closeOnCLick) {
+        if (e.target === ref.current && closeOnClick) {
           ref.current.close();
         }
       }}

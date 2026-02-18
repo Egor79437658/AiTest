@@ -8,6 +8,7 @@ export interface TestCaseContextType {
   testCase: TestCase | null
   allTestCases: TestCase[]
   isLoading: boolean
+  isInitializing: boolean
   error: string | null
   history: TestCaseHistoryRecord[]
 
@@ -37,6 +38,12 @@ export interface TestCaseContextType {
     caseIds: number[],
     updates: Partial<TestCase>
   ) => Promise<void>
+  sendExcelFile: (
+      file: File,
+      fileName: string,
+      columnMap: { [key: string]: string },
+      projectId: number,
+    ) => Promise<void>
 
   // Вспомогательные функции
   getGroupedTestCases: () => Record<number, TestCase[]>

@@ -1,11 +1,7 @@
 // src/contexts/TestCaseProvider.tsx
-import {
-  TestCase,
-  TestCaseFormData,
-  TestCaseUpdateData,
-} from '@interfaces/'
+import { TestCase, TestCaseFormData, TestCaseUpdateData } from '@interfaces/'
 import { useTestCaseStore } from '@stores/'
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useTestCaseActions } from '../../pages/ProjectPages/components/ProjectSubPages/TestCases/hooks/useTestCaseActions'
 import { TestCaseContext, TestCaseContextType } from './TestCaseContext'
 
@@ -51,7 +47,10 @@ export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
     deleteTestCases,
     createTestCase,
     getTestCaseHistory,
+    postExcelTestCases
   } = useTestCaseActions()
+
+  const [isInitializing, setIsInitializing] = useState(false)
 
   const loadAllTestCases = useCallback(
     async (projectId: number): Promise<TestCase[]> => {
@@ -60,7 +59,7 @@ export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
         console.error(`некорректное значение id проекта ${projectId}`)
         throw new Error(`некорректное значение id проекта ${projectId}`)
       }
-      setLoading(true)
+      setIsInitializing(true)
       setError(null)
 
       try {
@@ -77,10 +76,10 @@ export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
         onError?.('loadAllTestCases', error as Error)
         throw error
       } finally {
-        setLoading(false)
+        setIsInitializing(false)
       }
     },
-    [setLoading, setError, setAllTestCases, loadTestCases, onSuccess, onError]
+    [setIsInitializing, setError, setAllTestCases, loadTestCases, onSuccess, onError]
   )
 
   const updateTestCaseHandler = useCallback(
@@ -304,7 +303,7 @@ export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
         console.error(`некорректное значение id проекта ${projectId}`)
         throw new Error(`некорректное значение id проекта ${projectId}`)
       }
-      
+
       if (isNaN(testCaseId) || !isFinite(testCaseId)) {
         setError('некорректное значение id тест-кейса')
         console.error(`некорректное значение id тест-кейса ${testCaseId}`)
@@ -325,11 +324,45 @@ export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
     },
     [setTestHistory, setError, setLoading, getTestCaseHistory]
   )
+
+  const sendExcelFile = useCallback(
+    async (
+      file: File,
+      fileName: string,
+      columnMap: { [key: string]: string },
+      projectId: number,
+    ) => {
+      if(file === null || columnMap === null || isNaN(projectId) || !isFinite(projectId) || projectId < 0) {
+        setError('некорректные параметры в sendExcelFile')
+        console.error(
+          `некорректные параметры в sendExcelFile: file - ${file}, fileName - ${fileName}, columnMap - ${columnMap}, projectId - ${projectId}`
+        )
+        throw new Error('некорректные параметры в sendExcelFile')
+      }
+
+      setLoading(true)
+      setError(null)
+
+      try {
+        await postExcelTestCases(file, fileName, columnMap, projectId)
+      } catch (error) {
+        console.error(' Не удалось отправить файл:', error)
+        setError(`Не удалось отправить файл ${fileName}`)
+        throw error
+      } finally {
+        setLoading(false)
+      }
+
+    },
+    [setError, setLoading]
+  )
+  
   const value: TestCaseContextType = {
     // Состояние
     testCase,
     allTestCases,
     isLoading,
+    isInitializing,
     error,
     history: history,
 
@@ -349,6 +382,7 @@ export const TestCaseProvider: React.FC<TestCaseProviderProps> = ({
     deleteTestCases: deleteSelectedTestCases,
     createTestCase: createNewTestCase,
     bulkUpdateTestCases,
+    sendExcelFile,
 
     // Вспомогательные функции
     getGroupedTestCases,

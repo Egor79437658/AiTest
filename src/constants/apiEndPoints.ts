@@ -1,5 +1,5 @@
 export const API_URL = {
-  BASE: '/api',
+  BASE: import.meta.env.VITE_BACKEND_ADDRESS,
   AUTH: '/auth',
   USER: '/user',
   PROJECTS: '/projects',

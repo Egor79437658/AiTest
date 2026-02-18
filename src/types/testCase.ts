@@ -76,7 +76,7 @@ export interface TestCase {
   owner: { id: number; username: string; fullName?: string }
   project?: string // name
   scriptIds: { id: number; name: string }[]
-  precondition: string // for whole tc
+  precondition: number
 
   // tags
   tags: string[]
@@ -120,7 +120,7 @@ export interface TestCaseUpdateData {
   isAutoTest?: boolean
   isLoadTest?: boolean
   project?: string
-  precondition?: string
+  precondition?: number
   tags?: string[]
   steps?: TestCaseStep[]
   testData?: TestData[]
@@ -159,7 +159,7 @@ export interface TestCaseFormData {
   owner: { id: number; username: string; fullName?: string }
   project?: string // name
   scriptIds: { id: number; name: string }[]
-  precondition: string // for whole tc
+  precondition: number
 
   // tags
   tags: string[]

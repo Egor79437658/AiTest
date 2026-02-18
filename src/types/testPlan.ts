@@ -92,6 +92,7 @@ export interface TestPlanContextType {
   allTestPlans: TestPlan[]
   testPlanRuns: TestPlanRun[]
   isLoading: boolean
+  isInitializing: boolean
   error: string | null
   setTestPlan: (data: TestPlan) => void
   loadAllTestPlans: (projectId: number) => void
