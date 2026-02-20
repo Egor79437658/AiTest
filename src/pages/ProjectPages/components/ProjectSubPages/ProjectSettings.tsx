@@ -25,7 +25,7 @@ const URL_REGEX = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/
 export const ProjectSettings: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>()
   const navigate = useNavigate()
-  const { updateProject, deleteProject, project } = useProject()
+  const { updateProject, deleteProject, project, checkAccess } = useProject()
   const { setHeaderContent } = useHeaderStore()
 
   const {
@@ -359,20 +359,12 @@ export const ProjectSettings: React.FC = () => {
     return null
   }
 
-  if (!isAdmin) {
+  if (!checkAccess([UserRole.PROJECT_ADMIN])) {
     return (
-      <div className={styles.projectSettings}>
-        <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>Доступ запрещен</h2>
-          <div style={{ textAlign: 'center' }}>
-            <button
-              type="button"
-              onClick={() => navigate(`/app/project/${projectId}`)}
-              className={styles.secondaryButton}
-            >
-              Вернуться к проекту
-            </button>
-          </div>
+      <div className={styles.pageContainer}>
+        <div className={styles.loading}>
+          <div className={styles.loadingSpinner}></div>
+          <p>Обратитесь к Администратору проекта для доступа к разделу</p>
         </div>
       </div>
     )

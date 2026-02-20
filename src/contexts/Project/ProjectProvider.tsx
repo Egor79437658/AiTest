@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { MOCK_MODE } from '@constants/'
 import { ProjectContext } from './ProjectContext'
 import { mockApiService } from '../../services/mockApiService'
-import { Project, ProjectContextType } from '@interfaces/'
+import { Project, ProjectContextType, UserRole } from '@interfaces/'
 import { useProjectStore } from '../../stores/'
 import { projectsApi } from '@api'
 import { useUser } from '../User'
@@ -19,7 +19,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
     clearProject,
   } = useProjectStore()
 
-  const {refreshUser} = useUser()
+  const { refreshUser, user } = useUser()
   const [isInitializing, setIsInitializing] = useState(false)
 
   const loadProject = useCallback(
@@ -56,6 +56,19 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [setIsInitializing, setError, setProject]
   )
+
+  const getRole = useCallback(() => {
+    // получить роль текущего пользователя в проекте
+    if(!project || !user) return undefined
+    return project.users.find(el => el.id === user.id)?.role
+  }, [project, user])
+  
+  const checkAccess = useCallback((acceptedRoles: UserRole[]) => {
+    // проверить доступ текущего пользователя
+    if(!user || !project) return false
+    const role =  getRole()
+    return user.isAdmin || project.createdBy === user.id || acceptedRoles.some(el => el === role)
+  }, [getRole, user, project])
 
   const updateProjectData = useCallback(
     async (updates: Partial<Project>): Promise<void> => {
@@ -101,7 +114,6 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       setLoading(true)
 
-
       if (MOCK_MODE) {
         await mockApiService.deleteProject(project.id)
       } else {
@@ -110,7 +122,6 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
 
       refreshUser()
       clearProject()
-
     } catch (error) {
       console.error('Failed to delete project:', error)
       setError('Не удалось удалить проект')
@@ -118,7 +129,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
     } finally {
       setLoading(false)
     }
-  }, [project,setError, setLoading, refreshUser, clearProject ])
+  }, [project, setError, setLoading, refreshUser, clearProject])
 
   const clearErrorState = useCallback((): void => {
     setError(null)
@@ -133,7 +144,9 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
     updateProject: updateProjectData,
     clearProject: clearCurrentProject,
     clearError: clearErrorState,
-    deleteProject: deleteCurrentProject
+    deleteProject: deleteCurrentProject,
+    getRole,
+    checkAccess
   }
 
   return (

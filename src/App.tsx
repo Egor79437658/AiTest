@@ -43,6 +43,7 @@ import {
   ProjectScripts,
   RedactScript,
   ViewScript,
+  TestPlanOutlet,
 } from './pages/ProjectPages/components/ProjectSubPages'
 import { Toaster } from 'sonner'
 import { ScriptRunHistory } from './pages/ProjectPages/components/ProjectSubPages/Scripts/ScriptRunHistory'
