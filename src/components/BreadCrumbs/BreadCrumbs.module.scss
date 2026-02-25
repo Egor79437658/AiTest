@@ -4,7 +4,7 @@
   gap: 8px;
   width: 100%;
   flex-wrap: wrap;
-  font-size: 20px;
+  font-size: 16px;
   text-decoration: none;
   min-width: 0;
 
@@ -50,9 +50,12 @@
       border: 1px solid #ddd;
       border-radius: 4px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-      min-width: 180px;
+      min-width: 200px;
+      max-width: 300px;
+      max-height: 300px;
+      overflow-y: auto;
       z-index: 1000;
-      padding: 4px 0;
+      padding: 8px 0;
 
       .dropdownItem {
         padding: 8px 12px;
@@ -90,10 +93,8 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1000px) {
   .breadcrumbs {
-    font-size: 16px;
-
     .breadcrumbItem .breadcrumbText {
       max-width: 100px;
     }

@@ -1,5 +1,5 @@
-@use "@styles/_variables.scss" as vars;
-@use "@styles/_common-styles.scss" as common;
+@use '@styles/_variables.scss' as vars;
+@use '@styles/_common-styles.scss' as common;
 
 .container {
   margin: 20px 0;
@@ -247,11 +247,15 @@
 
   &.active {
     border-color: vars.$lightBlueColor;
-    background: linear-gradient(135deg, rgba(vars.$lightBlueColor, 0.1), rgba(vars.$lightBlueColor, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(vars.$lightBlueColor, 0.1),
+      rgba(vars.$lightBlueColor, 0.05)
+    );
     box-shadow: 0 4px 12px rgba(vars.$lightBlueColor, 0.15);
 
     &::before {
-      content: "";
+      content: '';
       position: absolute;
       top: -2px;
       left: 50%;
@@ -297,6 +301,10 @@
 .tabIndicators {
   display: flex;
   gap: 4px;
+}
+
+.icon {
+  width: 10px;
 }
 
 .indicator {
@@ -602,11 +610,11 @@
 }
 
 .prevButton::before {
-  content: "←";
+  content: '←';
 }
 
 .nextButton::after {
-  content: "→";
+  content: '→';
 }
 
 .stepPosition {
@@ -690,7 +698,7 @@
 
     li {
       margin: 15px 0;
-      color: #6c757d
+      color: #6c757d;
     }
   }
 }
@@ -773,7 +781,6 @@
 
 // Адаптивность
 @media (max-width: 1024px) {
-
   .headerActions {
     gap: 15px;
   }

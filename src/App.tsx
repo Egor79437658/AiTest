@@ -39,10 +39,11 @@ import {
   RedactTestPlan,
   TestPlanRunHistory,
   TestPlanRunDetails,
-  ScriptOutlet,
   ProjectScripts,
   RedactScript,
   ViewScript,
+  TestPlanOutlet,
+  ScriptRunDetails,
 } from './pages/ProjectPages/components/ProjectSubPages'
 import { Toaster } from 'sonner'
 import { ScriptRunHistory } from './pages/ProjectPages/components/ProjectSubPages/Scripts/ScriptRunHistory'
@@ -107,7 +108,7 @@ const router = createBrowserRouter([
               },
               {
                 path: `${PAGE_ENDPOINTS.PROJECT_PARTS.TEST_PLAN}`,
-                element: <TestPlanOutlet/>,
+                element: <TestPlanOutlet />,
                 children: [
                   {
                     index: true,
@@ -137,16 +138,11 @@ const router = createBrowserRouter([
               },
               {
                 path: `${PAGE_ENDPOINTS.PROJECT_PARTS.SCRIPT}`,
-                // element: <ScriptOutlet />,
                 children: [
                   {
                     index: true,
                     element: <ProjectScripts />,
                   },
-                  // {
-                  //   path: 'new',
-                  //   element: <Create />,
-                  // },
                   {
                     path: `${PAGE_ENDPOINTS.SCRIPT_ID}/edit`,
                     element: <RedactScript />,
@@ -158,6 +154,10 @@ const router = createBrowserRouter([
                   {
                     path: `${PAGE_ENDPOINTS.SCRIPT_ID}/${PAGE_ENDPOINTS.HISTORY}`,
                     element: <ScriptRunHistory />,
+                  },
+                  {
+                    path: `${PAGE_ENDPOINTS.SCRIPT_ID}/${PAGE_ENDPOINTS.HISTORY}/${PAGE_ENDPOINTS.RUN_ID}`,
+                    element: <ScriptRunDetails />,
                   },
                 ],
               },

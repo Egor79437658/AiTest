@@ -127,18 +127,6 @@ export const ViewScript: React.FC = () => {
             >
               ▶ Запустить
             </button>
-            <button
-              className={`${styles.actionButton} ${styles.editButton}`}
-              onClick={() => navigate('edit')}
-            >
-              ✎ Редактировать
-            </button>
-            <button
-              className={`${styles.actionButton} ${styles.historyButton}`}
-              onClick={() => navigate('runs')}
-            >
-              📋 Журнал
-            </button>
           </div>
         </div>
 
