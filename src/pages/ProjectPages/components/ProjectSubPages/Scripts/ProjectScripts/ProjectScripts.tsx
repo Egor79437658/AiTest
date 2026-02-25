@@ -203,9 +203,9 @@ export const ProjectScripts: React.FC = () => {
               onRun={handleRun}
               onRefactor={handleRefactor}
               onDelete={askDelete}
-              onOpenHistory={(id) => navigate(`${id}/runs`)}
+              onOpenHistory={(id) => navigate(`${id}/history`)}
               onEdit={(id) => navigate(`${id}/edit`)}
-              onView={(id) => navigate(`${id}`)}
+              onView={(id) => navigate(`${id}/view`)}
               projectBaseUrl={getProjectBaseUrl()}
             />
           ) : (

@@ -52,9 +52,12 @@ export const ScriptRunDetails: React.FC = () => {
             },
             {
               text: 'Журнал запусков',
-              link: `/app/project/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.SCRIPT}/${scriptId}/runs`,
+              link: `/app/project/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.SCRIPT}/${scriptId}/history`,
             },
-            { text: `Запуск #${run.id}` },
+            {
+              text: `Запуск #${run.id}`,
+              link: `/app/project/${project.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.SCRIPT}/${scriptId}/hisroty/${run.id}`,
+            },
           ]}
         />
       )

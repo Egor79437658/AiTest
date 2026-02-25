@@ -4,6 +4,8 @@ import { Script } from '@interfaces/'
 import { Link } from 'react-router-dom'
 import styles from './ProjectScriptTable.module.scss'
 import eyeIcon from '/icons/eye.svg'
+import editIcon from '/icons/pencil.svg'
+import documentIcon from '/icons/document.svg'
 
 interface Props {
   scripts: Script[]
@@ -123,14 +125,14 @@ export const ProjectScriptTable: React.FC<Props> = ({
             title="Редактировать"
             className={styles.actionBtn}
           >
-            ✎
+            <img src={editIcon} alt="" />
           </button>
           <button
             onClick={() => onOpenHistory(row.id)}
             title="Журнал запусков"
             className={styles.actionBtn}
           >
-            📋
+            <img src={documentIcon} alt="" />
           </button>
           <button
             onClick={() => onRefactor([row.id])}
@@ -151,5 +153,12 @@ export const ProjectScriptTable: React.FC<Props> = ({
     },
   ]
 
-  return <Table columns={columns} data={scripts} className={styles.table} />
+  return (
+    <Table
+      columns={columns}
+      data={scripts}
+      className={styles.table}
+      showFilters={false}
+    />
+  )
 }

@@ -18,7 +18,7 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
   items,
   homeText = 'ЯМП',
   homeLink = '/',
-  maxVisibleItems = 2,
+  maxVisibleItems = 3,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
@@ -58,7 +58,7 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
 
   if (showEllipsis) {
     const firstItem = items[0]
-    const lastItemsCount = Math.max(maxVisibleItems - 2)
+    const lastItemsCount = Math.max(0, maxVisibleItems - 2)
     const lastItems = items.slice(-lastItemsCount)
     hiddenItems = items.slice(1, totalItems - lastItemsCount)
     visibleItems = [firstItem, { text: '...', link: undefined }, ...lastItems]

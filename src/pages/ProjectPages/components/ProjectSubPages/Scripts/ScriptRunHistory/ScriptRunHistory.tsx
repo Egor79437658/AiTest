@@ -209,7 +209,13 @@ export const ScriptRunHistory: React.FC = () => {
                   <td>{run.triggeredBy?.username || '—'}</td>
                   <td>{formatDuration(run.duration)}</td>
                   <td>
-                    <button onClick={() => navigate(`${run.id}`)}>
+                    <button
+                      onClick={() =>
+                        navigate(
+                          `/app/project/${project?.id}/${PAGE_ENDPOINTS.PROJECT_PARTS.SCRIPT}/${scriptId}/history/${run.id}`
+                        )
+                      }
+                    >
                       Подробнее
                     </button>
                   </td>
