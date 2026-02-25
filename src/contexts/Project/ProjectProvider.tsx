@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { MOCK_MODE } from '@constants/'
 import { ProjectContext } from './ProjectContext'
 import { mockApiService } from '../../services/mockApiService'
-import { Project, ProjectContextType, UserRole } from '@interfaces/'
+import { Project, ProjectContextType, ProjectUser, UserRole } from '@interfaces/'
 import { useProjectStore } from '../../stores/'
 import { projectsApi } from '@api'
 import { useUser } from '../User'
@@ -102,6 +102,70 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
     [project, setLoading, setError, setProject]
   )
 
+  const updateProjectUsers = useCallback(
+    async (users: ProjectUser[]): Promise<void> => {
+      if (!project) {
+        throw new Error('No project loaded')
+      }
+
+      try {
+        setLoading(true)
+
+        let updatedProject: Project
+
+        if (MOCK_MODE) {
+          updatedProject = await mockApiService.updateProject(
+            project.id,
+            {users: users}
+          )
+        } else {
+          updatedProject = await projectsApi.updateProjectUsers(project.id, users)
+        }
+
+        setProject(updatedProject)
+      } catch (error) {
+        console.error('Failed to update project users:', error)
+        setError('Не удалось обновить пользователей проекта')
+        throw error
+      } finally {
+        setLoading(false)
+      }
+    },
+    [project, setLoading, setError, setProject]
+  )
+
+  const deleteProjectUsers = useCallback(
+    async (ids: number[]): Promise<void> => {
+      if (!project) {
+        throw new Error('No project loaded')
+      }
+
+      try {
+        setLoading(true)
+
+        let updatedProject: Project
+
+        if (MOCK_MODE) {
+          updatedProject = await mockApiService.updateProject(
+            project.id,
+            {users: project.users.filter(el => !ids.some(id => id === el.id))}
+          )
+        } else {
+          updatedProject = await projectsApi.deleteProjectUsers(project.id, ids)
+        }
+
+        setProject(updatedProject)
+      } catch (error) {
+        console.error('Failed to delete project users:', error)
+        setError('Не удалось удалить пользователей проекта')
+        throw error
+      } finally {
+        setLoading(false)
+      }
+    },
+    [project, setLoading, setError, setProject]
+  )
+
   const clearCurrentProject = useCallback((): void => {
     clearProject()
   }, [clearProject])
@@ -146,7 +210,9 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
     clearError: clearErrorState,
     deleteProject: deleteCurrentProject,
     getRole,
-    checkAccess
+    checkAccess,
+    deleteProjectUsers,
+    updateProjectUsers
   }
 
   return (

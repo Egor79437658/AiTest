@@ -54,6 +54,8 @@ export interface ProjectContextType {
   error: string | null
   loadProject: (projectId: number) => Promise<void>
   updateProject: (updates: Partial<Project>) => Promise<void>
+  deleteProjectUsers: (ids: number[]) => Promise<void>
+  updateProjectUsers: (users: ProjectUser[]) => Promise<void>
   clearProject: () => void
   clearError: () => void
   deleteProject: () => Promise<void>
